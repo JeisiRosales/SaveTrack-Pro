@@ -1,98 +1,61 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# SaveTrack Pro - Backend (NestJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este es el backend de **SaveTrack Pro**, una aplicación inteligente para la gestión de metas de ahorro. Está construido con **NestJS** y utiliza **Supabase** como infraestructura principal (Base de Datos, Autenticación y Almacenamiento).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Características Principales
 
-## Description
+- **Gestión de Metas de Ahorro:** Creación, actualización (DTOs parciales) y seguimiento de objetivos financieros.
+- **Cuentas de Financiamiento:** Gestión de las fuentes de dinero (ahorros, corriente, etc.).
+- **Transacciones Automáticas:** Historial de depósitos y retiros que actualizan automáticamente los balances de las cuentas y el progreso de las metas.
+- **Cálculo de Salud Financiera:** Algoritmos internos que comparan el progreso real vs. esperado según las fechas límite.
+- **Sistema de Archivos:** Subida de imágenes para metas con asociación automática a la base de datos.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠️ Stack Tecnológico
 
-## Project setup
+- **Framework:** [NestJS](https://nestjs.com/) (TypeScript)
+- **Base de Datos:** [Supabase](https://supabase.com/) (PostgreSQL)
+- **Autenticación:** Supabase Auth + Passport JWT (NestJS)
+- **Almacenamiento:** Supabase Storage (Bucket: `goal-images`)
+- **Validación:** Class-validator y Class-transformer
 
-```bash
-$ npm install
-```
+## 🔐 Seguridad y Autenticación
 
-## Compile and run the project
+### Supabase Auth & JWT
+El sistema utiliza el mecanismo de autenticación de Supabase. El backend de NestJS está protegido mediante el decorador `@UseGuards(AuthGuard('jwt'))`, lo que asegura que solo usuarios autenticados con un token válido puedan acceder a sus datos.
 
-```bash
-# development
-$ npm run start
+### Row Level Security (RLS)
+La seguridad está reforzada en la capa de base de datos mediante políticas **RLS** en PostgreSQL:
+- Cada usuario solo puede ver y modificar sus propios perfiles, metas y cuentas.
+- Se utiliza un **Trigger** en Supabase para crear automáticamente el perfil del usuario en la tabla `profiles` tras el registro en `auth.users`.
 
-# watch mode
-$ npm run start:dev
+## 📂 Estructura del Proyecto
 
-# production mode
-$ npm run start:prod
-```
+- `src/auth`: Manejo de registro y login integrando Supabase.
+- `src/funding-accounts`: Gestión de cuentas bancarias/fuentes de dinero.
+- `src/savings-goals`: Corazón del proyecto, maneja las metas y su lógica de salud.
+- `src/transactions`: Lógica para mover dinero entre cuentas y metas.
+- `src/supabase`: Módulo global para la conexión con el cliente de Supabase.
 
-## Run tests
+## 📸 Gestión de Imágenes
 
-```bash
-# unit tests
-$ npm run test
+El backend incluye un flujo optimizado para imágenes:
+1. El archivo se sube al Bucket `goal-images`.
+2. Se genera una URL pública.
+3. El servidor actualiza automáticamente el campo `image_url` en la tabla `savings_goals` asociado al ID proporcionado.
 
-# e2e tests
-$ npm run test:e2e
+## 📝 Instalación y Uso
 
-# test coverage
-$ npm run test:cov
-```
+1. Clonar el repositorio.
+2. Configurar el archivo `.env` con las credenciales de Supabase:
+   ```env
+   SUPABASE_URL=tu_url
+   SUPABASE_ANON_KEY=tu_anon_key
+   JWT_SECRET=tu_secreto
+   ```
+3. Instalar dependencias: `npm install`
+4. Ejecutar en modo desarrollo: `npm run start:dev`
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 📊 Métricas de Salud
+El `SavingsGoalsService` incluye lógica para calcular:
+- % de salud (Progreso real vs. esperado).
+- Cuotas diarias/semanales/mensuales requeridas para alcanzar la meta a tiempo.
