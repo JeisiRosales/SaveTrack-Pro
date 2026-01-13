@@ -2,14 +2,14 @@
 
 **SaveTrack Pro** es una plataforma integral de gestión financiera diseñada para transformar metas de ahorro en planes de acción ejecutables. A diferencia de un rastreador común, utiliza algoritmos de tiempo y progreso real para calcular cuotas dinámicas y salud financiera.
 
-## 📂 Documentación por Módulo
+## Documentación por Módulo
 
 Este proyecto está dividido en dos partes principales, cada una con su propia documentación detallada:
 
 - **[Backend (NestJS)](./savetrack-backend/README.md):** Contiene la lógica de negocio, integración con Supabase (Auth, RLS, Storage), y cálculos de métricas. Revisa su README para instrucciones de configuración y despliegue del servidor.
 - **[Frontend (React + Vite)](./savetrack-frontend/README.md):** Interfaz de usuario responsiva y moderna. Consulta su README para detalles sobre el diseño, hooks personalizados y cómo conectar con el backend.
 
-## 🚀 Stack Tecnológico
+## Stack Tecnológico
 
 - **Frontend:** [React](https://reactjs.org/) + [Vite](https://vitejs.dev/) (TypeScript)
 - **Backend:** [NestJS](https://nestjs.com/) (Arquitectura Modular)
@@ -42,16 +42,16 @@ El sistema utiliza un modelo relacional sólido para garantizar la integridad de
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/tu-usuario/savetrack-pro.git
+   git clone https://github.com/JeisiRosales/SaveTrack-Pro.git
    ```
 
-## 👤 Desarrollado por **Jeisi Rosales**.
+## Desarrollado por Jeisi Rosales.
 
 Si tienes alguna duda sobre este proyecto o quieres conectar conmigo, puedes encontrarme en:
 
-* **LinkedIn:** [Jeisi Rosales](https://linkedin.com/in/tu-perfil)
-* **Email:** jeisirosales2003@gmail.com
+* **LinkedIn:** [Jeisi Rosales](www.linkedin.com/in/jeisi-rosales)
+* **Email:** [Enviame un correo por Gmail](https://mail.google.com/mail/?view=cm&fs=1&to=jeisirosales2003@gmail.com&su=I%20would%20like%20to%20work%20with%20you&body=Hi%20Jeisi,)
 
 ---
-
+ 
 **Importante:** Este proyecto fue desarrollado con el objetivo de gestionar y optimizar mis metas de ahorro personales, ajustándose rigurosamente a mis requerimientos específicos. 
