@@ -49,7 +49,11 @@ const Login: React.FC = () => {
                 navigate('/dashboard');
             }, 1000);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+            if (err.response?.data?.message === 'Email not confirmed') {
+                setError('Debes confirmar tu correo electrónico antes de iniciar sesión. Revisa tu bandeja de entrada.');
+            } else {
+                setError(err.response?.data?.message || 'Error al iniciar sesión.');
+            }
         } finally {
             setLoading(false);
         }
