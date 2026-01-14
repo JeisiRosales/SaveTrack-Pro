@@ -3,12 +3,16 @@
 // Maneja el registro, inicio de sesión y cierre de sesión
 // =============================================
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SupabaseService } from '../supabase/supabase.service';
 import { SignUpDto, SignInDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
-    constructor(private supabase: SupabaseService) { }
+    constructor(
+        private supabase: SupabaseService,
+        private configService: ConfigService
+    ) { }
 
     /**
      * Registra un nuevo usuario en Supabase Auth
@@ -23,6 +27,7 @@ export class AuthService {
                 data: {
                     full_name: dto.name, // Metadatos que el trigger usará
                 },
+                emailRedirectTo: `${this.configService.get('FRONTEND_URL') || 'http://localhost:5173'}/login?confirmed=true`,
             },
         });
 

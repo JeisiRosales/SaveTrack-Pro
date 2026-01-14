@@ -50,7 +50,7 @@ El sistema utiliza un modelo relacional sólido para garantizar la integridad de
 Si tienes alguna duda sobre este proyecto o quieres conectar conmigo, puedes encontrarme en:
 
 * **LinkedIn:** [Jeisi Rosales](www.linkedin.com/in/jeisi-rosales)
-* **Email:** [Enviame un correo por Gmail](https://mail.google.com/mail/?view=cm&fs=1&to=jeisirosales2003@gmail.com&su=I%20would%20like%20to%20work%20with%20you&body=Hi%20Jeisi,)
+* **Email:** [Enviame un correo por Gmail](mailto:jeisirosales2003@gmail.com&su=I%20would%20like%20to%20work%20with%20you&body=Hi%20Jeisi,)
 
 ---
  
