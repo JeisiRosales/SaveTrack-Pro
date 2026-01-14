@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
-import { UserPlus, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, Loader2 } from 'lucide-react';
 
 /**
  * PÁGINA DE REGISTRO
@@ -42,9 +42,6 @@ const Register: React.FC = () => {
         <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
             <div className="w-full max-w-md bg-white rounded-[2rem] shadow-xl p-8 md:p-12 border border-gray-100">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-[#0051FF10] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <UserPlus className="w-8 h-8 text-[#0051FF]" />
-                    </div>
                     <h1 className="text-3xl font-bold text-gray-900">Crea tu cuenta</h1>
                     <p className="text-gray-500 mt-2">Únete a SaveTrack Pro y empieza a ahorrar</p>
                 </div>
@@ -72,7 +69,7 @@ const Register: React.FC = () => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Tu nombre"
-                                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
                             />
                         </div>
                     </div>
@@ -87,7 +84,7 @@ const Register: React.FC = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="tu@correo.com"
-                                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
                             />
                         </div>
                     </div>
@@ -103,7 +100,7 @@ const Register: React.FC = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Mínimo 6 caracteres"
-                                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
                             />
                         </div>
                     </div>
