@@ -60,80 +60,86 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-white rounded-[2rem] shadow-xl p-8 md:p-12 border border-gray-100">
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Bienvenido</h1>
-                    <p className="text-gray-500 mt-2">Ingresa tus credenciales para continuar</p>
+        <div className="min-h-screen bg-[#F8FAFC] flex flex-col relative overflow-hidden">
+            <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+                <div className="w-full max-w-[440px] bg-white rounded-[2rem] shadow-xl p-6 sm:p-10 md:p-12 border border-gray-100 mt-12 mb-8">
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-bold text-gray-900">Bienvenido</h1>
+                        <p className="text-gray-500 mt-2">Ingresa tus credenciales para continuar</p>
+                    </div>
+
+                    {success && (
+                        <div className="bg-green-50 text-green-600 p-4 rounded-xl text-sm mb-6 flex items-center">
+                            ¡Inicio de sesión exitoso!
+                        </div>
+                    )}
+
+                    {isConfirmed && (
+                        <div className="bg-green-50 text-green-600 p-4 rounded-xl text-sm mb-6 flex items-center">
+                            ¡Correo verificado con éxito! Ya puedes iniciar sesión.
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6 flex items-center">
+                            {error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <input
+                                    type="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="tu@correo.com"
+                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <input
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                />
+                            </div>
+                            <div className="flex justify-end mt-1">
+                                <Link to="/forgot-password" className="text-sm text-gray-500 hover:text-[#0051FF] font-medium transition-colors">
+                                    ¿Olvidaste tu contraseña?
+                                </Link>
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-[#4B56D2] text-white py-4 rounded-xl font-bold hover:bg-[#0041CC] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#F1F6F5]"
+                        >
+                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Iniciar Sesión'}
+                        </button>
+                    </form>
+
+                    <p className="text-center mt-8 text-gray-600">
+                        ¿No tienes una cuenta?{' '}
+                        <Link to="/register" className="text-[#0051FF] font-bold hover:underline">
+                            Regístrate aquí
+                        </Link>
+                    </p>
                 </div>
-
-                {success && (
-                    <div className="bg-green-50 text-green-600 p-4 rounded-xl text-sm mb-6 flex items-center">
-                        ¡Inicio de sesión exitoso!
-                    </div>
-                )}
-
-                {isConfirmed && (
-                    <div className="bg-green-50 text-green-600 p-4 rounded-xl text-sm mb-6 flex items-center">
-                        ¡Correo verificado con éxito! Ya puedes iniciar sesión.
-                    </div>
-                )}
-
-                {error && (
-                    <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6 flex items-center">
-                        {error}
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="tu@correo.com"
-                                className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
-                                className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-[#0051FF] text-white py-4 rounded-xl font-bold hover:bg-[#0041CC] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-200"
-                    >
-                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Iniciar Sesión'}
-                    </button>
-                </form>
-
-                <p className="text-center mt-8 text-gray-600">
-                    ¿No tienes una cuenta?{' '}
-                    <Link to="/register" className="text-[#0051FF] font-bold hover:underline">
-                        Regístrate aquí
-                    </Link>
-                </p>
             </div>
         </div>
     );
 };
-
 export default Login;

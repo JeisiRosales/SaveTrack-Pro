@@ -3,7 +3,7 @@
 // Expone los endpoints de la API para autenticación
 // Ubicación: src/auth/auth.controller.ts
 // =============================================
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Headers, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto, SignInDto } from './dto/auth.dto';
 
@@ -25,5 +25,20 @@ export class AuthController {
     async signOut(@Body('accessToken') accessToken: string) {
         // Nota: En un caso real, el token vendría del header Authorization
         return this.authService.signOut(accessToken);
+    }
+
+    @Post('forgot-password')
+    async forgotPassword(@Body('email') email: string) {
+        return this.authService.requestPasswordReset(email);
+    }
+
+    @Post('reset-password')
+    async resetPassword(
+        @Body('password') password: string,
+        @Headers('authorization') authHeader: string
+    ) {
+        if (!authHeader) throw new UnauthorizedException('No se proporcionó token.');
+        const token = authHeader.replace('Bearer ', '');
+        return this.authService.updatePassword(token, password);
     }
 }
