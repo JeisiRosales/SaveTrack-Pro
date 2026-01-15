@@ -70,7 +70,7 @@ const Register: React.FC = () => {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="Tu nombre"
-                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -85,7 +85,7 @@ const Register: React.FC = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="tu@correo.com"
-                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -101,7 +101,7 @@ const Register: React.FC = () => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Mínimo 6 caracteres"
-                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -109,7 +109,7 @@ const Register: React.FC = () => {
                         <button
                             type="submit"
                             disabled={loading || success}
-                            className="w-full bg-[#4B56D2] text-white py-4 rounded-xl font-bold hover:bg-[#0041CC] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#F1F6F5] disabled:opacity-50"
+                            className="w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold hover:bg-[#3D46A9] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-100 disabled:opacity-50"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Registrarme'}
                         </button>
@@ -117,7 +117,7 @@ const Register: React.FC = () => {
 
                     <p className="text-center mt-8 text-gray-600">
                         ¿Ya tienes una cuenta?{' '}
-                        <Link to="/login" className="text-[#0051FF] font-bold hover:underline">
+                        <Link to="/login" className="text-[var(--color-primary)] font-bold hover:underline">
                             Inicia sesión
                         </Link>
                     </p>

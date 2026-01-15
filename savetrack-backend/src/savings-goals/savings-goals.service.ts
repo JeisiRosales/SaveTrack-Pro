@@ -12,7 +12,7 @@ export class SavingsGoalsService {
      * @param dto - Datos de la meta
      */
     async create(userId: string, dto: CreateGoalDto) {
-        const { data, error } = await this.supabase.getClient()
+        const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .insert({
                 user_id: userId,
@@ -36,7 +36,7 @@ export class SavingsGoalsService {
      * Ordenadas por fecha de creación (más recientes primero)
      */
     async findAll(userId: string) {
-        const { data, error } = await this.supabase.getClient()
+        const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .select('*')
             .eq('user_id', userId)
@@ -52,7 +52,7 @@ export class SavingsGoalsService {
      * @param userId - ID del usuario (para validación)
      */
     async findOne(id: string, userId: string) {
-        const { data, error } = await this.supabase.getClient()
+        const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .select('*')
             .eq('id', id)
@@ -74,7 +74,7 @@ export class SavingsGoalsService {
         // Genera un nombre único para el archivo: userId/timestamp-nombreOriginal
         const fileName = `${userId}/${Date.now()}-${file.originalname}`;
 
-        const { data: uploadData, error: uploadError } = await this.supabase.getClient()
+        const { data: uploadData, error: uploadError } = await this.supabase.getAdminClient()
             .storage
             .from('goal-images')
             .upload(fileName, file.buffer, {
@@ -84,13 +84,13 @@ export class SavingsGoalsService {
         if (uploadError) throw uploadError;
 
         // Obtiene la URL pública de la imagen subida
-        const { data: { publicUrl } } = this.supabase.getClient()
+        const { data: { publicUrl } } = this.supabase.getAdminClient()
             .storage
             .from('goal-images')
             .getPublicUrl(fileName);
 
         // Actualiza el campo image_url en la base de datos
-        const { error: updateError } = await this.supabase.getClient()
+        const { error: updateError } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .update({ image_url: publicUrl })
             .eq('id', id)
@@ -149,7 +149,7 @@ export class SavingsGoalsService {
      * @param userId - ID del usuario (para validación)
      */
     async update(id: string, dto: any, userId: string) {
-        const { data, error } = await this.supabase.getClient()
+        const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .update({
                 name: dto.name,
@@ -174,7 +174,7 @@ export class SavingsGoalsService {
      * @param userId - ID del usuario (para validación)
      */
     async remove(id: string, userId: string) {
-        const { data, error } = await this.supabase.getClient()
+        const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .delete()
             .eq('id', id)

@@ -90,9 +90,40 @@ export class TransactionsService {
     async findByGoal(goalId: string) {
         const { data, error } = await this.supabase.getClient()
             .from('transactions')
-            .select('*, funding_accounts(name)') // JOIN con funding_accounts para obtener el nombre
+            .select('*, funding_accounts(name)')
             .eq('goal_id', goalId)
-            .order('created_at', { ascending: false }); // Más recientes primero
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data;
+    }
+
+    /**
+     * Obtiene todas las transacciones de un usuario
+     * Filtra a través de las cuentas que pertenecen al usuario
+     * @param userId - ID del usuario
+     */
+    async findAllByUser(userId: string) {
+        const supabase = this.supabase.getAdminClient();
+
+        // 1. Obtener los IDs de las cuentas del usuario
+        const { data: accounts, error: accError } = await supabase
+            .from('funding_accounts')
+            .select('id')
+            .eq('user_id', userId);
+
+        if (accError) throw accError;
+        if (!accounts || accounts.length === 0) return [];
+
+        const accountIds = accounts.map(acc => acc.id);
+
+        // 2. Obtener transacciones para esas cuentas
+        const { data, error } = await supabase
+            .from('transactions')
+            .select('*, funding_accounts(name), savings_goals(name)')
+            .in('account_id', accountIds)
+            .order('created_at', { ascending: false })
+            .limit(10);
 
         if (error) throw error;
         return data;

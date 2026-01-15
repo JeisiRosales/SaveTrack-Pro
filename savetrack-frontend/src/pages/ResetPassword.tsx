@@ -102,7 +102,7 @@ const ResetPassword: React.FC = () => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        className="text-black w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                        className="text-black w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                     />
                                     <button
                                         type="button"
@@ -124,7 +124,7 @@ const ResetPassword: React.FC = () => {
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                        className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                     />
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ const ResetPassword: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={loading || !!error && !window.location.hash}
-                                className="w-full bg-[#4B56D2] text-white py-4 rounded-xl font-bold hover:bg-[#0041CC] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#F1F6F5] disabled:opacity-50"
+                                className="w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold hover:bg-[#3D46A9] transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-100 disabled:opacity-50"
                             >
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Actualizar contraseña'}
                             </button>

@@ -33,7 +33,7 @@ const ForgotPassword: React.FC = () => {
         <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
             <div className="w-full max-w-[440px] bg-white rounded-[2rem] shadow-xl p-8 sm:p-12 border border-gray-100">
                 <div className="mb-6">
-                    <Link to="/login" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-[#0051FF] transition-colors">
+                    <Link to="/login" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-[var(--color-primary)] transition-colors">
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Volver al inicio de sesión
                     </Link>
@@ -53,7 +53,7 @@ const ForgotPassword: React.FC = () => {
                         </div>
                         <Link
                             to="/login"
-                            className="block w-full bg-[#4B56D2] text-white py-4 rounded-xl font-bold hover:bg-[#0041CC] transition-all shadow-lg shadow-blue-200"
+                            className="block w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold hover:bg-[#3D46A9] transition-all shadow-lg shadow-indigo-100"
                         >
                             Ir al Login
                         </Link>
@@ -77,7 +77,7 @@ const ForgotPassword: React.FC = () => {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="tu@correo.com"
-                                        className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                        className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                     />
                                 </div>
                             </div>
@@ -85,7 +85,7 @@ const ForgotPassword: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#4B56D2] text-white py-4 rounded-xl font-bold hover:bg-[#0041CC] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#F1F6F5]"
+                                className="w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold hover:bg-[#3D46A9] transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-100"
                             >
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Enviar enlace'}
                             </button>

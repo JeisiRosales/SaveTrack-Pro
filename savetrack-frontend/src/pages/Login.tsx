@@ -97,7 +97,7 @@ const Login: React.FC = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="tu@correo.com"
-                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -112,11 +112,11 @@ const Login: React.FC = () => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0051FF] focus:border-transparent outline-none transition-all"
+                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                 />
                             </div>
                             <div className="flex justify-end mt-1">
-                                <Link to="/forgot-password" className="text-sm text-gray-500 hover:text-[#0051FF] font-medium transition-colors">
+                                <Link to="/forgot-password" university-colors className="text-sm text-gray-500 hover:text-[var(--color-primary)] font-medium transition-colors">
                                     ¿Olvidaste tu contraseña?
                                 </Link>
                             </div>
@@ -125,7 +125,7 @@ const Login: React.FC = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[#4B56D2] text-white py-4 rounded-xl font-bold hover:bg-[#0041CC] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#F1F6F5]"
+                            className="w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold hover:bg-[#3D46A9] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-100"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Iniciar Sesión'}
                         </button>
@@ -133,7 +133,7 @@ const Login: React.FC = () => {
 
                     <p className="text-center mt-8 text-gray-600">
                         ¿No tienes una cuenta?{' '}
-                        <Link to="/register" className="text-[#0051FF] font-bold hover:underline">
+                        <Link to="/register" className="text-[var(--color-primary)] font-bold hover:underline">
                             Regístrate aquí
                         </Link>
                     </p>

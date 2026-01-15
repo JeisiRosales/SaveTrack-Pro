@@ -2,7 +2,8 @@
 // Controlador de Transacciones
 // Ubicación: src/transactions/transactions.controller.ts
 // =============================================
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 
@@ -13,6 +14,13 @@ export class TransactionsController {
     @Post()
     create(@Body() dto: CreateTransactionDto) {
         return this.transactionsService.create(dto);
+    }
+
+    @Get()
+    @UseGuards(AuthGuard('jwt'))
+    findAll(@Request() req) {
+        const userId = req.user.id;
+        return this.transactionsService.findAllByUser(userId);
     }
 
     @Get('goal/:goalId')

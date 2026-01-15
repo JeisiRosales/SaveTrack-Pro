@@ -12,7 +12,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = localStorage.getItem('token');
 
             if (savedUser && token) {
-                setUser(JSON.parse(savedUser));
+                const parsedUser = JSON.parse(savedUser);
+                // Aseguramos que full_name esté disponible incluso si viene de metadata
+                if (!parsedUser.full_name && parsedUser.user_metadata?.full_name) {
+                    parsedUser.full_name = parsedUser.user_metadata.full_name;
+                }
+                setUser(parsedUser);
             }
             setLoading(false);
         };
@@ -21,9 +26,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     const login = (userData: any, token: string) => {
+        // Enriquecemos el objeto usuario con el nombre de los metadatos si es necesario
+        const enrichedUser = {
+            ...userData,
+            full_name: userData.full_name || userData.user_metadata?.full_name || userData.email?.split('@')[0]
+        };
+
         localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(enrichedUser));
+        setUser(enrichedUser);
     };
 
     const logout = () => {
