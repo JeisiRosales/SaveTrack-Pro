@@ -121,11 +121,11 @@ const Accounts: React.FC = () => {
             <main className="flex-1 p-6 lg:p-10 relative overflow-x-hidden">
                 <header className="mb-6 flex items-center justify-between">
                     <div>
-                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-                            <Wallet className="w-6 h-6 text-indigo-600" />
+                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)] flex items-center gap-2">
+                            <Wallet className="w-6 h-6 text-[var(--accent-text)]" />
                             Mis Cuentas
                         </h1>
-                        <p className="text-slate-500 text-xs mt-1 font-medium">Administra tus fuentes de ahorro y saldos.</p>
+                        <p className="text-[var(--muted)] text-xs mt-1 font-medium">Administra tus fuentes de ahorro y saldos.</p>
                     </div>
                 </header>
 
@@ -134,22 +134,22 @@ const Accounts: React.FC = () => {
                         <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)]" />
                     </div>
                 ) : error ? (
-                    <div className="bg-red-50 text-red-600 p-6 rounded-2xl border border-red-100 text-center">
+                    <div className="bg-rose-500/10 text-rose-500 p-6 rounded-2xl border border-rose-200 text-center">
                         <AlertCircle className="w-8 h-8 mx-auto mb-2" />
                         <p className="font-bold">{error}</p>
                     </div>
                 ) : (
                     <div className="space-y-8">
                         {/* Resumen Global */}
-                        <div className="bg-indigo-50/40 p-6 lg:p-8 rounded-2xl border border-indigo-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="bg-[var(--accent-soft)] p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
-                                <h2 className="text-xs font-semibold text-slate-800 uppercase tracking-wider">Saldo Consolidado</h2>
-                                <h3 className="text-3xl font-bold mt-2 text-indigo-600">
+                                <h2 className="text-xs font-semibold text-[var(--foreground)] uppercase tracking-wider">Saldo Consolidado</h2>
+                                <h3 className="text-3xl font-bold mt-2 text-[var(--accent-text)]">
                                     ${totalBalance.toLocaleString()}
                                 </h3>
                             </div>
-                            <div className="text-xs text-slate-500 font-medium">
-                                <span className="text-indigo-600 font-bold">{accounts.length}</span> cuentas activas
+                            <div className="text-xs text-[var(--muted)] font-medium">
+                                <span className="text-[var(--accent-text)] font-bold">{accounts.length}</span> cuentas activas
                             </div>
                         </div>
 
@@ -160,25 +160,25 @@ const Accounts: React.FC = () => {
                                     <div
                                         key={acc.id}
                                         onClick={() => handleOpenDetails(acc)}
-                                        className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer group relative overflow-hidden"
+                                        className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all cursor-pointer group relative overflow-hidden"
                                     >
                                         <div className="relative z-10">
                                             <div className="flex justify-between items-start mb-3">
-                                                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
+                                                <div className="w-8 h-8 bg-[var(--accent-soft)] rounded-lg flex items-center justify-center text-[var(--accent-text)]">
                                                     <Wallet className="w-4 h-4" />
                                                 </div>
-                                                <span className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full border border-indigo-100">
+                                                <span className="text-[10px] font-bold bg-[var(--accent-soft)] text-[var(--accent-text)] px-2 py-0.5 rounded-full border border-[var(--card-border)]">
                                                     {totalBalance > 0 ? `${Math.round((acc.balance / totalBalance) * 100)}%` : '0%'}
                                                 </span>
                                             </div>
-                                            <h5 className="text-sm font-bold text-slate-900 leading-tight mb-1">{acc.name}</h5>
-                                            <p className="text-xl font-bold text-indigo-600">${acc.balance.toLocaleString()}</p>
-                                            <p className="text-[10px] text-slate-400 mt-1">Toca para ver detalles</p>
+                                            <h5 className="text-sm font-bold text-[var(--foreground)] leading-tight mb-1">{acc.name}</h5>
+                                            <p className="text-xl font-bold text-[var(--accent-text)]">${acc.balance.toLocaleString()}</p>
+                                            <p className="text-[10px] text-[var(--muted)] mt-1">Toca para ver detalles</p>
                                         </div>
                                     </div>
                                 ))
                             ) : (
-                                <div className="col-span-full bg-white border border-dashed border-gray-200 rounded-[2rem] p-12 text-center text-[var(--muted)]">
+                                <div className="col-span-full bg-[var(--card)] border border-dashed border-[var(--card-border)] rounded-2xl p-12 text-center text-[var(--muted)]">
                                     No tienes cuentas registradas. Crea una desde el Dashboard.
                                 </div>
                             )}
@@ -203,18 +203,18 @@ const Accounts: React.FC = () => {
                         onClick={() => !isUpdating && !isDeleting && setIsDetailModalOpen(false)}
                     />
 
-                    <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-300">
+                    <div className="relative w-full max-w-lg bg-[var(--card)] rounded-2xl shadow-2xl overflow-hidden border border-[var(--card-border)] animate-in fade-in zoom-in duration-300">
                         <div className="max-h-[85vh] overflow-y-auto p-6">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-lg font-bold text-slate-900">
+                                <h3 className="text-lg font-bold text-[var(--foreground)]">
                                     {isEditMode ? 'Editar Cuenta' : 'Información de Cuenta'}
                                 </h3>
                                 {!isUpdating && !isDeleting && (
                                     <button
                                         onClick={() => setIsDetailModalOpen(false)}
-                                        className="p-1.5 hover:bg-slate-100 rounded-full transition-colors"
+                                        className="p-1.5 hover:bg-[var(--background)] rounded-full transition-colors"
                                     >
-                                        <X className="w-5 h-5 text-slate-400" />
+                                        <X className="w-5 h-5 text-[var(--muted)]" />
                                     </button>
                                 )}
                             </div>
@@ -222,22 +222,22 @@ const Accounts: React.FC = () => {
                             {isEditMode ? (
                                 <form onSubmit={handleUpdateAccount} className="space-y-5">
                                     <div>
-                                        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Nombre de la Cuenta</label>
+                                        <label className="block text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-2 px-1">Nombre de la Cuenta</label>
                                         <input
                                             type="text"
                                             value={editForm.name}
                                             onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-600 outline-none transition-all text-slate-900"
+                                            className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-600 outline-none transition-all text-[var(--foreground)]"
                                             required
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Saldo Actual ($)</label>
+                                        <label className="block text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-2 px-1">Saldo Actual ($)</label>
                                         <input
                                             type="number"
                                             value={editForm.balance}
                                             onChange={(e) => setEditForm({ ...editForm, balance: Number(e.target.value) })}
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-600 outline-none transition-all text-slate-900"
+                                            className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-600 outline-none transition-all text-[var(--foreground)]"
                                             required
                                         />
                                     </div>
@@ -246,7 +246,7 @@ const Accounts: React.FC = () => {
                                         <button
                                             type="button"
                                             onClick={() => setIsEditMode(false)}
-                                            className="flex-1 px-4 py-3 rounded-xl font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors text-sm"
+                                            className="flex-1 px-4 py-3 rounded-xl font-bold bg-[var(--background)] text-[var(--muted)] hover:bg-[var(--card-border)] transition-colors text-sm"
                                         >
                                             Cancelar
                                         </button>
@@ -261,9 +261,9 @@ const Accounts: React.FC = () => {
                                 </form>
                             ) : (
                                 <div className="space-y-6">
-                                    <div className="bg-indigo-50/30 p-5 rounded-2xl border border-indigo-50/50">
-                                        <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1">Saldo Disponible</p>
-                                        <p className="text-3xl font-bold text-indigo-600">
+                                    <div className="bg-[var(--accent-soft)] p-5 rounded-2xl border border-[var(--card-border)]">
+                                        <p className="text-[10px] font-bold text-[var(--accent-text)] opacity-80 uppercase tracking-widest mb-1">Saldo Disponible</p>
+                                        <p className="text-3xl font-bold text-[var(--accent-text)]">
                                             ${selectedAccount.balance.toLocaleString()}
                                         </p>
                                     </div>
@@ -271,38 +271,38 @@ const Accounts: React.FC = () => {
                                     <div className="space-y-4 px-2">
                                         <div className="flex justify-between items-center text-sm">
                                             <span className="text-[var(--muted)] flex items-center gap-2"><Clock className="w-4 h-4" /> Creado el</span>
-                                            <span className="font-bold text-gray-900">{new Date(selectedAccount.created_at).toLocaleDateString()}</span>
+                                            <span className="font-bold text-[var(--foreground)]">{new Date(selectedAccount.created_at).toLocaleDateString()}</span>
                                         </div>
                                         <div className="flex justify-between items-center text-sm">
                                             <span className="text-[var(--muted)] flex items-center gap-2"><Wallet className="w-4 h-4" /> Nombre</span>
-                                            <span className="font-bold text-gray-900">{selectedAccount.name}</span>
+                                            <span className="font-bold text-[var(--foreground)]">{selectedAccount.name}</span>
                                         </div>
                                     </div>
 
                                     {/* Historial de Transacciones */}
-                                    <div className="pt-6 border-t border-gray-100">
-                                        <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                            <Clock className="w-4 h-4 text-indigo-400" />
+                                    <div className="pt-6 border-t border-[var(--card-border)]">
+                                        <h4 className="text-sm font-bold text-[var(--foreground)] mb-4 flex items-center gap-2">
+                                            <Clock className="w-4 h-4 text-[var(--accent-text)] opacity-60" />
                                             Historial Reciente
                                         </h4>
                                         {loadingTransactions ? (
                                             <div className="flex justify-center p-4">
-                                                <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+                                                <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-text)]" />
                                             </div>
                                         ) : transactions.length > 0 ? (
                                             <div className="space-y-3">
                                                 {transactions.slice(0, 5).map(tx => (
-                                                    <div key={tx.id} className="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
+                                                    <div key={tx.id} className="flex justify-between items-center bg-[var(--background)] p-3 rounded-xl border border-[var(--card-border)]">
                                                         <div className="flex items-center gap-3">
-                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${tx.type === 'deposit' ? 'bg-indigo-50 text-indigo-600' : 'bg-red-50 text-red-600'}`}>
+                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${tx.type === 'deposit' ? 'bg-[var(--accent-soft)] text-[var(--accent-text)]' : 'bg-rose-500/10 text-rose-500'}`}>
                                                                 <Plus className={`w-4 h-4 ${tx.type !== 'deposit' && 'rotate-45'}`} />
                                                             </div>
                                                             <div>
-                                                                <p className="text-xs font-bold text-gray-900 capitalize">{tx.type === 'deposit' ? 'Depósito' : 'Retiro'}</p>
-                                                                <p className="text-[10px] text-gray-400">{new Date(tx.created_at).toLocaleDateString()}</p>
+                                                                <p className="text-xs font-bold text-[var(--foreground)] capitalize">{tx.type === 'deposit' ? 'Depósito' : 'Retiro'}</p>
+                                                                <p className="text-[10px] text-[var(--muted)]">{new Date(tx.created_at).toLocaleDateString()}</p>
                                                             </div>
                                                         </div>
-                                                        <p className={`text-xs font-black ${tx.type === 'deposit' ? 'text-indigo-600' : 'text-red-600'}`}>
+                                                        <p className={`text-xs font-black ${tx.type === 'deposit' ? 'text-[var(--accent-text)]' : 'text-rose-500'}`}>
                                                             {tx.type === 'deposit' ? '-' : '+'}${tx.amount.toLocaleString()}
                                                         </p>
                                                     </div>
@@ -313,21 +313,21 @@ const Accounts: React.FC = () => {
                                         )}
                                     </div>
 
-                                    <div className="flex flex-col gap-3 pt-6 border-t border-gray-100">
+                                    <div className="flex flex-col gap-3 pt-6 border-t border-[var(--card-border)]">
                                         {showDeleteConfirm ? (
-                                            <div className="bg-red-50 p-4 rounded-2xl border border-red-100 animate-in slide-in-from-bottom-2 duration-300">
-                                                <p className="text-xs font-bold text-red-600 mb-3 text-center">¿Estás seguro de que deseas eliminar esta cuenta? Esta acción no se puede deshacer.</p>
+                                            <div className="bg-rose-500/10 p-4 rounded-2xl border border-rose-500/20 animate-in slide-in-from-bottom-2 duration-300">
+                                                <p className="text-xs font-bold text-rose-500 mb-3 text-center">¿Estás seguro de que deseas eliminar esta cuenta? Esta acción no se puede deshacer.</p>
                                                 <div className="flex gap-3">
                                                     <button
                                                         onClick={() => setShowDeleteConfirm(false)}
-                                                        className="flex-1 py-3 bg-white text-gray-600 rounded-xl text-sm font-bold border border-red-100 hover:bg-red-50 transition-colors"
+                                                        className="flex-1 py-3 bg-[var(--card)] text-[var(--muted)] rounded-xl text-sm font-bold border border-[var(--card-border)] hover:bg-[var(--background)] transition-colors"
                                                     >
                                                         No, cancelar
                                                     </button>
                                                     <button
                                                         onClick={handleDeleteAccount}
                                                         disabled={isDeleting}
-                                                        className="flex-1 py-3 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-colors shadow-sm flex items-center justify-center"
+                                                        className="flex-1 py-3 bg-rose-500 text-white rounded-xl text-sm font-bold hover:bg-rose-600 transition-colors shadow-sm flex items-center justify-center"
                                                     >
                                                         {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sí, eliminar'}
                                                     </button>
@@ -337,13 +337,13 @@ const Accounts: React.FC = () => {
                                             <>
                                                 <button
                                                     onClick={() => setIsEditMode(true)}
-                                                    className="w-full flex items-center justify-center gap-2 py-4 bg-indigo-50 text-[var(--color-primary)] rounded-2xl font-bold hover:bg-indigo-100 transition-colors"
+                                                    className="w-full flex items-center justify-center gap-2 py-4 bg-[var(--accent-soft)] text-[var(--accent-text)] rounded-2xl font-bold hover:opacity-80 transition-opacity"
                                                 >
                                                     <Pencil className="w-4 h-4" /> Editar Cuenta
                                                 </button>
                                                 <button
                                                     onClick={() => setShowDeleteConfirm(true)}
-                                                    className="w-full flex items-center justify-center gap-2 py-4 text-red-500 rounded-2xl font-bold hover:bg-red-50 transition-colors"
+                                                    className="w-full flex items-center justify-center gap-2 py-4 text-rose-500 rounded-2xl font-bold hover:bg-rose-500/10 transition-colors"
                                                 >
                                                     <Trash2 className="w-4 h-4" /> Eliminar Cuenta
                                                 </button>

@@ -30,30 +30,30 @@ const ForgotPassword: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
-            <div className="w-full max-w-[440px] bg-white rounded-[2rem] shadow-xl p-8 sm:p-12 border border-gray-100">
+        <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex items-center justify-center p-4 transition-colors duration-300">
+            <div className="w-full max-w-[440px] bg-[var(--card)] rounded-2xl shadow-xl p-8 sm:p-12 border border-[var(--card-border)]">
                 <div className="mb-6">
-                    <Link to="/login" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-[var(--color-primary)] transition-colors">
+                    <Link to="/login" className="inline-flex items-center text-sm font-medium text-[var(--muted)] hover:text-[var(--color-primary)] transition-colors">
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Volver al inicio de sesión
                     </Link>
                 </div>
 
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Recuperar contraseña</h1>
-                    <p className="text-gray-500 mt-2">Te enviaremos un enlace para que puedas reestablecerla</p>
+                    <h1 className="text-3xl font-bold text-[var(--foreground)]">Recuperar contraseña</h1>
+                    <p className="text-[var(--muted)] mt-2">Te enviaremos un enlace para que puedas reestablecerla</p>
                 </div>
 
                 {success ? (
                     <div className="text-center py-4">
-                        <div className="bg-green-50 text-green-600 p-6 rounded-2xl mb-6">
+                        <div className="bg-emerald-500/10 text-emerald-500 p-6 rounded-2xl mb-6 border border-emerald-500/20">
                             <CheckCircle className="w-12 h-12 mx-auto mb-4" />
-                            <p className="font-semibold text-lg">¡Correo enviado!</p>
+                            <p className="font-semibold text-lg text-emerald-500">¡Correo enviado!</p>
                             <p className="text-sm mt-2 opacity-90">Revisa tu bandeja de entrada y sigue las instrucciones.</p>
                         </div>
                         <Link
                             to="/login"
-                            className="block w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold hover:bg-[#3D46A9] transition-all shadow-lg shadow-indigo-100"
+                            className="block w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/10"
                         >
                             Ir al Login
                         </Link>
@@ -61,23 +61,23 @@ const ForgotPassword: React.FC = () => {
                 ) : (
                     <>
                         {error && (
-                            <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6">
+                            <div className="bg-rose-500/10 text-rose-500 p-4 rounded-xl text-sm mb-6 border border-rose-500/20">
                                 {error}
                             </div>
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                                <label className="block text-sm font-medium text-[var(--muted)] mb-1">Correo Electrónico</label>
                                 <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--muted)]" />
                                     <input
                                         type="email"
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="tu@correo.com"
-                                        className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
+                                        className="w-full pl-11 pr-4 py-3 bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--foreground)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                     />
                                 </div>
                             </div>
@@ -85,7 +85,7 @@ const ForgotPassword: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold hover:bg-[#3D46A9] transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-100"
+                                className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/10"
                             >
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Enviar enlace'}
                             </button>

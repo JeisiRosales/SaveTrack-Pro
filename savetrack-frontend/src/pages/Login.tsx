@@ -60,63 +60,63 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex flex-col relative overflow-hidden">
+        <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col relative overflow-hidden transition-colors duration-300">
             <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-                <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-xl p-6 sm:p-10 border border-slate-100">
+                <div className="w-full max-w-[420px] bg-[var(--card)] rounded-2xl shadow-xl p-6 sm:p-10 border border-[var(--card-border)]">
                     <div className="text-center mb-6">
-                        <h1 className="text-2xl font-bold text-slate-900">Bienvenido</h1>
-                        <p className="text-slate-500 text-sm mt-2">Ingresa tus credenciales para continuar</p>
+                        <h1 className="text-2xl font-bold text-[var(--foreground)]">Bienvenido</h1>
+                        <p className="text-[var(--muted)] text-sm mt-2">Ingresa tus credenciales para continuar</p>
                     </div>
 
                     {success && (
-                        <div className="bg-green-50 text-green-600 p-4 rounded-xl text-sm mb-6 flex items-center">
+                        <div className="bg-emerald-500/10 text-emerald-500 p-4 rounded-xl text-sm mb-6 flex items-center border border-emerald-500/20">
                             ¡Inicio de sesión exitoso!
                         </div>
                     )}
 
                     {isConfirmed && (
-                        <div className="bg-green-50 text-green-600 p-4 rounded-xl text-sm mb-6 flex items-center">
+                        <div className="bg-emerald-500/10 text-emerald-500 p-4 rounded-xl text-sm mb-6 flex items-center border border-emerald-500/20">
                             ¡Correo verificado con éxito! Ya puedes iniciar sesión.
                         </div>
                     )}
 
                     {error && (
-                        <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6 flex items-center">
+                        <div className="bg-rose-500/10 text-rose-500 p-4 rounded-xl text-sm mb-6 flex items-center border border-rose-500/20">
                             {error}
                         </div>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                            <label className="block text-sm font-medium text-[var(--muted)] mb-1">Correo Electrónico</label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--muted)]" />
                                 <input
                                     type="email"
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="tu@correo.com"
-                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
+                                    className="w-full pl-11 pr-4 py-3 bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--foreground)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                            <label className="block text-sm font-medium text-[var(--muted)] mb-1">Contraseña</label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--muted)]" />
                                 <input
                                     type="password"
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="text-black w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
+                                    className="w-full pl-11 pr-4 py-3 bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--foreground)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all"
                                 />
                             </div>
                             <div className="flex justify-end mt-1">
-                                <Link to="/forgot-password" university-colors className="text-sm text-gray-500 hover:text-[var(--color-primary)] font-medium transition-colors">
+                                <Link to="/forgot-password" university-colors className="text-sm text-[var(--muted)] hover:text-[var(--color-primary)] font-medium transition-colors">
                                     ¿Olvidaste tu contraseña?
                                 </Link>
                             </div>
@@ -125,25 +125,25 @@ const Login: React.FC = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold hover:bg-[#3D46A9] transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-100"
+                            className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/10"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Iniciar Sesión'}
                         </button>
                     </form>
 
-                    <p className="text-center mt-5 text-gray-600">
+                    <p className="text-center mt-5 text-[var(--muted)]">
                         ¿No tienes una cuenta?{' '}
                         <Link to="/register" className="text-[var(--color-primary)] font-bold hover:underline">
                             Regístrate aquí
                         </Link>
                     </p>
 
-                    <div className="pt-4 border-t border-slate-50 flex justify-center">
+                    <div className="pt-4 border-t border-[var(--card-border)] flex justify-center">
                         <a
                             href="https://github.com/JeisiRosales"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 text-[10px] text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300 group shadow-sm border border-slate-100"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--background)] text-[10px] text-[var(--muted)] hover:text-[var(--accent-text)] hover:bg-[var(--accent-soft)] transition-all duration-300 group shadow-sm border border-[var(--card-border)]"
                         >
                             <Github className="w-3 h-3 transition-transform group-hover:scale-110" />
                             <span className="font-bold uppercase tracking-wider">

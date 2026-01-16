@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             )}
 
             <aside className={`
-                fixed inset-y-0 left-0 z-50 w-64 bg-[var(--card)] border-r border-[var(--border)] 
+                fixed inset-y-0 left-0 z-50 w-64 bg-[var(--card)] border-r border-[var(--card-border)] 
                 flex flex-col p-5 transition-transform duration-300 ease-in-out
                 lg:translate-x-0 lg:static lg:inset-auto lg:h-auto
                 ${isOpen ? 'translate-x-0 shadowed-sidebar' : '-translate-x-full'}
@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 {/* Botón de cierre para móviles */}
                 <button
                     onClick={onClose}
-                    className="lg:hidden absolute top-5 right-5 p-2 text-[var(--muted)] hover:bg-[var(--background)] rounded-lg"
+                    className="lg:hidden absolute top-5 right-5 p-2 text-[var(--muted)] hover:bg-[var(--background)] rounded-lg transition-colors"
                 >
                     <LogOut className="w-5 h-5 rotate-180" />
                 </button>
@@ -112,11 +112,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 </nav>
 
                 {/* Región de Opciones de Usuario y Preferencias */}
-                <div className="mt-auto pt-5 border-t border-[var(--border)] space-y-4">
+                <div className="mt-auto pt-5 border-t border-[var(--card-border)] space-y-4">
 
                     {/* Tarjeta de Perfil */}
-                    <div className="flex items-center gap-3 p-2 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-                        <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                    <div className="flex items-center gap-3 p-2 rounded-xl bg-[var(--background)] border border-[var(--card-border)]">
+                        <div className="w-8 h-8 rounded-full bg-[var(--accent-soft)] text-[var(--accent-text)] flex items-center justify-center font-bold text-xs">
                             {user?.full_name?.charAt(0) || 'U'}
                         </div>
                         <div className="flex-1 overflow-hidden">
@@ -130,7 +130,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     {/* Interruptor de Tema */}
                     <button
                         onClick={toggleTheme}
-                        className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-[var(--background)] transition-colors text-[var(--muted)] hover:text-indigo-600"
+                        className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-[var(--background)] transition-colors text-[var(--muted)] hover:text-[var(--accent-text)]"
                         title="Cambiar tema de la aplicación"
                     >
                         <div className="flex items-center gap-2">
@@ -138,26 +138,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             <span className="text-xs font-medium">{darkMode ? 'Modo Claro' : 'Modo Oscuro'}</span>
                         </div>
                         {/* Botón de switch estilizado */}
-                        <div className={`w-8 h-4 rounded-full relative transition-colors ${darkMode ? 'bg-indigo-600' : 'bg-gray-300'}`}>
+                        <div className={`w-8 h-4 rounded-full relative transition-colors ${darkMode ? 'bg-indigo-600' : 'bg-slate-300'}`}>
                             <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${darkMode ? 'left-4.5' : 'left-0.5'}`} />
                         </div>
                     </button>
 
-                    {/* Botón de Cerrar Sesión */}
+                    {/* Cerrar Sesión */}
                     <button
                         onClick={logout}
-                        className="w-full flex items-center gap-3 p-3 text-red-500 hover:bg-red-500/10 rounded-xl transition-all font-medium"
+                        className="w-full flex items-center gap-2 p-2 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors"
+                        title="Salir de la aplicación"
                     >
                         <LogOut className="w-5 h-5" />
                         <span className="text-sm">Cerrar Sesión</span>
                     </button>
 
-                    <div className="border-t border-slate-50 flex justify-center">
+                    <div className="border-t border-[var(--card-border)] pt-4 flex justify-center">
                         <a
                             href="https://github.com/JeisiRosales"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 text-[10px] text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300 group shadow-sm border border-slate-100"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--background)] text-[10px] text-[var(--muted)] hover:text-[var(--accent-text)] hover:bg-[var(--accent-soft)] transition-all duration-300 group shadow-sm border border-[var(--card-border)]"
                         >
                             <Github className="w-3 h-3 transition-transform group-hover:scale-110" />
                             <span className="font-bold uppercase tracking-wider">

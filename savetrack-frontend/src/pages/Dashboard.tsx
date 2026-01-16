@@ -84,10 +84,10 @@ const Dashboard: React.FC = () => {
             <main className="flex-1 p-6 lg:p-10 relative overflow-x-hidden">
                 <header className="mb-6 flex items-center justify-between">
                     <div>
-                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-slate-900">
-                            Hola, <span className="text-indigo-600">{user?.full_name?.split(' ')[0] || 'User'}</span> 👋
+                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)]">
+                            Hola, <span className="text-[var(--accent-text)]">{user?.full_name?.split(' ')[0] || 'User'}</span> 👋
                         </h1>
-                        <p className="text-slate-500 text-xs mt-1 font-medium">Gestiona tu libertad financiera.</p>
+                        <p className="text-[var(--muted)] text-xs mt-1 font-medium">Gestiona tu libertad financiera.</p>
                     </div>
 
                     <button
@@ -110,21 +110,21 @@ const Dashboard: React.FC = () => {
                     <div className="space-y-8 max-w-[1200px]">
 
                         {/* SECCIÓN 1: SALDO TOTAL Y CUENTAS */}
-                        <div className="bg-white p-6 lg:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                        <div className="bg-[var(--card)] p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
                             <div className="mb-6">
-                                <h2 className="text-sm font-semibold text-slate-800">Saldo Total</h2>
-                                <p className="text-slate-500 text-xs">Tu capital neto disponible</p>
-                                <h3 className="text-3xl font-bold mt-3 text-indigo-600">
+                                <h2 className="text-sm font-semibold text-[var(--foreground)]">Saldo Total</h2>
+                                <p className="text-[var(--muted)] text-xs">Tu capital neto disponible</p>
+                                <h3 className="text-3xl font-bold mt-3 text-[var(--accent-text)]">
                                     ${totalBalance.toLocaleString()}
                                 </h3>
-                                <p className="text-slate-400 text-[10px] mt-1.5">Distribuido en {accounts.length} cuentas</p>
+                                <p className="text-[var(--muted-foreground)] text-[10px] mt-1.5">Distribuido en {accounts.length} cuentas</p>
                             </div>
 
                             <div className="mt-8">
                                 <h4 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Detalle por Cuenta:</h4>
                                 {accounts.length > 0 ? (
                                     <div className="flex items-center gap-4">
-                                        <button className="p-2 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-100 transition-colors hidden sm:block">
+                                        <button className="p-2 bg-[var(--accent-soft)] hover:bg-gray-100 rounded-lg border border-[var(--card-border)] transition-colors hidden sm:block">
                                             <ChevronLeft className="w-4 h-4 text-gray-400" />
                                         </button>
 
@@ -139,7 +139,7 @@ const Dashboard: React.FC = () => {
                                             ))}
                                         </div>
 
-                                        <button className="p-2 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-100 transition-colors hidden sm:block">
+                                        <button className="p-2 bg-[var(--accent-soft)] hover:bg-gray-100 rounded-lg border border-[var(--card-border)] transition-colors hidden sm:block">
                                             <ChevronRight className="w-4 h-4 text-gray-400" />
                                         </button>
                                     </div>
@@ -150,22 +150,22 @@ const Dashboard: React.FC = () => {
                         </div>
 
                         {/* SECCIÓN 2: KPI DE METAS */}
-                        <div className="bg-indigo-50/40 p-6 lg:p-8 rounded-2xl border border-indigo-100 shadow-sm">
-                            <h2 className="text-xs font-semibold text-slate-800 uppercase tracking-wider">Total Ahorrado en Metas</h2>
-                            <h3 className="text-2xl font-bold mt-2 text-indigo-600">
+                        <div className="bg-[var(--accent-soft)] p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
+                            <h2 className="text-xs font-semibold text-[var(--foreground)] uppercase tracking-wider">Total Ahorrado en Metas</h2>
+                            <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
                                 ${totalSavedInGoals.toLocaleString()}
                             </h3>
-                            <p className="text-slate-500 text-[10px] mt-1">Progreso acumulado de tus {goals.length} metas</p>
+                            <p className="text-[var(--muted)] text-[10px] mt-1">Progreso acumulado de tus {goals.length} metas</p>
                         </div>
 
                         {/* SECCIÓN 3: GESTIÓN DE METAS */}
                         <section>
                             <div className="flex items-center justify-between mb-4">
                                 <div>
-                                    <h2 className="text-lg font-bold text-slate-900">Tus Metas</h2>
-                                    <p className="text-slate-500 text-xs">Visualiza el avance hacia tus sueños</p>
+                                    <h2 className="text-lg font-bold text-[var(--foreground)]">Tus Metas</h2>
+                                    <p className="text-[var(--muted)] text-xs">Visualiza el avance hacia tus sueños</p>
                                 </div>
-                                <Link to="/goals" className="text-xs font-semibold text-indigo-600 hover:indigo-700">
+                                <Link to="/goals" className="text-xs font-semibold text-[var(--accent-text)] hover:opacity-80 transition-opacity">
                                     Ver Todo ({goals.length})
                                 </Link>
                             </div>
@@ -187,7 +187,7 @@ const Dashboard: React.FC = () => {
                         <section>
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h2 className="text-xl font-bold text-gray-900">Actividad Reciente</h2>
+                                    <h2 className="text-lg font-bold text-[var(--foreground)]">Actividad Reciente</h2>
                                     <p className="text-[var(--muted)] text-sm">Últimos movimientos financieros</p>
                                 </div>
                                 <Link to="/transactions" className="text-sm font-bold text-[var(--color-primary)] hover:underline">
@@ -195,15 +195,15 @@ const Dashboard: React.FC = () => {
                                 </Link>
                             </div>
 
-                            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                            <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl overflow-hidden shadow-sm">
                                 {transactions.length > 0 ? (
-                                    <div className="divide-y divide-slate-50">
+                                    <div className="divide-y divide-[var(--card-border)]">
                                         {transactions.slice(0, 5).map(tx => (
                                             <TransactionItem key={tx.id} transaction={tx} />
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="p-8 text-center text-slate-400 text-sm italic">
+                                    <div className="p-8 text-center text-[var(--muted)] text-sm italic">
                                         No hay movimientos recientes.
                                     </div>
                                 )}
@@ -231,26 +231,26 @@ const TransactionItem = ({ transaction }: { transaction: any }) => {
     const isDeposit = transaction.type === 'deposit';
 
     return (
-        <div className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+        <div className="p-4 flex items-center justify-between hover:bg-[var(--background)] transition-colors">
             <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDeposit ? 'bg-indigo-50 text-indigo-600' : 'bg-rose-50 text-rose-600'
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDeposit ? 'bg-[var(--accent-soft)] text-[var(--accent-text)]' : 'bg-rose-500/10 text-rose-500'
                     }`}>
                     <Plus className={`w-4 h-4 ${!isDeposit && 'rotate-45'}`} />
                 </div>
                 <div>
-                    <h5 className="font-semibold text-slate-900 text-xs capitalize">
+                    <h5 className="font-semibold text-[var(--foreground)] text-xs capitalize">
                         {isDeposit ? 'Depósito' : 'Retiro'}
                     </h5>
-                    <p className="text-[10px] text-slate-500">
+                    <p className="text-[10px] text-[var(--muted)]">
                         {transaction.funding_accounts?.name} → {transaction.savings_goals?.name || 'General'}
                     </p>
                 </div>
             </div>
             <div className="text-right">
-                <p className={`text-sm font-bold ${isDeposit ? 'text-indigo-600' : 'text-rose-600'}`}>
+                <p className={`text-sm font-bold ${isDeposit ? 'text-[var(--accent-text)]' : 'text-rose-500'}`}>
                     {isDeposit ? '+' : '-'}${transaction.amount.toLocaleString()}
                 </p>
-                <p className="text-[10px] text-slate-400 mt-0.5">
+                <p className="text-[10px] text-[var(--muted-foreground)] mt-0.5">
                     {new Date(transaction.created_at).toLocaleDateString()}
                 </p>
             </div>
@@ -262,12 +262,12 @@ const TransactionItem = ({ transaction }: { transaction: any }) => {
  * Componente Tarjeta de Cuenta
  */
 const AccountCard = ({ name, balance, percentage }: { name: string, balance: string, percentage: string }) => (
-    <div className="min-w-[240px] bg-white p-4 rounded-xl border border-slate-200 flex justify-between items-start shadow-sm hover:shadow-md transition-shadow">
+    <div className="min-w-[240px] bg-[var(--card)] p-4 rounded-xl border border-[var(--card-border)] flex justify-between items-start shadow-sm hover:shadow-md transition-shadow">
         <div>
-            <h5 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{name}</h5>
-            <p className="text-lg font-bold mt-2 text-indigo-600">{balance}</p>
+            <h5 className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-wider">{name}</h5>
+            <p className="text-lg font-bold mt-2 text-[var(--accent-text)]">{balance}</p>
         </div>
-        <span className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full border border-indigo-100">
+        <span className="text-[10px] font-bold bg-[var(--accent-soft)] text-[var(--accent-text)] px-2 py-0.5 rounded-full border border-[var(--card-border)]">
             {percentage}
         </span>
     </div>
@@ -280,25 +280,25 @@ const GoalCard = ({ goal }: { goal: any }) => {
     const progress = Math.min(Math.round((goal.current_amount / goal.target_amount) * 100), 100);
 
     return (
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group">
+        <div className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-start justify-between mb-3">
-                <p className="text-[10px] text-slate-400 uppercase font-semibold">
+                <p className="text-[10px] text-[var(--muted)] uppercase font-semibold">
                     Vence el {new Date(goal.end_date).toLocaleDateString()}
                 </p>
-                <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-2 py-0.5 rounded-full">
                     {progress}%
                 </span>
             </div>
 
-            <h4 className="font-bold text-slate-900 text-sm mb-1">{goal.name}</h4>
+            <h4 className="font-bold text-[var(--foreground)] text-sm mb-1">{goal.name}</h4>
             <div className="flex items-baseline gap-1.5 mb-3">
-                <span className="text-base font-bold text-indigo-600">${goal.current_amount?.toLocaleString()}</span>
-                <span className="text-[10px] text-slate-400 font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
+                <span className="text-base font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
+                <span className="text-[10px] text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
             </div>
 
-            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-[var(--background)] rounded-full overflow-hidden">
                 <div
-                    className="h-full bg-indigo-600 rounded-full transition-all duration-1000"
+                    className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(79,70,229,0.4)]"
                     style={{ width: `${progress}%` }}
                 />
             </div>

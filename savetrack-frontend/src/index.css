@@ -19,22 +19,29 @@
   --foreground: #0F172A;
   --card: #FFFFFF;
   --card-foreground: #0F172A;
-  --border: #E2E8F0;
+  --card-border: #E2E8F0;
+  --input-bg: #F1F5F9;
+  --input-border: #E2E8F0;
   --muted: #64748B;
+  --muted-foreground: #94A3B8;
+  --accent-soft: #EEF2FF;
+  --accent-text: #4F46E5;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Variables para Modo Oscuro (se activa con la clase .dark) */
 .dark {
-  --background: #0A0C10;
-  /* Fondo profundo */
+  --background: #0B0E14;
   --foreground: #F8FAFC;
-  /* Texto claro */
-  --card: #111827;
-  /* Tarjetas oscuras */
+  --card: #161B22;
   --card-foreground: #F8FAFC;
-  --border: #1F2937;
-  --muted: #94A3B8;
+  --card-border: #30363D;
+  --input-bg: #0D1117;
+  --input-border: #30363D;
+  --muted: #8B949E;
+  --muted-foreground: #484F58;
+  --accent-soft: rgba(79, 70, 229, 0.1);
+  --accent-text: #818CF8;
 }
 
 /* Estilos globales */
