@@ -71,18 +71,18 @@ const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGo
             />
 
             {/* Contenedor del Modal */}
-            <div className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-                <div className="p-8 sm:p-10">
-                    <div className="flex justify-between items-start mb-8">
+            <div className="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div className="p-6">
+                    <div className="flex justify-between items-start mb-6">
                         <div>
-                            <h2 className="text-2xl font-black text-gray-900 tracking-tight">Nueva Meta</h2>
-                            <p className="text-[var(--muted)] text-sm mt-1">Define tu próximo gran objetivo.</p>
+                            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Nueva Meta</h2>
+                            <p className="text-slate-500 text-xs mt-1">Define tu próximo gran objetivo.</p>
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 transition-colors"
+                            className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors"
                         >
-                            <X className="w-6 h-6" />
+                            <X className="w-5 h-5" />
                         </button>
                     </div>
 
@@ -95,26 +95,26 @@ const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGo
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Nombre de la Meta */}
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">¿Qué quieres lograr?</label>
+                            <label className="block text-xs font-semibold text-slate-700 mb-2 ml-1">¿Qué quieres lograr?</label>
                             <div className="relative">
-                                <Target className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Target className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
                                     type="text"
                                     required
                                     placeholder="Ej: Viaje a Japón, Fondo de Emergencia..."
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="text-black w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[var(--color-primary)] focus:bg-white transition-all outline-none"
+                                    className="text-slate-900 text-sm w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all outline-none"
                                 />
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* Monto Objetivo */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Monto Objetivo</label>
+                                <label className="block text-xs font-semibold text-slate-700 mb-2 ml-1">Monto Objetivo</label>
                                 <div className="relative">
-                                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input
                                         type="number"
                                         required
@@ -130,16 +130,16 @@ const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGo
                                                 }
                                             }
                                         }
-                                        className="text-black w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[var(--color-primary)] focus:bg-white transition-all outline-none font-bold"
+                                        className="text-slate-900 text-sm w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all outline-none font-bold"
                                     />
                                 </div>
                             </div>
 
                             {/* Ahorro Inicial */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Ya tengo ahorrado</label>
+                                <label className="block text-xs font-semibold text-slate-700 mb-2 ml-1">Ya tengo ahorrado</label>
                                 <div className="relative">
-                                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input
                                         type="number"
                                         min="0"
@@ -154,7 +154,7 @@ const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGo
                                                 }
                                             }
                                         }
-                                        className="text-black w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[var(--color-primary)] focus:bg-white transition-all outline-none"
+                                        className="text-slate-900 text-sm w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all outline-none"
                                     />
                                 </div>
                             </div>
@@ -162,36 +162,36 @@ const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGo
 
                         {/* Fecha Límite */}
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">¿Para cuándo lo necesitas?</label>
+                            <label className="block text-xs font-semibold text-slate-700 mb-2 ml-1">¿Para cuándo lo necesitas?</label>
                             <div className="relative">
-                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
                                     type="date"
                                     required
                                     min={new Date().toISOString().split('T')[0]}
                                     value={endDate}
                                     onChange={(e) => setEndDate(e.target.value)}
-                                    className="text-black w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[var(--color-primary)] focus:bg-white transition-all outline-none"
+                                    className="text-slate-900 text-sm w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all outline-none"
                                 />
                             </div>
                         </div>
 
-                        <div className="pt-4 flex gap-4">
+                        <div className="pt-2 flex gap-3">
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="flex-1 py-4 px-6 border border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-gray-50 transition-colors"
+                                className="flex-1 py-3 px-4 border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors text-sm"
                             >
                                 Cancelar
                             </button>
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] py-4 px-6 bg-[var(--color-primary)] text-white font-black rounded-2xl hover:bg-[#3D46A9] transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
+                                className="flex-[2] py-3 px-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 flex items-center justify-center gap-2 text-sm"
                             >
                                 {loading ? (
                                     <>
-                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        <Loader2 className="w-4 h-4 animate-spin" />
                                         Creando...
                                     </>
                                 ) : (

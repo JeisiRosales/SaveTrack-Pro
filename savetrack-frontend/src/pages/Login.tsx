@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/api';
-import { Mail, Lock, Loader2 } from 'lucide-react';
+import { Mail, Lock, Loader2, Github } from 'lucide-react';
 
 /**
  * PÁGINA DE LOGIN
@@ -62,10 +62,10 @@ const Login: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#F8FAFC] flex flex-col relative overflow-hidden">
             <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-                <div className="w-full max-w-[440px] bg-white rounded-[2rem] shadow-xl p-6 sm:p-10 md:p-12 border border-gray-100 mt-12 mb-8">
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900">Bienvenido</h1>
-                        <p className="text-gray-500 mt-2">Ingresa tus credenciales para continuar</p>
+                <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-xl p-6 sm:p-10 border border-slate-100">
+                    <div className="text-center mb-6">
+                        <h1 className="text-2xl font-bold text-slate-900">Bienvenido</h1>
+                        <p className="text-slate-500 text-sm mt-2">Ingresa tus credenciales para continuar</p>
                     </div>
 
                     {success && (
@@ -131,12 +131,26 @@ const Login: React.FC = () => {
                         </button>
                     </form>
 
-                    <p className="text-center mt-8 text-gray-600">
+                    <p className="text-center mt-5 text-gray-600">
                         ¿No tienes una cuenta?{' '}
                         <Link to="/register" className="text-[var(--color-primary)] font-bold hover:underline">
                             Regístrate aquí
                         </Link>
                     </p>
+
+                    <div className="pt-4 border-t border-slate-50 flex justify-center">
+                        <a
+                            href="https://github.com/JeisiRosales"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 text-[10px] text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300 group shadow-sm border border-slate-100"
+                        >
+                            <Github className="w-3 h-3 transition-transform group-hover:scale-110" />
+                            <span className="font-bold uppercase tracking-wider">
+                                Entra a mi GitHub
+                            </span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

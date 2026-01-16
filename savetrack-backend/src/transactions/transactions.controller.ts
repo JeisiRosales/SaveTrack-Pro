@@ -27,4 +27,10 @@ export class TransactionsController {
     findByGoal(@Param('goalId') goalId: string) {
         return this.transactionsService.findByGoal(goalId);
     }
+
+    @Get('account/:accountId')
+    @UseGuards(AuthGuard('jwt'))
+    findByAccount(@Param('accountId') accountId: string) {
+        return this.transactionsService.findByAccount(accountId);
+    }
 }

@@ -5,6 +5,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { useAuth } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
+import Goals from './pages/Goals';
+import Accounts from './pages/Accounts';
 
 function App() {
   const { user, loading } = useAuth();
@@ -26,6 +28,8 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/goals" element={user ? <Goals /> : <Navigate to="/login" />} />
+        <Route path="/accounts" element={user ? <Accounts /> : <Navigate to="/login" />} />
         <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       </Routes>
     </Router>

@@ -117,13 +117,28 @@ export class TransactionsService {
 
         const accountIds = accounts.map(acc => acc.id);
 
-        // 2. Obtener transacciones para esas cuentas
+        // 2. Obtener transacciones for esas cuentas
         const { data, error } = await supabase
             .from('transactions')
             .select('*, funding_accounts(name), savings_goals(name)')
             .in('account_id', accountIds)
             .order('created_at', { ascending: false })
             .limit(10);
+
+        if (error) throw error;
+        return data;
+    }
+
+    /**
+     * Obtiene todas las transacciones de una cuenta específica
+     * @param accountId - ID de la cuenta
+     */
+    async findByAccount(accountId: string) {
+        const { data, error } = await this.supabase.getClient()
+            .from('transactions')
+            .select('*, savings_goals(name)')
+            .eq('account_id', accountId)
+            .order('created_at', { ascending: false });
 
         if (error) throw error;
         return data;

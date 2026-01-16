@@ -3,12 +3,13 @@
 
 /* Definición de variables de tema personalizadas */
 @theme {
-  --color-primary: #4B56D2;
-  --color-accent: #0051FF;
-  --color-success: #059669;
-  --color-success-bg: #ECFDF5;
-  --color-success-dark: #065F46;
-  --radius-custom: 2rem;
+  --color-primary: #4f46e5;
+  --color-accent: #6366f1;
+  --color-success: #10b981;
+  --color-success-bg: #f0fdf4;
+  --color-success-dark: #14532d;
+  --radius-custom: 1rem;
+  --radius-inner: 0.75rem;
   --font-sans: "Inter", "system-ui", "sans-serif";
 }
 
