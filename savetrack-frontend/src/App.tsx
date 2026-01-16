@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Goals from './pages/Goals';
 import Accounts from './pages/Accounts';
 import Transactions from './pages/Transactions';
+import GoalDetailsPage from './pages/GoalDetailsPage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -30,6 +31,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/goals" element={user ? <Goals /> : <Navigate to="/login" />} />
+        <Route path="/goals/:id" element={<GoalDetailsPage />} />
         <Route path="/accounts" element={user ? <Accounts /> : <Navigate to="/login" />} />
         <Route path="/transactions" element={user ? <Transactions /> : <Navigate to="/login" />} />
         <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />

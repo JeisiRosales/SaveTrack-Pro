@@ -167,8 +167,7 @@ const Accounts: React.FC = () => {
                                     <div
                                         key={acc.id}
                                         onClick={() => handleOpenDetails(acc)}
-                                        className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all cursor-pointer group relative overflow-hidden"
-                                    >
+                                        className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all cursor-pointer group relative overflow-hidden">
                                         <div className="relative z-10">
                                             <div className="flex justify-between items-start mb-3">
                                                 <div className="w-8 h-8 bg-[var(--accent-soft)] rounded-lg flex items-center justify-center text-[var(--accent-text)]">

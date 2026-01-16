@@ -85,7 +85,7 @@ const Dashboard: React.FC = () => {
                 <header className="mb-6 flex items-center justify-between">
                     <div>
                         <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)]">
-                            Hola, <span className="text-[var(--accent-text)]">{user?.full_name?.split(' ')[0] || 'User'}</span> 👋
+                            Hola, <span className="text-[var(--accent-text)]">{user?.full_name?.split(' ')[0] || 'User'}</span>
                         </h1>
                         <p className="text-[var(--muted)] text-xs mt-1 font-medium">Gestiona tu libertad financiera.</p>
                     </div>
@@ -166,15 +166,17 @@ const Dashboard: React.FC = () => {
                                     <p className="text-[var(--muted)] text-xs">Visualiza el avance hacia tus sueños</p>
                                 </div>
                                 <Link to="/goals" className="text-xs font-semibold text-[var(--accent-text)] hover:opacity-80 transition-opacity">
-                                    Ver Todo ({goals.length})
+                                    Ver Todo
                                 </Link>
                             </div>
 
                             {goals.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                    {goals.slice(0, 2).map(goal => (
-                                        <GoalCard key={goal.id} goal={goal} />
-                                    ))}
+                                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {goals
+                                        .sort((a, b) => new Date(a.end_date).getTime() - new Date(b.end_date).getTime())
+                                        .map(goal => (
+                                            <GoalCard key={goal.id} goal={goal} />
+                                        ))}
                                 </div>
                             ) : (
                                 <div className="bg-white border border-dashed border-gray-200 rounded-[2rem] p-12 text-center">
@@ -281,8 +283,8 @@ const GoalCard = ({ goal }: { goal: any }) => {
     return (
         <div className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-start justify-between mb-3">
-                <p className="text-[10px] text-[var(--muted)] uppercase font-semibold">
-                    Vence el {new Date(goal.end_date).toLocaleDateString()}
+                <p className="text-[10px] text-[var(--muted)] font-semibold">
+                    Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
                 </p>
                 <span className="text-[10px] font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-2 py-0.5 rounded-full">
                     {progress}%
@@ -293,13 +295,6 @@ const GoalCard = ({ goal }: { goal: any }) => {
             <div className="flex items-baseline gap-1.5 mb-3">
                 <span className="text-base font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
                 <span className="text-[10px] text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
-            </div>
-
-            <div className="w-full h-1.5 bg-[var(--background)] rounded-full overflow-hidden">
-                <div
-                    className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(79,70,229,0.4)]"
-                    style={{ width: `${progress}%` }}
-                />
             </div>
         </div>
     );

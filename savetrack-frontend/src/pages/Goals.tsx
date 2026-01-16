@@ -1,8 +1,11 @@
 import React from 'react';
 import Sidebar from '../components/layout/Sidebar';
-import { Target, Loader2, Menu } from 'lucide-react';
+import CreateGoalModal from '../components/modals/CreateGoalModal';
+import FloatingActionButton from '../components/ui/FloatingActionButton';
 import { useAuth } from '../context/AuthContext';
+import { Target, Loader2, Menu } from 'lucide-react';
 import api from '../lib/api';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * PÁGINA DE METAS
@@ -14,6 +17,8 @@ const Goals: React.FC = () => {
     const [loading, setLoading] = React.useState(true);
     const [goals, setGoals] = React.useState<any[]>([]);
     const [error, setError] = React.useState<string | null>(null);
+    const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         const fetchGoals = async () => {
@@ -31,6 +36,24 @@ const Goals: React.FC = () => {
 
         fetchGoals();
     }, []);
+
+    // CÁLCULOS MATEMÁTICOS REALES
+    const totalSavedInGoals = goals.reduce((acc, curr) => acc + (curr.current_amount || 0), 0);
+
+    const handleCreateGoal = () => {
+        setIsCreateModalOpen(true);
+    };
+
+    const refreshData = async () => {
+        try {
+            const [goalsRes] = await Promise.allSettled([
+                api.get('/savings-goals'),
+            ]);
+            if (goalsRes.status === 'fulfilled') setGoals(goalsRes.value.data);
+        } catch (err) {
+            console.error("Error refreshing data:", err);
+        }
+    };
 
     return (
         <div className="flex min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
@@ -51,7 +74,17 @@ const Goals: React.FC = () => {
                     >
                         <Menu className="w-6 h-6" />
                     </button>
+
                 </header>
+
+                {/* SECCIÓN 2: KPI DE METAS */}
+                <div className="bg-[var(--accent-soft)] mb-6 p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
+                    <h2 className="text-xs font-semibold text-[var(--foreground)] uppercase tracking-wider">Total Ahorrado en Metas</h2>
+                    <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
+                        ${totalSavedInGoals.toLocaleString()}
+                    </h3>
+                    <p className="text-[var(--muted)] text-[10px] mt-1">Progreso acumulado de tus {goals.length} metas</p>
+                </div>
 
                 {loading ? (
                     <div className="flex items-center justify-center h-64">
@@ -67,7 +100,7 @@ const Goals: React.FC = () => {
                             goals.map((goal) => {
                                 const progress = Math.min(Math.round((goal.current_amount / goal.target_amount) * 100), 100);
                                 return (
-                                    <div key={goal.id} className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all group">
+                                    <div key={goal.id} onClick={() => navigate(`/goals/${goal.id}`)} className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all group">
                                         <div className="flex items-start justify-between mb-3">
                                             <p className="text-[10px] text-[var(--muted)] uppercase font-semibold">
                                                 Vence el {new Date(goal.end_date).toLocaleDateString()}
@@ -99,6 +132,13 @@ const Goals: React.FC = () => {
                         )}
                     </div>
                 )}
+                <FloatingActionButton onClick={handleCreateGoal} />
+
+                <CreateGoalModal
+                    isOpen={isCreateModalOpen}
+                    onClose={() => setIsCreateModalOpen(false)}
+                    onGoalCreated={refreshData}
+                />
             </main>
         </div>
     );
