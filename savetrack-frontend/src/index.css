@@ -26,6 +26,7 @@
   --muted-foreground: #94A3B8;
   --accent-soft: #EEF2FF;
   --accent-text: #4F46E5;
+  color-scheme: light;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -42,6 +43,7 @@
   --muted-foreground: #484F58;
   --accent-soft: rgba(79, 70, 229, 0.1);
   --accent-text: #818CF8;
+  color-scheme: dark;
 }
 
 /* Estilos globales */

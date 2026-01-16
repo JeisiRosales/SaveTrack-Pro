@@ -8,7 +8,8 @@ import {
     Loader2,
     AlertCircle,
     Clock,
-    Plus
+    Plus,
+    Menu
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/api';
@@ -21,10 +22,10 @@ import CreateAccountModal from '../components/modals/CreateAccountModal';
  */
 const Accounts: React.FC = () => {
     useAuth();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [accounts, setAccounts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+    const [accounts, setAccounts] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState<string | null>(null);
 
     // Estado para Modales y Edición
     const [selectedAccount, setSelectedAccount] = useState<any | null>(null);
@@ -127,6 +128,12 @@ const Accounts: React.FC = () => {
                         </h1>
                         <p className="text-[var(--muted)] text-xs mt-1 font-medium">Administra tus fuentes de ahorro y saldos.</p>
                     </div>
+                    <button
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
+                    >
+                        <Menu className="w-6 h-6" />
+                    </button>
                 </header>
 
                 {loading ? (

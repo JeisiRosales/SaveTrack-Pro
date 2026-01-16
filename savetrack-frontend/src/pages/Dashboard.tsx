@@ -92,7 +92,7 @@ const Dashboard: React.FC = () => {
 
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden p-3 bg-[var(--card)] border border-[var(--border)] rounded-xl text-[var(--foreground)] hover:bg-[var(--background)] transition-colors"
+                        className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
                     >
                         <Menu className="w-6 h-6" />
                     </button>
@@ -233,8 +233,7 @@ const TransactionItem = ({ transaction }: { transaction: any }) => {
     return (
         <div className="p-4 flex items-center justify-between hover:bg-[var(--background)] transition-colors">
             <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDeposit ? 'bg-[var(--accent-soft)] text-[var(--accent-text)]' : 'bg-rose-500/10 text-rose-500'
-                    }`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDeposit ? 'bg-[var(--accent-soft)] text-[var(--accent-text)]' : 'bg-rose-500/10 text-rose-500'}`}>
                     <Plus className={`w-4 h-4 ${!isDeposit && 'rotate-45'}`} />
                 </div>
                 <div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Sidebar from '../components/layout/Sidebar';
-import { Target, Loader2 } from 'lucide-react';
+import { Target, Loader2, Menu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/api';
 
@@ -9,7 +9,7 @@ import api from '../lib/api';
  * Permite a los usuarios visualizar y gestionar sus metas de ahorro.
  */
 const Goals: React.FC = () => {
-    const { } = useAuth();
+    useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
     const [goals, setGoals] = React.useState<any[]>([]);
@@ -45,6 +45,12 @@ const Goals: React.FC = () => {
                         </h1>
                         <p className="text-[var(--muted)] text-xs mt-1 font-medium">Gestiona tus objetivos financieros a largo plazo.</p>
                     </div>
+                    <button
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
+                    >
+                        <Menu className="w-6 h-6" />
+                    </button>
                 </header>
 
                 {loading ? (
