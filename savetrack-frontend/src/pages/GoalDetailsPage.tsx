@@ -40,8 +40,6 @@ const GoalDetailsPage: React.FC = () => {
         }
     };
 
-
-
     const handleDeleteConfirmed = async () => {
         setIsDeleting(true);
         try {
@@ -53,7 +51,6 @@ const GoalDetailsPage: React.FC = () => {
         }
     };
 
-
     React.useEffect(() => {
         const closeMenu = () => setShowMenu(false);
         if (showMenu) {
@@ -61,7 +58,6 @@ const GoalDetailsPage: React.FC = () => {
         }
         return () => window.removeEventListener('click', closeMenu);
     }, [showMenu]);
-
 
     // Efecto para cargar los datos de la meta específica
     React.useEffect(() => {
@@ -147,17 +143,14 @@ const GoalDetailsPage: React.FC = () => {
             <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
             <main className="flex-1 p-6 lg:p-10 relative overflow-x-hidden">
-                <header className="mb-2 flex items-center justify-between">
-                    <div>
-                        <Link to="/goals" className="inline-flex items-center text-sm font-medium text-[var(--muted)] hover:text-[var(--color-primary)] transition-colors mb-4">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Volver a metas
-                        </Link>
-                    </div>
-
+                <header className="mb-6 flex items-center justify-between">
+                    <Link to="/goals" className="inline-flex items-center text-sm font-medium text-[var(--muted)] hover:text-[var(--color-primary)] transition-colors">
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Volver a metas
+                    </Link>
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
+                        className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors flex items-center justify-center"
                     >
                         <Menu className="w-6 h-6" />
                     </button>
@@ -429,7 +422,6 @@ const GoalDetailsPage: React.FC = () => {
                         setGoal(response.data);
                     }}
                 />
-
 
                 {showDeleteModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center">

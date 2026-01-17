@@ -174,11 +174,8 @@ const Goals: React.FC = () => {
                                     return (
                                         <div key={goal.id} onClick={() => navigate(`/goals/${goal.id}`)} className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all group">
                                             <div className="flex items-center justify-between mb-3">
-                                                <p className="text-xm text-[var(--muted)] font-semibold">
-                                                    Vence el {new Date(goal.end_date).toLocaleDateString()}
-                                                    <p className="text-[var(--muted)] text-xs mb-1">
-                                                        Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
-                                                    </p>
+                                                <p className="text-[var(--muted)] text-xs mb-1">
+                                                    Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
                                                 </p>
                                                 <span className="text-xs font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-2 py-0.5 rounded-full">
                                                     {progress}%
@@ -191,7 +188,6 @@ const Goals: React.FC = () => {
                                                 <span className="text-xs text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
                                             </div>
 
-                                            <p className="text-[var(--muted)] text-xs mb-1">Progreso acumulado</p>
                                             <div className="w-full h-2.5 bg-[var(--background)] rounded-full overflow-hidden mb-3">
                                                 <div
                                                     className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(79,70,229,0.4)]"
