@@ -5,7 +5,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom'; // Agregamos us
 import { AlertCircle, ArrowLeft, Calendar, CheckCircle2, Loader2, Menu, Minus, Pencil, Plus, Target, Trash, TrendingUp } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import EditGoalModal from '../components/modals/EditGoalModal';
-
+import FloatingActionButton from '../components/ui/FloatingActionButton';
+import TransactionModal from '../components/modals/TransactionModal';
 
 /**
  * PÁGINA DE DETALLES DE METAS
@@ -20,9 +21,7 @@ const GoalDetailsPage: React.FC = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [showEditModal, setShowEditModal] = React.useState(false);
-
-
-
+    const [showTransactionModal, setShowTransactionModal] = React.useState(false);
 
     // Cambiamos el estado para guardar UN objeto, no un array
     const [goal, setGoal] = React.useState<any | null>(null);
@@ -207,9 +206,9 @@ const GoalDetailsPage: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="mt-4 flex justify-left items-center gap-1">
+                        <div className="mt-4 flex justify-between items-center gap-1">
                             {/* Etiqueta de Días Transcurridos */}
-                            <div className="">
+                            <div className="flex items-center gap-2 grid grid-cols-1 md:grid-cols-2">
                                 <span className="text-xm font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-5 py-2 rounded-full">
                                     {(() => {
                                         const daysElapsed = Math.max(0, Math.floor((new Date().getTime() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)));
@@ -220,12 +219,11 @@ const GoalDetailsPage: React.FC = () => {
                                         );
                                     })()}
                                 </span>
+                                {/* Etiqueta de Días Restantes */}
+                                <span className="text-xs text-[var(--muted)] font-bold tracking-wider px-2 text-left">
+                                    Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
+                                </span>
                             </div>
-
-                            {/* Etiqueta de Días Restantes */}
-                            <span className="text-xs text-[var(--muted)] font-bold tracking-wider px-2">
-                                Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
-                            </span>
                         </div>
 
                         {/* BARRA DE PROGRESO */}
@@ -470,7 +468,19 @@ const GoalDetailsPage: React.FC = () => {
                         </div>
                     </div>
                 )}
+                <FloatingActionButton onClick={() => setShowTransactionModal(true)} />
 
+                <TransactionModal
+                    isOpen={showTransactionModal}
+                    onClose={() => setShowTransactionModal(false)}
+                    goalId={id}
+                    onSuccess={async () => {
+                        // Recargamos los datos para ver el nuevo current_amount y la lista de transacciones
+                        const response = await api.get(`/savings-goals/${id}`);
+                        setGoal(response.data);
+                        if (id) await fetchTransactions(id);
+                    }}
+                />
             </main>
         </div>
     );
