@@ -170,28 +170,28 @@ const Goals: React.FC = () => {
                                     return (
                                         <div key={goal.id} onClick={() => navigate(`/goals/${goal.id}`)} className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all group">
                                             <div className="flex items-start justify-between mb-3">
-                                                <p className="text-[10px] text-[var(--muted)] font-semibold">
+                                                <p className="text-xm text-[var(--muted)] font-semibold">
                                                     Vence el {new Date(goal.end_date).toLocaleDateString()}
                                                 </p>
-                                                <span className="text-[10px] font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-2 py-0.5 rounded-full">
+                                                <span className="text-xm font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-2 py-0.5 rounded-full">
                                                     {progress}%
                                                 </span>
                                             </div>
 
                                             <h4 className="font-bold text-[var(--foreground)] text-sm mb-1">{goal.name}</h4>
                                             <div className="flex items-baseline gap-1.5 mb-3">
-                                                <span className="text-base font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
-                                                <span className="text-[10px] text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
+                                                <span className="text-xm font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
+                                                <span className="text-xm text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
                                             </div>
 
-                                            <p className="text-[var(--muted)] text-[10px] mb-1">Progreso acumulado</p>
+                                            <p className="text-[var(--muted)] text-xs mb-1">Progreso acumulado</p>
                                             <div className="w-full h-1.5 bg-[var(--background)] rounded-full overflow-hidden">
                                                 <div
                                                     className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(79,70,229,0.4)]"
                                                     style={{ width: `${progress}%` }}
                                                 />
                                             </div>
-                                            <p className="text-[10px] text-[var(--muted)] font-semibold mt-4">
+                                            <p className="text-xs text-[var(--muted)] font-semibold mt-4">
                                                 Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
                                             </p>
                                             <div className="mt-2 pt-2 border-t border-[var(--card-border)]">
@@ -203,7 +203,7 @@ const Goals: React.FC = () => {
                                                 </p>
 
                                                 {calculateWeeklyStatus(goal).isBehind && (
-                                                    <span className="text-[10px] opacity-70 flex items-center gap-1 mt-1">
+                                                    <span className="text-xm opacity-70 flex items-center gap-1 mt-1">
                                                         <AlertCircle className="w-3 h-3" /> Incluye saldo acumulado de semanas anteriores
                                                     </span>
                                                 )}
