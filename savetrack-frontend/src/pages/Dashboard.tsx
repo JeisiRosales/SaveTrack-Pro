@@ -121,7 +121,7 @@ const Dashboard: React.FC = () => {
                             </div>
 
                             <div className="mt-8">
-                                <h4 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Detalle por Cuenta:</h4>
+                                <h4 className="text-sm font-bold text-gray-900 mb-4 tracking-wider">Detalle por Cuenta:</h4>
                                 {accounts.length > 0 ? (
                                     <div className="flex items-center gap-4">
                                         <button className="p-2 bg-[var(--accent-soft)] hover:bg-gray-100 rounded-lg border border-[var(--card-border)] transition-colors hidden sm:block">
@@ -151,7 +151,7 @@ const Dashboard: React.FC = () => {
 
                         {/* SECCIÓN 2: KPI DE METAS */}
                         <div className="bg-[var(--accent-soft)] p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                            <h2 className="text-xs font-semibold text-[var(--foreground)] uppercase tracking-wider">Total Ahorrado en Metas</h2>
+                            <h2 className="text-xs font-semibold text-[var(--foreground)] tracking-wider">Total Ahorrado en Metas</h2>
                             <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
                                 ${totalSavedInGoals.toLocaleString()}
                             </h3>
@@ -265,7 +265,7 @@ const TransactionItem = ({ transaction }: { transaction: any }) => {
 const AccountCard = ({ name, balance, percentage }: { name: string, balance: string, percentage: string }) => (
     <div className="min-w-[240px] bg-[var(--card)] p-4 rounded-xl border border-[var(--card-border)] flex justify-between items-start shadow-sm hover:shadow-md transition-shadow">
         <div>
-            <h5 className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-wider">{name}</h5>
+            <h5 className="text-[10px] font-semibold text-[var(--muted)] tracking-wider">{name}</h5>
             <p className="text-lg font-bold mt-2 text-[var(--accent-text)]">{balance}</p>
         </div>
         <span className="text-[10px] font-bold bg-[var(--accent-soft)] text-[var(--accent-text)] px-2 py-0.5 rounded-full border border-[var(--card-border)]">
