@@ -6,6 +6,7 @@ import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/
 import { AuthGuard } from '@nestjs/passport';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { TransferDto } from './dto/transfer.dto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -32,5 +33,12 @@ export class TransactionsController {
     @UseGuards(AuthGuard('jwt'))
     findByAccount(@Param('accountId') accountId: string) {
         return this.transactionsService.findByAccount(accountId);
+    }
+
+    @Post('transfer')
+    @UseGuards(AuthGuard('jwt'))
+    transfer(@Body() dto: TransferDto) {
+        // Llamamos al nuevo método específico para transferencias
+        return this.transactionsService.transferBetweenAccounts(dto);
     }
 }

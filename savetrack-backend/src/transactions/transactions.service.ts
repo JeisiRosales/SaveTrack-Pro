@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { TransferDto } from './dto/transfer.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -142,5 +143,70 @@ export class TransactionsService {
 
         if (error) throw error;
         return data;
+    }
+
+
+    async transferBetweenAccounts(dto: TransferDto) {
+        const supabase = this.supabase.getAdminClient();
+
+        // 1. Obtener y validar cuenta de origen (Saldo suficiente)
+        const { data: fromAccount, error: fromError } = await supabase
+            .from('funding_accounts')
+            .select('balance, name')
+            .eq('id', dto.fromAccountId)
+            .single();
+
+        if (fromError || !fromAccount) throw new NotFoundException('Cuenta de origen no encontrada');
+        if (fromAccount.balance < dto.amount) throw new Error('Saldo insuficiente en la cuenta de origen');
+
+        // 2. Obtener cuenta de destino
+        const { data: toAccount, error: toError } = await supabase
+            .from('funding_accounts')
+            .select('balance, name')
+            .eq('id', dto.toAccountId)
+            .single();
+
+        if (toError || !toAccount) throw new NotFoundException('Cuenta de destino no encontrada');
+
+        // 3. Ejecutar las actualizaciones de balance
+        // Restar de origen
+        const { error: updateFromError } = await supabase
+            .from('funding_accounts')
+            .update({ balance: fromAccount.balance - dto.amount })
+            .eq('id', dto.fromAccountId);
+
+        if (updateFromError) throw updateFromError;
+
+        // Sumar a destino
+        const { error: updateToError } = await supabase
+            .from('funding_accounts')
+            .update({ balance: toAccount.balance + dto.amount })
+            .eq('id', dto.toAccountId);
+
+        if (updateToError) {
+            // "Rollback" manual simple: Si falla el destino, devolvemos el dinero al origen
+            await supabase.from('funding_accounts').update({ balance: fromAccount.balance }).eq('id', dto.fromAccountId);
+            throw new Error('Error al acreditar en la cuenta destino');
+        }
+
+        // 4. Registrar la transacción en el historial (Opcional pero recomendado)
+        const { data: transaction, error: txError } = await supabase
+            .from('transactions')
+            .insert({
+                account_id: dto.fromAccountId,
+                amount: dto.amount,
+                type: 'transfer', // Debes asegurarte que este tipo exista en tu ENUM de base de datos
+                description: `Transferencia a ${toAccount.name}`
+            })
+            .select()
+            .single();
+
+        if (txError) console.error("Error registrando log de transferencia:", txError);
+
+        return {
+            message: 'Transferencia realizada con éxito',
+            newFromBalance: fromAccount.balance - dto.amount,
+            transaction
+        };
     }
 }

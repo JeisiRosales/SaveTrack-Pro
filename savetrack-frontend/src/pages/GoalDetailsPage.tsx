@@ -40,10 +40,7 @@ const GoalDetailsPage: React.FC = () => {
         }
     };
 
-    const handleEdit = () => {
-        setShowMenu(false);
-        navigate(`/goals/${goal.id}/edit`);
-    };
+
 
     const handleDeleteConfirmed = async () => {
         setIsDeleting(true);
