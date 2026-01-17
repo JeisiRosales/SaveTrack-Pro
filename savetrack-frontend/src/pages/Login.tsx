@@ -131,7 +131,7 @@ const Login: React.FC = () => {
                         </button>
                     </form>
 
-                    <p className="text-center mt-5 text-[var(--muted)]">
+                    <p className="text-center mt-5 mb-4 text-[var(--muted)]">
                         ¿No tienes una cuenta?{' '}
                         <Link to="/register" className="text-[var(--color-primary)] font-bold hover:underline">
                             Regístrate aquí

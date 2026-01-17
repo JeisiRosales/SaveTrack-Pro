@@ -1,25 +1,36 @@
 import axios from 'axios';
+import { createClient } from '@supabase/supabase-js';
 
-/**
- * Configuración centralizada de Axios
- * Se encarga de conectar con el backend y manejar el token de seguridad.
- */
 const api = axios.create({
-    // VITE_API_URL debe estar definida en el archivo .env de Vercel o Local
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
 });
 
-/**
- * Interceptor de Peticiones:
- * Antes de enviar cualquier petición al backend, buscamos si hay un token
- * guardado en el navegador. Si existe, lo enviamos en el Header de Authorization.
- */
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`; // Formato JWT estándar
+// Inicializamos Supabase para poder usar el refresco automático
+const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+
+api.interceptors.request.use(async (config) => {
+    // 1. Intentamos obtener la sesión real de Supabase (Gestiona el refresco automático)
+    const { data: { session } } = await supabase.auth.getSession();
+
+    let token = session?.access_token;
+
+    // 2. Si Supabase no tiene sesión (porque el login fue manual), usamos tu localStorage
+    if (!token) {
+        token = localStorage.getItem('token') || '';
+    } else {
+        localStorage.setItem('token', token);
     }
+
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 export default api;

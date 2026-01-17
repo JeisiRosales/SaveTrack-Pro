@@ -153,7 +153,7 @@ const Transactions: React.FC = () => {
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setIsSidebarOpen(true)}
-                            className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
+                            className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors"
                         >
                             <Menu className="w-6 h-6" />
                         </button>
@@ -163,7 +163,7 @@ const Transactions: React.FC = () => {
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                        <p className="text-[var(--muted)] text-xs font-bold uppercase mb-2">Total Depósitos</p>
+                        <p className="text-[var(--muted)] text-xl font-bold mb-2">Total Depósitos</p>
                         <div className="flex items-end justify-between">
                             <h3 className="text-2xl font-bold text-emerald-500">${totalIncomes.toLocaleString()}</h3>
                             <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
@@ -173,7 +173,7 @@ const Transactions: React.FC = () => {
                     </div>
 
                     <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                        <p className="text-[var(--muted)] text-xs font-bold uppercase mb-2">Total Retiros</p>
+                        <p className="text-[var(--muted)] text-xl font-bold mb-2">Total Retiros</p>
                         <div className="flex items-end justify-between">
                             <h3 className="text-2xl font-bold text-rose-500">${totalExpenses.toLocaleString()}</h3>
                             <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center">
@@ -183,7 +183,7 @@ const Transactions: React.FC = () => {
                     </div>
 
                     <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                        <p className="text-[var(--muted)] text-xs font-bold uppercase mb-2">Balance Neto</p>
+                        <p className="text-[var(--muted)] text-xl font-bold mb-2">Balance Neto</p>
                         <div className="flex items-end justify-between">
                             <h3 className={`text-2xl font-bold ${totalIncomes - totalExpenses >= 0 ? 'text-indigo-500' : 'text-rose-500'}`}>
                                 ${(totalIncomes - totalExpenses).toLocaleString()}

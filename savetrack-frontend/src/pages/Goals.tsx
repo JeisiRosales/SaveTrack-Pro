@@ -81,7 +81,8 @@ const Goals: React.FC = () => {
 
         // 2. Cuota semanal FIJA (Monto Total / Duración Total de la meta)
         const totalWeeksDuration = endDate.getTime() - startDate.getTime();
-        const weeklyInstallment = goal.target_amount / totalWeeksDuration;
+        const weeksDuration = Math.max(1, Math.ceil(totalWeeksDuration / (1000 * 60 * 60 * 24 * 7)));
+        const weeklyInstallment = goal.target_amount / weeksDuration;
 
         // 3. Lo que el usuario debería tener ahorrado ACUMULADO hasta esta semana
         const expectedAccumulated = weeklyInstallment * weeksElapsed;
@@ -91,7 +92,10 @@ const Goals: React.FC = () => {
 
         return {
             balanceToStayOnTrack,
-            isBehind: goal.current_amount < expectedAccumulated
+            isBehind: goal.current_amount < expectedAccumulated,
+            weeksElapsed,
+            weeklyInstallment,
+            expectedAccumulated
         };
     };
 
@@ -110,7 +114,7 @@ const Goals: React.FC = () => {
                     </div>
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
+                        className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors"
                     >
                         <Menu className="w-6 h-6" />
                     </button>
@@ -119,11 +123,11 @@ const Goals: React.FC = () => {
 
                 {/* SECCIÓN 1: KPI DE METAS */}
                 <div className="bg-[var(--accent-soft)] mb-6 p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                    <h2 className="text-xs font-semibold text-[var(--foreground)] uppercase tracking-wider">Total Ahorrado en Metas</h2>
+                    <h2 className="text-xl font-semibold text-[var(--foreground)] tracking-wider">Total Ahorrado en Metas</h2>
                     <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
                         ${totalSavedInGoals.toLocaleString()}
                     </h3>
-                    <p className="text-[var(--muted)] text-[10px] mt-1">Progreso acumulado de tus {goals.length} metas</p>
+                    <p className="text-[var(--muted)] text-xs mt-1">Progreso acumulado de tus {goals.length} metas</p>
                 </div>
 
                 {/* Filters */}
@@ -133,7 +137,7 @@ const Goals: React.FC = () => {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" />
                             <input
                                 type="text"
-                                placeholder="Buscar por meta..."
+                                placeholder="Buscar meta..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-2 bg-[var(--background)] border border-[var(--card-border)] rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
@@ -169,41 +173,52 @@ const Goals: React.FC = () => {
                                     const progress = Math.min(Math.round((goal.current_amount / goal.target_amount) * 100), 100);
                                     return (
                                         <div key={goal.id} onClick={() => navigate(`/goals/${goal.id}`)} className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--card-border)] shadow-sm hover:shadow-md transition-all group">
-                                            <div className="flex items-start justify-between mb-3">
+                                            <div className="flex items-center justify-between mb-3">
                                                 <p className="text-xm text-[var(--muted)] font-semibold">
                                                     Vence el {new Date(goal.end_date).toLocaleDateString()}
+                                                    <p className="text-[var(--muted)] text-xs mb-1">
+                                                        Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
+                                                    </p>
                                                 </p>
-                                                <span className="text-xm font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-2 py-0.5 rounded-full">
+                                                <span className="text-xs font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-2 py-0.5 rounded-full">
                                                     {progress}%
                                                 </span>
                                             </div>
 
-                                            <h4 className="font-bold text-[var(--foreground)] text-sm mb-1">{goal.name}</h4>
+                                            <h4 className="font-bold text-[var(--foreground)] text-xm mb-1">{goal.name}</h4>
                                             <div className="flex items-baseline gap-1.5 mb-3">
-                                                <span className="text-xm font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
-                                                <span className="text-xm text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
+                                                <span className="text-xs font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
+                                                <span className="text-xs text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
                                             </div>
 
                                             <p className="text-[var(--muted)] text-xs mb-1">Progreso acumulado</p>
-                                            <div className="w-full h-1.5 bg-[var(--background)] rounded-full overflow-hidden">
+                                            <div className="w-full h-2.5 bg-[var(--background)] rounded-full overflow-hidden mb-3">
                                                 <div
                                                     className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(79,70,229,0.4)]"
                                                     style={{ width: `${progress}%` }}
                                                 />
                                             </div>
-                                            <p className="text-xs text-[var(--muted)] font-semibold mt-4">
-                                                Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
-                                            </p>
+
                                             <div className="mt-2 pt-2 border-t border-[var(--card-border)]">
-                                                <p className={`text-sm font-medium ${calculateWeeklyStatus(goal).isBehind ? 'text-rose-500' : 'text-emerald-500'}`}>
-                                                    {calculateWeeklyStatus(goal).balanceToStayOnTrack > 0
-                                                        ? `Debe saldar $${calculateWeeklyStatus(goal).balanceToStayOnTrack.toFixed(2)} esta semana`
-                                                        : "¡Vas al día con tus ahorros!"
-                                                    }
+                                                <p className={`text-sm font-medium ${goal.current_amount >= goal.target_amount
+                                                        ? 'text-emerald-500 font-bold'
+                                                        : calculateWeeklyStatus(goal).isBehind ? 'text-rose-500' : 'text-emerald-500'
+                                                    }`}>
+                                                    {(() => {
+                                                        // 1. Prioridad: Meta completada
+                                                        if (goal.current_amount >= goal.target_amount) {
+                                                            return "¡Felicidades, has cumplido con tu meta de ahorro!";
+                                                        }
+
+                                                        // 2. Si no está completada, revisamos la deuda semanal
+                                                        return calculateWeeklyStatus(goal).balanceToStayOnTrack > 0
+                                                            ? `Debe saldar $${calculateWeeklyStatus(goal).balanceToStayOnTrack.toFixed(2)} esta semana`
+                                                            : "¡Vas al día con tus ahorros!";
+                                                    })()}
                                                 </p>
 
                                                 {calculateWeeklyStatus(goal).isBehind && (
-                                                    <span className="text-xm opacity-70 flex items-center gap-1 mt-1">
+                                                    <span className="text-xs opacity-70 flex items-center gap-1 mt-1">
                                                         <AlertCircle className="w-3 h-3" /> Incluye saldo acumulado de semanas anteriores
                                                     </span>
                                                 )}
@@ -212,7 +227,7 @@ const Goals: React.FC = () => {
                                     );
                                 })
                         ) : (
-                            <div className="col-span-full bg-[var(--card)] border border-dashed border-[var(--card-border)] rounded-2xl p-12 text-center">
+                            <div className="col-span-full bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-12 text-center">
                                 <p className="text-[var(--muted)] text-sm">Aún no has creado metas de ahorro.</p>
                             </div>
                         )}

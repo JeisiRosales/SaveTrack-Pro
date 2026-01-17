@@ -5,7 +5,7 @@ import CreateGoalModal from '../components/modals/CreateGoalModal';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/api';
 import { Link } from 'react-router-dom';
-import { Menu, Plus, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { Menu, Plus, ChevronLeft, ChevronRight, Loader2, User } from 'lucide-react';
 
 /**
  * Página de Dashboard Principal
@@ -84,7 +84,8 @@ const Dashboard: React.FC = () => {
             <main className="flex-1 p-6 lg:p-10 relative overflow-x-hidden">
                 <header className="mb-6 flex items-center justify-between">
                     <div>
-                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)]">
+                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)] flex items-center gap-2">
+                            <User className="w-6 h-6 text-[var(--accent-text)]" />
                             Hola, <span className="text-[var(--accent-text)]">{user?.full_name?.split(' ')[0] || 'User'}</span>
                         </h1>
                         <p className="text-[var(--muted)] text-xs mt-1 font-medium">Gestiona tu libertad financiera.</p>
@@ -92,7 +93,7 @@ const Dashboard: React.FC = () => {
 
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
+                        className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors"
                     >
                         <Menu className="w-6 h-6" />
                     </button>
@@ -112,16 +113,16 @@ const Dashboard: React.FC = () => {
                         {/* SECCIÓN 1: SALDO TOTAL Y CUENTAS */}
                         <div className="bg-[var(--card)] p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
                             <div className="mb-6">
-                                <h2 className="text-sm font-semibold text-[var(--foreground)]">Saldo Total</h2>
+                                <h2 className="text-xl font-semibold text-[var(--foreground)]">Saldo Total</h2>
                                 <p className="text-[var(--muted)] text-xs">Tu capital neto disponible</p>
                                 <h3 className="text-3xl font-bold mt-3 text-[var(--accent-text)]">
                                     ${totalBalance.toLocaleString()}
                                 </h3>
-                                <p className="text-[var(--muted-foreground)] text-[10px] mt-1.5">Distribuido en {accounts.length} cuentas</p>
+                                <p className="text-[var(--muted)] text-xs mt-2">Distribuido en {accounts.length} cuentas</p>
                             </div>
 
-                            <div className="mt-8">
-                                <h4 className="text-sm font-bold text-gray-900 mb-4 tracking-wider">Detalle por Cuenta:</h4>
+                            <div className="mt-4">
+                                <h4 className="text-sm font-bold text-[var(--foreground)] mb-4 tracking-wider">Detalle por Cuenta:</h4>
                                 {accounts.length > 0 ? (
                                     <div className="flex items-center gap-4">
                                         <button className="p-2 bg-[var(--accent-soft)] hover:bg-gray-100 rounded-lg border border-[var(--card-border)] transition-colors hidden sm:block">
@@ -144,28 +145,28 @@ const Dashboard: React.FC = () => {
                                         </button>
                                     </div>
                                 ) : (
-                                    <p className="text-[var(--muted)] text-sm italic">No hay cuentas configuradas.</p>
+                                    <p className="text-[var(--muted)] text-sm">No hay cuentas configuradas.</p>
                                 )}
                             </div>
                         </div>
 
                         {/* SECCIÓN 2: KPI DE METAS */}
                         <div className="bg-[var(--accent-soft)] p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                            <h2 className="text-xs font-semibold text-[var(--foreground)] tracking-wider">Total Ahorrado en Metas</h2>
+                            <h2 className="text-xl font-semibold text-[var(--foreground)] tracking-wider">Total Ahorrado en Metas</h2>
                             <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
                                 ${totalSavedInGoals.toLocaleString()}
                             </h3>
-                            <p className="text-[var(--muted)] text-[10px] mt-1">Progreso acumulado de tus {goals.length} metas</p>
+                            <p className="text-[var(--muted)] text-xs mt-1">Progreso acumulado de tus {goals.length} metas</p>
                         </div>
 
                         {/* SECCIÓN 3: GESTIÓN DE METAS */}
                         <section>
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center justify-between mb-4 ">
                                 <div>
                                     <h2 className="text-lg font-bold text-[var(--foreground)]">Tus Metas</h2>
-                                    <p className="text-[var(--muted)] text-xs">Visualiza el avance hacia tus sueños</p>
+                                    <p className="text-[var(--muted)] text-sm">Visualiza el avance hacia tus sueños</p>
                                 </div>
-                                <Link to="/goals" className="text-xs font-semibold text-[var(--accent-text)] hover:opacity-80 transition-opacity">
+                                <Link to="/goals" className="text-sm font-bold text-[var(--color-primary)] hover:underline">
                                     Ver Todo
                                 </Link>
                             </div>
@@ -179,7 +180,7 @@ const Dashboard: React.FC = () => {
                                         ))}
                                 </div>
                             ) : (
-                                <div className="bg-white border border-dashed border-gray-200 rounded-[2rem] p-12 text-center">
+                                <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-12 text-center">
                                     <p className="text-[var(--muted)] text-sm">Aún no has creado metas de ahorro.</p>
                                 </div>
                             )}
@@ -205,7 +206,7 @@ const Dashboard: React.FC = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="p-8 text-center text-[var(--muted)] text-sm italic">
+                                    <div className="p-12 text-center text-[var(--muted)] text-sm">
                                         No hay movimientos recientes.
                                     </div>
                                 )}
@@ -235,7 +236,7 @@ const TransactionItem = ({ transaction }: { transaction: any }) => {
     return (
         <div className="p-4 flex items-center justify-between hover:bg-[var(--background)] transition-colors">
             <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDeposit ? 'bg-[var(--accent-soft)] text-[var(--accent-text)]' : 'bg-rose-500/10 text-rose-500'}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDeposit ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
                     <Plus className={`w-4 h-4 ${!isDeposit && 'rotate-45'}`} />
                 </div>
                 <div>
@@ -248,7 +249,7 @@ const TransactionItem = ({ transaction }: { transaction: any }) => {
                 </div>
             </div>
             <div className="text-right">
-                <p className={`text-sm font-bold ${isDeposit ? 'text-[var(--accent-text)]' : 'text-rose-500'}`}>
+                <p className={`text-sm font-bold ${isDeposit ? 'text-emerald-500' : 'text-rose-500'}`}>
                     {isDeposit ? '+' : '-'}${transaction.amount.toLocaleString()}
                 </p>
                 <p className="text-[10px] text-[var(--muted-foreground)] mt-0.5">

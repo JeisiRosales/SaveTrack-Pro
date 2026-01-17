@@ -130,7 +130,7 @@ const Accounts: React.FC = () => {
                     </div>
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
+                        className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors"
                     >
                         <Menu className="w-6 h-6" />
                     </button>
@@ -148,9 +148,9 @@ const Accounts: React.FC = () => {
                 ) : (
                     <div className="space-y-8">
                         {/* Resumen Global */}
-                        <div className="bg-[var(--accent-soft)] p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="bg-[var(--accent-soft)] p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm flex flex-col gap-4">
                             <div>
-                                <h2 className="text-xs font-semibold text-[var(--foreground)] uppercase tracking-wider">Saldo Consolidado</h2>
+                                <h2 className="text-xl font-semibold text-[var(--foreground)] tracking-wider">Saldo Consolidado</h2>
                                 <h3 className="text-3xl font-bold mt-2 text-[var(--accent-text)]">
                                     ${totalBalance.toLocaleString()}
                                 </h3>
@@ -184,7 +184,7 @@ const Accounts: React.FC = () => {
                                     </div>
                                 ))
                             ) : (
-                                <div className="col-span-full bg-[var(--card)] border border-dashed border-[var(--card-border)] rounded-2xl p-12 text-center text-[var(--muted)]">
+                                <div className="col-span-full bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-12 text-center text-[var(--muted)]">
                                     No tienes cuentas registradas. Crea una desde el Dashboard.
                                 </div>
                             )}
@@ -300,7 +300,7 @@ const Accounts: React.FC = () => {
                                                 {transactions.slice(0, 5).map(tx => (
                                                     <div key={tx.id} className="flex justify-between items-center bg-[var(--background)] p-3 rounded-xl border border-[var(--card-border)]">
                                                         <div className="flex items-center gap-3">
-                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${tx.type === 'deposit' ? 'bg-[var(--accent-soft)] text-[var(--accent-text)]' : 'bg-rose-500/10 text-rose-500'}`}>
+                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${tx.type === 'deposit' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
                                                                 <Plus className={`w-4 h-4 ${tx.type !== 'deposit' && 'rotate-45'}`} />
                                                             </div>
                                                             <div>
@@ -308,7 +308,7 @@ const Accounts: React.FC = () => {
                                                                 <p className="text-[10px] text-[var(--muted)]">{new Date(tx.created_at).toLocaleDateString()}</p>
                                                             </div>
                                                         </div>
-                                                        <p className={`text-xs font-black ${tx.type === 'deposit' ? 'text-[var(--accent-text)]' : 'text-rose-500'}`}>
+                                                        <p className={`text-xs font-black ${tx.type === 'deposit' ? 'text-emerald-500' : 'text-rose-500'}`}>
                                                             {tx.type === 'deposit' ? '-' : '+'}${tx.amount.toLocaleString()}
                                                         </p>
                                                     </div>
