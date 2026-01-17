@@ -185,7 +185,7 @@ const Goals: React.FC = () => {
                                                 </span>
                                             </div>
 
-                                            <h4 className="font-bold text-[var(--foreground)] text-xm mb-1">{goal.name}</h4>
+                                            <h4 className="font-bold text-[var(--foreground)] text-xl mb-1">{goal.name}</h4>
                                             <div className="flex items-baseline gap-1.5 mb-3">
                                                 <span className="text-xs font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
                                                 <span className="text-xs text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
@@ -201,8 +201,8 @@ const Goals: React.FC = () => {
 
                                             <div className="mt-2 pt-2 border-t border-[var(--card-border)]">
                                                 <p className={`text-sm font-medium ${goal.current_amount >= goal.target_amount
-                                                        ? 'text-emerald-500 font-bold'
-                                                        : calculateWeeklyStatus(goal).isBehind ? 'text-rose-500' : 'text-emerald-500'
+                                                    ? 'text-emerald-500 font-bold'
+                                                    : calculateWeeklyStatus(goal).isBehind ? 'text-rose-500' : 'text-emerald-500'
                                                     }`}>
                                                     {(() => {
                                                         // 1. Prioridad: Meta completada

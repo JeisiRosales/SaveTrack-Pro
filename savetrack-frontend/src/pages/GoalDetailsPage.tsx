@@ -1,9 +1,11 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/api';
-import { useParams, Link } from 'react-router-dom'; // Agregamos useParams
-import { AlertCircle, ArrowLeft, Calendar, CheckCircle2, Loader2, Menu, Minus, Plus, Target, TrendingUp } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom'; // Agregamos useParams
+import { AlertCircle, ArrowLeft, Calendar, CheckCircle2, Loader2, Menu, Minus, Pencil, Plus, Target, Trash, TrendingUp } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
+import EditGoalModal from '../components/modals/EditGoalModal';
+
 
 /**
  * PÁGINA DE DETALLES DE METAS
@@ -12,7 +14,15 @@ import Sidebar from '../components/layout/Sidebar';
 const GoalDetailsPage: React.FC = () => {
     const { user } = useAuth();
     const { id } = useParams(); // Capturamos el ID de la URL (ej: /goals/123)
+    const navigate = useNavigate();
     const [transactions, setTransactions] = React.useState<any[]>([]);
+    const [showMenu, setShowMenu] = React.useState(false);
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+    const [isDeleting, setIsDeleting] = React.useState(false);
+    const [showEditModal, setShowEditModal] = React.useState(false);
+
+
+
 
     // Cambiamos el estado para guardar UN objeto, no un array
     const [goal, setGoal] = React.useState<any | null>(null);
@@ -29,6 +39,32 @@ const GoalDetailsPage: React.FC = () => {
             setTransactions([]);
         }
     };
+
+    const handleEdit = () => {
+        setShowMenu(false);
+        navigate(`/goals/${goal.id}/edit`);
+    };
+
+    const handleDeleteConfirmed = async () => {
+        setIsDeleting(true);
+        try {
+            await api.delete(`/savings-goals/${goal.id}`);
+            navigate('/goals');
+        } catch (error) {
+            alert('Error al eliminar la meta');
+            setIsDeleting(false);
+        }
+    };
+
+
+    React.useEffect(() => {
+        const closeMenu = () => setShowMenu(false);
+        if (showMenu) {
+            window.addEventListener('click', closeMenu);
+        }
+        return () => window.removeEventListener('click', closeMenu);
+    }, [showMenu]);
+
 
     // Efecto para cargar los datos de la meta específica
     React.useEffect(() => {
@@ -139,6 +175,29 @@ const GoalDetailsPage: React.FC = () => {
                             <div>
                                 <h1 className="text-3xl font-bold text-[var(--foreground)] mt-2">{goal.name}</h1>
                                 <p className="text-[var(--muted)] text-xs mt-1 font-medium">Detalles de la meta financiera.</p>
+                            </div>
+
+                            {/* Botón de acciones */}
+                            <div className="relative">
+                                {/* Acciones */}
+                                <div className="flex items-center gap-2 mt-2">
+                                    {/* Editar */}
+                                    <button
+                                        onClick={() => setShowEditModal(true)}
+                                        className="text-xm font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-5 py-2 rounded-xl hover:bg-[var(--background)] transition-colors"
+                                    >
+                                        <Pencil className="w-4 h-4" />
+                                    </button>
+
+                                    {/* Eliminar */}
+                                    <button
+                                        onClick={() => setShowDeleteModal(true)}
+                                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-rose-600 text-white hover:bg-rose-700 transition-all shadow-sm"
+                                    >
+                                        <Trash className="w-4 h-4" />
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
 
@@ -361,6 +420,67 @@ const GoalDetailsPage: React.FC = () => {
                         </div>
                     )}
                 </div>
+
+                <EditGoalModal
+                    isOpen={showEditModal}
+                    goal={goal}
+                    onClose={() => setShowEditModal(false)}
+                    onGoalUpdated={async () => {
+                        setShowEditModal(false);
+                        // volver a cargar la meta actualizada
+                        const response = await api.get(`/savings-goals/${goal.id}`);
+                        setGoal(response.data);
+                    }}
+                />
+
+
+                {showDeleteModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        {/* Fondo oscuro */}
+                        <div
+                            className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+                            onClick={() => !isDeleting && setShowDeleteModal(false)}
+                        />
+
+                        {/* Modal */}
+                        <div className="relative bg-[var(--card)] rounded-2xl border border-[var(--card-border)] shadow-xl w-full max-w-sm p-6 animate-scaleIn">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 rounded-xl bg-rose-500/10 text-rose-600">
+                                    <Trash className="w-5 h-5" />
+                                </div>
+                                <h3 className="text-lg font-bold">
+                                    Eliminar meta
+                                </h3>
+                            </div>
+
+                            <p className="text-sm text-[var(--muted)] mb-6">
+                                Esta acción eliminará <strong>{goal.name}</strong> permanentemente.
+                                No podrás recuperar esta información.
+                            </p>
+
+                            <div className="flex justify-end gap-3">
+                                <button
+                                    disabled={isDeleting}
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="px-4 py-2 text-sm rounded-lg border border-[var(--card-border)] hover:bg-[var(--background)] transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    disabled={isDeleting}
+                                    onClick={handleDeleteConfirmed}
+                                    className="px-4 py-2 text-sm rounded-lg bg-rose-600 text-white hover:bg-rose-700 transition-colors flex items-center gap-2"
+                                >
+                                    {isDeleting && (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    )}
+                                    Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
             </main>
         </div>

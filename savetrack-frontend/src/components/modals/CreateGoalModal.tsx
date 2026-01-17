@@ -25,7 +25,7 @@ const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGo
         if (!isOpen) {
             setName('');
             setTargetAmount('');
-            setInitialAmount('0');
+            setInitialAmount('');
             setEndDate('');
             setError(null);
         }
