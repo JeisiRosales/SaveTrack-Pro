@@ -3,7 +3,7 @@ import Sidebar from '../components/layout/Sidebar';
 import CreateGoalModal from '../components/modals/CreateGoalModal';
 import FloatingActionButton from '../components/ui/FloatingActionButton';
 import { useAuth } from '../context/AuthContext';
-import { Target, Loader2, Menu, Search, X, AlertCircle } from 'lucide-react';
+import { Target, Loader2, Menu, Search, X, AlertCircle, CheckCircle2 } from 'lucide-react';
 import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 
@@ -122,7 +122,7 @@ const Goals: React.FC = () => {
                 </header>
 
                 {/* SECCIÓN 1: KPI DE METAS */}
-                <div className="bg-[var(--accent-soft)] mb-6 p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
+                <div className="bg-[var(--accent-soft)] mb-4 p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
                     <h2 className="text-xl font-semibold text-[var(--foreground)] tracking-wider">Total Ahorrado en Metas</h2>
                     <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
                         ${totalSavedInGoals.toLocaleString()}
@@ -130,8 +130,64 @@ const Goals: React.FC = () => {
                     <p className="text-[var(--muted)] text-xs mt-1">Progreso acumulado de tus {goals.length} metas</p>
                 </div>
 
+                {/* SECCIÓN DE DINERO A RECOLECTAR */}
+                {(() => {
+                    // 1. Calculamos el estado acumulado de todas las metas
+                    const globalStatus = goals.reduce((acc, goal) => {
+                        const status = calculateWeeklyStatus(goal);
+                        const isCompleted = goal.current_amount >= goal.target_amount;
+
+                        if (!isCompleted) {
+                            acc.totalBalanceToPay += status.balanceToStayOnTrack;
+                            if (status.isBehind) acc.anyGoalBehind = true;
+                            acc.activeGoalsCount += 1;
+                        } else {
+                            acc.completedGoalsCount += 1;
+                        }
+                        return acc;
+                    }, { totalBalanceToPay: 0, anyGoalBehind: false, activeGoalsCount: 0, completedGoalsCount: 0 });
+
+                    const allGoalsCompleted = globalStatus.activeGoalsCount === 0 && goals.length > 0;
+                    const isBehind = globalStatus.anyGoalBehind;
+
+                    // 2. Definimos estilos basados en el estado global
+                    const config = allGoalsCompleted
+                        ? { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-600', icon: <CheckCircle2 className="w-6 h-6" />, iconBg: 'bg-emerald-500/20' }
+                        : isBehind
+                            ? { bg: 'bg-rose-500/5', border: 'border-rose-500/20', text: 'text-rose-600', icon: <AlertCircle className="w-6 h-6" />, iconBg: 'bg-rose-500/10' }
+                            : { bg: 'bg-emerald-500/5', border: 'border-emerald-500/20', text: 'text-emerald-600', icon: <CheckCircle2 className="w-6 h-6" />, iconBg: 'bg-emerald-500/10' };
+
+                    return (
+                        <div className={`mt-6 p-6 rounded-3xl border transition-all ${config.bg} ${config.border}`}>
+                            <div className="flex items-center gap-4">
+                                <div className={`p-3 rounded-2xl ${config.iconBg} ${config.text}`}>
+                                    {config.icon}
+                                </div>
+                                <div>
+                                    <h3 className={`text-lg font-bold ${config.text}`}>
+                                        {allGoalsCompleted
+                                            ? "¡Felicidades, todas tus metas están cumplidas!"
+                                            : globalStatus.totalBalanceToPay > 0
+                                                ? `Debes saldar $${globalStatus.totalBalanceToPay.toFixed(2).toLocaleString(undefined, { minimumFractionDigits: 2 })} esta semana`
+                                                : "¡Estás al día con todas tus metas!"
+                                        }
+                                    </h3>
+                                    <p className="text-sm text-[var(--muted)] mt-1">
+                                        {allGoalsCompleted
+                                            ? `Has completado tus ${globalStatus.completedGoalsCount} objetivos financieros.`
+                                            : isBehind
+                                                ? `Tienes saldo pendiente acumulado en tus metas activas.`
+                                                : `Vas por buen camino con tus ${globalStatus.activeGoalsCount} metas vigentes.`
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })()}
+
                 {/* Filters */}
-                <div className="bg-[var(--card)] p-4 rounded-2xl border border-[var(--card-border)] mb-6 shadow-sm">
+                <div className="bg-[var(--card)] p-4 rounded-2xl border border-[var(--card-border)] mt-6 mb-6 shadow-sm">
                     <div className="flex flex-col lg:flex-row gap-4 items-center">
                         <div className="relative flex-1 w-full">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" />
