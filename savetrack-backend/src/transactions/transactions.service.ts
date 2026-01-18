@@ -22,7 +22,7 @@ export class TransactionsService {
      * @param dto - Datos de la transacción
      */
     async create(dto: CreateTransactionDto) {
-        const supabase = this.supabase.getClient();
+        const supabase = this.supabase.getAdminClient();
 
         // Paso 1: Crear el registro de la transacción
         const { data: transaction, error: txError } = await supabase

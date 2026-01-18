@@ -13,6 +13,7 @@ export class TransactionsController {
     constructor(private readonly transactionsService: TransactionsService) { }
 
     @Post()
+    @UseGuards(AuthGuard('jwt'))
     create(@Body() dto: CreateTransactionDto) {
         return this.transactionsService.create(dto);
     }

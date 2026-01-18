@@ -20,7 +20,7 @@ const AccountSelector = ({
 
     return (
         <div className="space-y-2 relative">
-            <label className="text-sm font-black text-gray-500 ml-1">
+            <label className="text-xs font-black text-gray-500 ml-1 uppercase">
                 {label}
             </label>
 
@@ -174,7 +174,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onClose, go
                         />
                         {/* Input Monto */}
                         <div className="space-y-2">
-                            <label className="text-sm font-black text-gray-500 ml-1">Monto a transferir</label>
+                            <label className="text-xs font-black text-gray-500 ml-1 uppercase">Monto a transferir</label>
                             <div className="relative group">
                                 <input
                                     type="number" required step="0.01" value={amount}
@@ -188,7 +188,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onClose, go
 
                         <button
                             disabled={loading}
-                            className={`w-full py-5 rounded-2xl font-black text-xs text-white shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3 ${type === 'deposit'
+                            className={`w-full py-5 rounded-2xl font-black text-xs text-white shadow shadow-indigo-500/10 transition-all active:scale-95 flex items-center justify-center gap-3 ${type === 'deposit'
                                 ? 'bg-[#4f46e5] hover:bg-[#4338ca] shadow-indigo-500/20'
                                 : 'bg-rose-600 hover:bg-rose-700 shadow-rose-500/20'
                                 }`}

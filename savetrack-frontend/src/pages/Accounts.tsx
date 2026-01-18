@@ -476,7 +476,7 @@ const Accounts: React.FC = () => {
                                         <button
                                             type="submit"
                                             disabled={isUpdating}
-                                            className="flex-1 px-4 py-3 rounded-xl font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 flex items-center justify-center text-sm"
+                                            className="flex-1 px-4 py-3 rounded-xl font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-500/10 flex items-center justify-center text-sm"
                                         >
                                             {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Guardar Cambios'}
                                         </button>
