@@ -36,13 +36,6 @@ La seguridad está reforzada en la capa de base de datos mediante políticas **R
 - `src/transactions`: Lógica para mover dinero entre cuentas y metas.
 - `src/supabase`: Módulo global para la conexión con el cliente de Supabase.
 
-## Gestión de Imágenes
-
-El backend incluye un flujo optimizado para imágenes:
-1. El archivo se sube al Bucket `goal-images`.
-2. Se genera una URL pública.
-3. El servidor actualiza automáticamente el campo `image_url` en la tabla `savings_goals` asociado al ID proporcionado.
-
 ## Instalación y Uso
 
 1. Clonar el repositorio.
