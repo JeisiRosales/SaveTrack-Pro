@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../lib/api'
 
 const AuthContext = createContext<any>(null);
 
@@ -7,37 +8,67 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const initializeAuth = () => {
-            const savedUser = localStorage.getItem('user');
-            const token = localStorage.getItem('token');
+        const initializeAuth = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
 
-            if (savedUser && token) {
-                const parsedUser = JSON.parse(savedUser);
-                // Aseguramos que full_name esté disponible incluso si viene de metadata
-                if (!parsedUser.full_name && parsedUser.user_metadata?.full_name) {
-                    parsedUser.full_name = parsedUser.user_metadata.full_name;
-                }
-                setUser(parsedUser);
+            if (session) {
+                handleUser(session.user, session.access_token);
             }
             setLoading(false);
         };
 
         initializeAuth();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session) {
+                handleUser(session.user, session.access_token);
+            } else {
+                // Si el evento es SIGNED_OUT, limpiamos
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                setUser(null);
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
-    const login = (userData: any, token: string) => {
-        // Enriquecemos el objeto usuario con el nombre de los metadatos si es necesario
+    const handleUser = (supabaseUser: any, token: string) => {
         const enrichedUser = {
-            ...userData,
-            full_name: userData.full_name || userData.user_metadata?.full_name || userData.email?.split('@')[0]
+            ...supabaseUser,
+            full_name: supabaseUser.user_metadata?.full_name || supabaseUser.email?.split('@')[0]
         };
 
+        // Seguimos guardando en localStorage por si tu backend actual lo necesita ahí
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(enrichedUser));
         setUser(enrichedUser);
     };
 
-    const logout = () => {
+    const login = async (userData: any, session: any) => {
+        // 1. Sincronizamos con la librería de Supabase para activar el autorefresco
+        if (session?.access_token && session?.refresh_token) {
+            await supabase.auth.setSession({
+                access_token: session.access_token,
+                refresh_token: session.refresh_token
+            });
+        }
+
+        // 2. Enriquecemos el usuario como ya lo hacías
+        const enrichedUser = {
+            ...userData,
+            full_name: userData.full_name || userData.user_metadata?.full_name || userData.email?.split('@')[0]
+        };
+
+        // 3. Guardamos en LocalStorage (mantenemos las llaves viejas por compatibilidad si quieres)
+        localStorage.setItem('token', session.access_token);
+        localStorage.setItem('user', JSON.stringify(enrichedUser));
+
+        setUser(enrichedUser);
+    };
+
+    const logout = async () => {
+        await supabase.auth.signOut();
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);

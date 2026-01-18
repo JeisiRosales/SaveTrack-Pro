@@ -41,7 +41,7 @@ const Login: React.FC = () => {
             const { user, session } = response.data;
 
             // Guardamos en el contexto global y localStorage
-            login(user, session.access_token);
+            login(user, session);
 
             setSuccess(true);
             // Intentamos ir al dashboard si existe, sino nos quedamos con el mensaje de éxito

@@ -36,7 +36,7 @@ const AccountSelector = ({
 
     return (
         <div className="space-y-2 relative">
-            <label className="block text-[11px] font-black text-[var(--muted)] uppercase tracking-[0.1em] ml-1">
+            <label className="block text-[11px] font-black text-[var(--muted)] uppercase ml-1">
                 {label}
             </label>
 
@@ -242,7 +242,7 @@ const Accounts: React.FC = () => {
             <main className="flex-1 p-6 lg:p-10 relative overflow-x-hidden">
                 <header className="mb-6 flex items-center justify-between">
                     <div>
-                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)] flex items-center gap-2">
+                        <h1 className="text-xl lg:text-2xl font-bold text-[var(--foreground)] flex items-center gap-2">
                             <Wallet className="w-6 h-6 text-[var(--accent-text)]" />
                             Mis Cuentas
                         </h1>
@@ -270,7 +270,7 @@ const Accounts: React.FC = () => {
                         {/* Resumen Global */}
                         <div className="bg-[var(--accent-soft)] p-6 grid grid-cols-1 md:grid-cols-2 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm flex flex-center gap-4">
                             <div>
-                                <h2 className="text-xl font-semibold text-[var(--foreground)] tracking-wider">Saldo Consolidado</h2>
+                                <h2 className="text-xl font-semibold text-[var(--foreground)]">Saldo Consolidado</h2>
                                 <h3 className="text-3xl font-bold mt-2 text-[var(--accent-text)]">
                                     ${totalBalance.toLocaleString()}
                                 </h3>
@@ -390,7 +390,7 @@ const Accounts: React.FC = () => {
 
                                 {/* Input de Monto */}
                                 <div className="space-y-2">
-                                    <label className="block text-[11px] font-black text-[var(--muted)] uppercase tracking-[0.1em] ml-1">Monto a Transferir</label>
+                                    <label className="block text-[11px] font-black text-[var(--muted)] uppercase ml-1">Monto a Transferir</label>
                                     <div className="relative">
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] font-bold">$</span>
                                         <input
@@ -445,7 +445,7 @@ const Accounts: React.FC = () => {
                             {isEditMode ? (
                                 <form onSubmit={handleUpdateAccount} className="space-y-5">
                                     <div>
-                                        <label className="block text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-2 px-1">Nombre de la Cuenta</label>
+                                        <label className="block text-[10px] font-bold text-[var(--muted)] uppercase mb-2 px-1">Nombre de la Cuenta</label>
                                         <input
                                             type="text"
                                             value={editForm.name}
@@ -455,7 +455,7 @@ const Accounts: React.FC = () => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-2 px-1">Saldo Actual ($)</label>
+                                        <label className="block text-[10px] font-bold text-[var(--muted)] uppercase mb-2 px-1">Saldo Actual ($)</label>
                                         <input
                                             type="number"
                                             value={editForm.balance}
@@ -485,7 +485,7 @@ const Accounts: React.FC = () => {
                             ) : (
                                 <div className="space-y-6">
                                     <div className="bg-[var(--accent-soft)] p-5 rounded-2xl border border-[var(--card-border)]">
-                                        <p className="text-[10px] font-bold text-[var(--accent-text)] opacity-80 uppercase tracking-widest mb-1">Saldo Disponible</p>
+                                        <p className="text-[10px] font-bold text-[var(--accent-text)] opacity-80 uppercase mb-1">Saldo Disponible</p>
                                         <p className="text-3xl font-bold text-[var(--accent-text)]">
                                             ${selectedAccount.balance.toLocaleString()}
                                         </p>

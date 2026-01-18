@@ -26,8 +26,8 @@ export class SupabaseService {
         if (supabaseServiceKey) {
             this.supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
                 auth: {
-                    autoRefreshToken: false,
-                    persistSession: false
+                    autoRefreshToken: true,
+                    persistSession: true
                 }
             });
         }

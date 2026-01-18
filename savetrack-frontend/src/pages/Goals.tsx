@@ -106,7 +106,7 @@ const Goals: React.FC = () => {
             <main className="flex-1 p-6 lg:p-10 relative overflow-x-hidden">
                 <header className="mb-6 flex items-center justify-between">
                     <div>
-                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-[var(--foreground)] flex items-center gap-2">
+                        <h1 className="text-xl lg:text-2xl font-bold text-[var(--foreground)] flex items-center gap-2">
                             <Target className="w-6 h-6 text-[var(--accent-text)]" />
                             Mis Metas
                         </h1>
@@ -123,7 +123,7 @@ const Goals: React.FC = () => {
 
                 {/* SECCIÓN 1: KPI DE METAS */}
                 <div className="bg-[var(--accent-soft)] mb-4 p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                    <h2 className="text-xl font-semibold text-[var(--foreground)] tracking-wider">Total Ahorrado en Metas</h2>
+                    <h2 className="text-xl font-semibold text-[var(--foreground)]">Total Ahorrado en Metas</h2>
                     <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
                         ${totalSavedInGoals.toLocaleString()}
                     </h3>

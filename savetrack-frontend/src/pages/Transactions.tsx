@@ -143,9 +143,9 @@ const Transactions: React.FC = () => {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Activity className="w-5 h-5 text-[var(--accent-text)]" />
-                            <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Historial de Transacciones</h1>
+                            <h1 className="text-xl lg:text-2xl font-bold">Historial de Transacciones</h1>
                         </div>
-                        <p className="text-[var(--muted)] text-xs font-medium tracking-wider">
+                        <p className="text-[var(--muted)] text-xs font-medium">
                             Control detallado de tus movimientos.
                         </p>
                     </div>
@@ -245,11 +245,11 @@ const Transactions: React.FC = () => {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-[var(--background)] border-b border-[var(--card-border)]">
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Fecha</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Flujo</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Cuenta Origen</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Tipo</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider text-right">Monto</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase">Fecha</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase">Flujo</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase">Cuenta Origen</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase">Tipo</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase text-right">Monto</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[var(--card-border)]">

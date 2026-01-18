@@ -193,13 +193,13 @@ const GoalDetailsPage: React.FC = () => {
                         {/* Saldo Actual y Objetivo*/}
                         <div className="flex justify-between items-end mt-6">
                             <div>
-                                <h2 className="text-sm font-semibold text-[var(--muted)] tracking-wider">Saldo Actual</h2>
+                                <h2 className="text-sm font-semibold text-[var(--muted)]">Saldo Actual</h2>
                                 <h3 className="text-3xl font-bold mt-1 text-[var(--accent-text)]">
                                     ${goal.current_amount.toLocaleString()}
                                 </h3>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm text-[var(--muted)] font-semibold tracking-wider">Objetivo</p>
+                                <p className="text-sm text-[var(--muted)] font-semibold">Objetivo</p>
                                 <p className="text-3xl font-bold mt-1 text-[var(--foreground)]">
                                     ${goal.target_amount.toLocaleString()}
                                 </p>
@@ -220,7 +220,7 @@ const GoalDetailsPage: React.FC = () => {
                                     })()}
                                 </span>
                                 {/* Etiqueta de Días Restantes */}
-                                <span className="text-xs text-[var(--muted)] font-bold tracking-wider px-2 text-left">
+                                <span className="text-xs text-[var(--muted)] font-bold px-2 text-left">
                                     Restan {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días
                                 </span>
                             </div>
@@ -321,9 +321,9 @@ const GoalDetailsPage: React.FC = () => {
                 {/* SECCIÓN DE HISTORIAL DE TRANSACCIONES */}
                 <div>
                     <div className="flex items-center gap-2 mt-6">
-                        <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Historial de Transacciones</h1>
+                        <h1 className="text-xl lg:text-2xl font-bold">Historial de Transacciones</h1>
                     </div>
-                    <p className="text-[var(--muted)] text-xs font-medium tracking-wider">
+                    <p className="text-[var(--muted)] text-xs font-medium">
                         Control detallado de tus movimientos.
                     </p>
                 </div>
@@ -339,11 +339,11 @@ const GoalDetailsPage: React.FC = () => {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-[var(--background)] border-b border-[var(--card-border)]">
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Fecha</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Flujo</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Cuenta Origen</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Tipo</th>
-                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider text-right">Monto</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase">Fecha</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase">Flujo</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase">Cuenta Origen</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase">Tipo</th>
+                                        <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase text-right">Monto</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[var(--card-border)]">

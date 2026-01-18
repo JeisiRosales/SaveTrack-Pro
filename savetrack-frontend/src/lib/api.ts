@@ -6,7 +6,7 @@ const api = axios.create({
 });
 
 // Inicializamos Supabase para poder usar el refresco automático
-const supabase = createClient(
+export const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL,
     import.meta.env.VITE_SUPABASE_ANON_KEY
 );
