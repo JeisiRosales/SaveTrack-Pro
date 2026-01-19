@@ -128,6 +128,19 @@ const Goals: React.FC = () => {
                         ${totalSavedInGoals.toLocaleString()}
                     </h3>
                     <p className="text-[var(--muted)] text-xs mt-1">Progreso acumulado de tus {goals.length} metas</p>
+                    {(() => {
+                        const totalWeeklyInstallments = goals.reduce((acc, goal) => {
+                            const installment = calculateWeeklyStatus(goal).weeklyInstallment;
+                            return acc + installment;
+                        }, 0);
+
+                        return (
+                            <div className="text-[var(--foreground)] font-semibold text-xs mt-1">
+                                <h3>Debes ahorrar ${totalWeeklyInstallments.toFixed(2).toLocaleString()} semanalmente</h3>
+                            </div>
+                        );
+                    })()}
+
                 </div>
 
                 {/* SECCIÓN DE DINERO A RECOLECTAR */}
