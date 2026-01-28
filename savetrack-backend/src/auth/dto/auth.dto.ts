@@ -1,10 +1,3 @@
-// =============================================
-// DTOs de Autenticación
-// Definen la estructura de datos para registro e inicio de sesión
-// Ubicación: src/auth/dto/auth.dto.ts
-// =============================================
-
-// DTO para registro de nuevos usuarios
 import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional } from 'class-validator';
 
 // DTO para registro de nuevos usuarios
@@ -18,11 +11,10 @@ export class SignUpDto {
 
     @IsString()
     @IsOptional()
-    name?: string; // Changed from fullName to match common payloads and consistency
+    name?: string; // cambia fullName a name para que coincida con el payload
 }
 
 
-// DTO para inicio de sesión
 // DTO para inicio de sesión
 export class SignInDto {
     @IsEmail()

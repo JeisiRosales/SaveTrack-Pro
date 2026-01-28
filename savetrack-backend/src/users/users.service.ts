@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { SupabaseService } from 'src/supabase/supabase.service';
 
 
@@ -9,13 +8,13 @@ export class UsersService {
 
 
   async updateProfile(userId: string, data: any) {
-    // 1. Actualizar metadata de auth (opcional, pero útil para sincronización)
+    // Actualizar metadata de auth
     const { error: authError } = await this.supabase.getClient().auth.updateUser({
       data: { full_name: data.name }
     });
     if (authError) throw new BadRequestException(authError.message);
 
-    // 2. Actualizar tabla 'profiles' (DONDE REALMENTE VIVEN LOS DATOS)
+    // Actualizar tabla 'profiles'
     const { error: profileError } = await this.supabase.getClient()
       .from('profiles')
       .update({ full_name: data.name, updated_at: new Date() })

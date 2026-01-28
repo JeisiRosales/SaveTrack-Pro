@@ -6,25 +6,30 @@ import { passportJwtSecret } from 'jwks-rsa';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+    /**
+     * Constructor de la clase JwtStrategy.
+     * @param configService - Servicio de configuración.
+     */
     constructor(private configService: ConfigService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            // Usar JWKS en lugar de una clave secreta estática
             secretOrKeyProvider: passportJwtSecret({
                 cache: true,
                 rateLimit: true,
                 jwksRequestsPerMinute: 5,
                 jwksUri: `${configService.get<string>('SUPABASE_URL')}/auth/v1/.well-known/jwks.json`,
             }),
-            algorithms: ['ES256'], // Algoritmo correcto para Supabase
+            algorithms: ['ES256'],
         });
     }
 
+    /**
+     * Valida el token JWT.
+     * @param payload - El payload del token JWT.
+     * @returns El payload del token JWT.
+     */
     async validate(payload: any) {
-        console.log('JwtStrategy: Token validated successfully. Payload:', payload);
-        // Aquí puedes añadir lógica adicional si necesitas verificar algo más.
-        // Lo que retornes aquí se inyectará en `req.user`
         return { id: payload.sub, email: payload.email, ...payload.user_metadata };
     }
 }

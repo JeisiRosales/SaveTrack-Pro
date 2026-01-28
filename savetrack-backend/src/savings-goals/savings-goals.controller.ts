@@ -14,41 +14,35 @@ import { AuthGuard } from '@nestjs/passport';
 export class SavingsGoalsController {
     constructor(private readonly goalsService: SavingsGoalsService) { }
 
+    // Crear meta de ahorro
     @Post()
     create(@Body() dto: CreateGoalDto, @Request() req) {
         const userId = req.user.id;
         return this.goalsService.create(userId, dto);
     }
 
+    // Obtener todas las metas de ahorro del usuario
     @Get()
     findAll(@Request() req) {
         const userId = req.user.id;
         return this.goalsService.findAll(userId);
     }
 
+    // Obtener una meta de ahorro específica
     @Get(':id')
     findOne(@Param('id') id: string, @Request() req) {
         const userId = req.user.id;
         return this.goalsService.findOne(id, userId);
     }
 
-    @Post(':id/upload')
-    @UseInterceptors(FileInterceptor('file'))
-    uploadImage(
-        @Param('id') id: string,
-        @UploadedFile() file: Express.Multer.File,
-        @Request() req
-    ) {
-        const userId = req.user.id;
-        return this.goalsService.uploadImage(id, file, userId);
-    }
-
+    // Modificar un meta de ahorro
     @Patch(':id')
     update(@Param('id') id: string, @Body() dto: UpdateGoalDto, @Request() req) {
         const userId = req.user.id;
         return this.goalsService.update(id, dto, userId);
     }
 
+    // Eliminar una meta de ahorro
     @Delete(':id')
     remove(@Param('id') id: string, @Request() req) {
         const userId = req.user.id;

@@ -12,12 +12,14 @@ import { TransferDto } from './dto/transfer.dto';
 export class TransactionsController {
     constructor(private readonly transactionsService: TransactionsService) { }
 
+    // crear transaccion
     @Post()
     @UseGuards(AuthGuard('jwt'))
     create(@Body() dto: CreateTransactionDto) {
         return this.transactionsService.create(dto);
     }
 
+    // obtener todas las transacciones de un usuario
     @Get()
     @UseGuards(AuthGuard('jwt'))
     findAll(@Request() req) {
@@ -25,17 +27,20 @@ export class TransactionsController {
         return this.transactionsService.findAllByUser(userId);
     }
 
+    // obtener todas las transacciones de un objetivo
     @Get('goal/:goalId')
     findByGoal(@Param('goalId') goalId: string) {
         return this.transactionsService.findByGoal(goalId);
     }
 
+    // obtener todas las transacciones de una cuenta
     @Get('account/:accountId')
     @UseGuards(AuthGuard('jwt'))
     findByAccount(@Param('accountId') accountId: string) {
         return this.transactionsService.findByAccount(accountId);
     }
 
+    // transferencia entre cuentas
     @Post('transfer')
     @UseGuards(AuthGuard('jwt'))
     transfer(@Body() dto: TransferDto) {

@@ -1,7 +1,4 @@
-// =============================================
-// Servicio de Autenticación
-// Maneja el registro, inicio de sesión y cierre de sesión
-// =============================================
+
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SupabaseService } from '../supabase/supabase.service';
@@ -14,12 +11,8 @@ export class AuthService {
         private configService: ConfigService
     ) { }
 
-    /**
-     * Registra un nuevo usuario en Supabase Auth
-     * El trigger handle_new_user() creará automáticamente el perfil
-     */
+    // Registra un nuevo usuario en Supabase Auth
     async signUp(dto: SignUpDto) {
-        // Intenta registrar al usuario en Supabase Auth
         const { data, error } = await this.supabase.getClient().auth.signUp({
             email: dto.email,
             password: dto.password,
@@ -31,25 +24,14 @@ export class AuthService {
             },
         });
 
-
-
         if (error) {
             console.error('Supabase SignUp Error:', error);
             throw new BadRequestException(error.message);
         }
-
-
-
-        // NOTA: Ya no es necesario crear el perfil manualmente
-        // El trigger on_auth_user_created lo hace automáticamente
-
         return data;
     }
 
-    /**
-     * Inicia sesión con email y contraseña
-     * Retorna el usuario y el token de acceso
-     */
+    // Inicia sesión con email y contraseña
     async signIn(dto: SignInDto) {
         const { data, error } = await this.supabase.getClient().auth.signInWithPassword({
             email: dto.email,
@@ -60,17 +42,13 @@ export class AuthService {
         return data; // Contiene: user, session (con access_token y refresh_token)
     }
 
-    /**
-     * Cierra la sesión del usuario actual
-     */
+    // Cierra la sesión del usuario actual
     async signOut(accessToken: string) {
         const { error } = await this.supabase.getClient().auth.signOut();
         if (error) throw new UnauthorizedException(error.message);
     }
 
-    /**
-     * Envía un correo de recuperación de contraseña
-     */
+    // Envía un correo de recuperación de contraseña
     async requestPasswordReset(email: string) {
         const { error } = await this.supabase.getClient().auth.resetPasswordForEmail(email, {
             redirectTo: `${this.configService.get('FRONTEND_URL') || 'http://localhost:5173'}/reset-password`,
@@ -80,10 +58,7 @@ export class AuthService {
         return { message: 'Correo de recuperación enviado exitosamente.' };
     }
 
-    /**
-     * Actualiza la contraseña del usuario (usado tras el reset)
-     * Requiere que el token del usuario esté en el contexto o se pase explícitamente
-     */
+    // Actualiza la contraseña del usuario (usado tras el reset)
     async updatePassword(accessToken: string, password: string) {
         // Obtenemos el cliente con el token del usuario para asegurar que está autorizado
         const { data: { user }, error: userError } = await this.supabase.getClient().auth.getUser(accessToken);
@@ -92,8 +67,7 @@ export class AuthService {
             throw new UnauthorizedException('Token inválido o expirado.');
         }
 
-        // Usamos el cliente admin para forzar el cambio si es necesario, 
-        // o el cliente normal si ya tiene la sesión (getUser ya lo valida)
+        // Actualizamos la contraseña del usuario
         const { error } = await this.supabase.getAdminClient().auth.admin.updateUserById(user.id, {
             password: password
         });

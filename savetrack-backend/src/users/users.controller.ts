@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  // Actualizar perfil
   @Patch('profile')
   @UseGuards(AuthGuard('jwt'))
   async updateProfile(@Body() updateDto: UpdateUserDto, @Req() req) {
@@ -14,8 +15,8 @@ export class UsersController {
     return this.usersService.updateProfile(userId, updateDto);
   }
 
+  // Eliminar perfil
   @Delete(':id')
-  // IMPORTANTE: Proteger esto con un Guard que verifique que el usuario se borra a sí mismo o es Admin
   @UseGuards(AuthGuard('jwt'))
   async remove(@Param('id') id: string, @Req() req) {
     const userId = req.user.id;

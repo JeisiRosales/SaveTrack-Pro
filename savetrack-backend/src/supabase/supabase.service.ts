@@ -1,15 +1,11 @@
-// =============================================
-// Servicio de Supabase
-// Crea y gestiona la conexión con Supabase
-// =============================================
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class SupabaseService {
-    private supabase: SupabaseClient; // Cliente de Supabase (privado)
-    private supabaseAdmin: SupabaseClient; // Cliente Admin de Supabase
+    private supabase: SupabaseClient;
+    private supabaseAdmin: SupabaseClient;
 
     constructor(private configService: ConfigService) {
         // Inicializa el cliente de Supabase con las credenciales del .env

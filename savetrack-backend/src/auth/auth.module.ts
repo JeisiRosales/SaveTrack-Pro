@@ -1,8 +1,3 @@
-// =============================================
-// Módulo de Autenticación
-// Organiza los componentes de autenticación
-// Ubicación: src/auth/auth.module.ts
-// =============================================
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -11,10 +6,12 @@ import { JwtStrategy } from './jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 
 @Module({
+    // Organiza los componentes de autenticación
     imports: [
         SupabaseModule,
         PassportModule.register({ defaultStrategy: 'jwt' }),
     ],
+    // Expone los controladores de autenticación
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy],
     exports: [AuthService, JwtStrategy, PassportModule],

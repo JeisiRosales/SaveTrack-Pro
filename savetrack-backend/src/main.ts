@@ -16,7 +16,7 @@ async function bootstrap() {
   return app.getHttpAdapter().getInstance();
 }
 
-// Para despliegue en Vercel, necesitamos exportar la instancia
+// Importacion para despliegue en vercel
 let server: any;
 export default async (req: any, res: any) => {
   if (!server) {
@@ -25,7 +25,6 @@ export default async (req: any, res: any) => {
   return server(req, res);
 };
 
-// Intentar arrancar localmente
 if (require.main === module) {
   bootstrap();
 }
