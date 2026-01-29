@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransferDto } from './dto/transfer.dto';
+import { Transaction } from './entities/transaction.entity';
 
 @Injectable()
 export class TransactionsService {
@@ -11,7 +12,7 @@ export class TransactionsService {
      * Crea una nueva transacción y actualiza los balances automáticamente
      * @param dto - Datos de la transacción
      */
-    async create(dto: CreateTransactionDto) {
+    async create(dto: CreateTransactionDto): Promise<Transaction> {
         const supabase = this.supabase.getAdminClient();
 
         // Crear el registro de la transacción
@@ -70,7 +71,7 @@ export class TransactionsService {
             .update({ balance: newBalance })
             .eq('id', dto.accountId);
 
-        return transaction;
+        return transaction as Transaction;
     }
 
     /**
@@ -78,7 +79,7 @@ export class TransactionsService {
      * Incluye el nombre de la cuenta fuente mediante JOIN
      * @param goalId - ID de la meta
      */
-    async findByGoal(goalId: string) {
+    async findByGoal(goalId: string): Promise<Transaction[]> {
         const { data, error } = await this.supabase.getClient()
             .from('transactions')
             .select('*, funding_accounts(name)')
@@ -86,7 +87,7 @@ export class TransactionsService {
             .order('created_at', { ascending: false });
 
         if (error) throw error;
-        return data;
+        return data as Transaction[];
     }
 
     /**
@@ -94,7 +95,7 @@ export class TransactionsService {
      * Filtra a través de las cuentas que pertenecen al usuario
      * @param userId - ID del usuario
      */
-    async findAllByUser(userId: string) {
+    async findAllByUser(userId: string): Promise<Transaction[]> {
         const supabase = this.supabase.getAdminClient();
 
         // Obtener los IDs de las cuentas del usuario
@@ -117,14 +118,14 @@ export class TransactionsService {
             .limit(10);
 
         if (error) throw error;
-        return data;
+        return data as Transaction[];
     }
 
     /**
      * Obtiene todas las transacciones de una cuenta específica
      * @param accountId - ID de la cuenta
      */
-    async findByAccount(accountId: string) {
+    async findByAccount(accountId: string): Promise<Transaction[]> {
         const { data, error } = await this.supabase.getClient()
             .from('transactions')
             .select('*, savings_goals(name)')
@@ -132,7 +133,7 @@ export class TransactionsService {
             .order('created_at', { ascending: false });
 
         if (error) throw error;
-        return data;
+        return data as Transaction[];
     }
 
 
@@ -179,7 +180,7 @@ export class TransactionsService {
             throw new Error('Error al acreditar en la cuenta destino');
         }
 
-        // Registrar la transacción en el historial (Opcional pero recomendado)
+        // Registrar la transacción en el historial
         const { data: transaction, error: txError } = await supabase
             .from('transactions')
             .insert({

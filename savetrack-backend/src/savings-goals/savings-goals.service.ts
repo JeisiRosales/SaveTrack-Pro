@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateGoalDto } from './dto/create-goal.dto';
+import { SavingsGoal } from './entities/savings-goal.entity';
 
 @Injectable()
 export class SavingsGoalsService {
@@ -11,7 +12,7 @@ export class SavingsGoalsService {
      * @param userId - ID del usuario propietario
      * @param dto - Datos de la meta
      */
-    async create(userId: string, dto: CreateGoalDto) {
+    async create(userId: string, dto: CreateGoalDto): Promise<SavingsGoal> {
         const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .insert({
@@ -28,14 +29,14 @@ export class SavingsGoalsService {
             .single();
 
         if (error) throw error;
-        return data;
+        return data as SavingsGoal;
     }
 
     /**
      * Obtiene todas las metas del usuario
      * Ordenadas por fecha de creación (más recientes primero)
      */
-    async findAll(userId: string) {
+    async findAll(userId: string): Promise<SavingsGoal[]> {
         const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .select('*')
@@ -43,7 +44,7 @@ export class SavingsGoalsService {
             .order('created_at', { ascending: false }); // Más recientes primero
 
         if (error) throw error;
-        return data;
+        return data as SavingsGoal[];
     }
 
     /**
@@ -51,7 +52,7 @@ export class SavingsGoalsService {
      * @param id - ID de la meta
      * @param userId - ID del usuario (para validación)
      */
-    async findOne(id: string, userId: string) {
+    async findOne(id: string, userId: string): Promise<SavingsGoal> {
         const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .select('*')
@@ -60,7 +61,7 @@ export class SavingsGoalsService {
             .single();
 
         if (error) throw error;
-        return data;
+        return data as SavingsGoal;
     }
 
     /**
@@ -69,7 +70,7 @@ export class SavingsGoalsService {
      * @param dto - Datos a actualizar
      * @param userId - ID del usuario (para validación)
      */
-    async update(id: string, dto: any, userId: string) {
+    async update(id: string, dto: any, userId: string): Promise<SavingsGoal> {
         const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .update({
@@ -86,7 +87,7 @@ export class SavingsGoalsService {
             .single();
 
         if (error) throw error;
-        return data;
+        return data as SavingsGoal;
     }
 
     /**
@@ -94,7 +95,7 @@ export class SavingsGoalsService {
      * @param id - ID de la meta
      * @param userId - ID del usuario (para validación)
      */
-    async remove(id: string, userId: string) {
+    async remove(id: string, userId: string): Promise<SavingsGoal> {
         const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
             .delete()
@@ -104,6 +105,6 @@ export class SavingsGoalsService {
             .single();
 
         if (error) throw error;
-        return data;
+        return data as SavingsGoal;
     }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { FundingAccount } from './entities/funding-account.entity';
 
 @Injectable()
 export class FundingAccountsService {
@@ -11,7 +12,7 @@ export class FundingAccountsService {
      * @param userId - ID del usuario propietario
      * @param dto - Datos de la cuenta (nombre y balance inicial)
      */
-    async create(userId: string, dto: CreateAccountDto) {
+    async create(userId: string, dto: CreateAccountDto): Promise<FundingAccount> {
         const { data, error } = await this.supabase.getAdminClient()
             .from('funding_accounts')
             .insert({ user_id: userId, ...dto }) // Inserta con el user_id del usuario autenticado
@@ -19,21 +20,21 @@ export class FundingAccountsService {
             .single(); // Espera un solo resultado
 
         if (error) throw error;
-        return data;
+        return data as FundingAccount;
     }
 
     /**
      * Obtiene todas las cuentas del usuario
      * @param userId - ID del usuario
      */
-    async findAll(userId: string) {
+    async findAll(userId: string): Promise<FundingAccount[]> {
         const { data, error } = await this.supabase.getAdminClient()
             .from('funding_accounts')
             .select('*')
             .eq('user_id', userId); // Filtra por user_id (RLS también lo valida)
 
         if (error) throw error;
-        return data;
+        return data as FundingAccount[];
     }
 
     /**
@@ -42,7 +43,7 @@ export class FundingAccountsService {
      * @param userId - ID del usuario (para validación)
      * @param updates - Campos a actualizar
      */
-    async update(id: string, userId: string, updates: Partial<CreateAccountDto>) {
+    async update(id: string, userId: string, updates: Partial<CreateAccountDto>): Promise<FundingAccount> {
         const { data, error } = await this.supabase.getAdminClient()
             .from('funding_accounts')
             .update(updates)
@@ -52,7 +53,7 @@ export class FundingAccountsService {
             .single();
 
         if (error) throw error;
-        return data;
+        return data as FundingAccount;
     }
 
     /**
@@ -60,7 +61,7 @@ export class FundingAccountsService {
      * @param id - ID de la cuenta
      * @param userId - ID del usuario (para validación)
      */
-    async delete(id: string, userId: string) {
+    async delete(id: string, userId: string): Promise<void> {
         const { error } = await this.supabase.getAdminClient()
             .from('funding_accounts')
             .delete()

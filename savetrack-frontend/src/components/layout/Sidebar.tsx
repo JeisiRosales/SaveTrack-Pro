@@ -1,26 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import {
-    LayoutDashboard,
-    Wallet,
-    Target,
-    LogOut,
-    Sun,
-    Moon,
-    ArrowRightLeft,
-    Github
-} from 'lucide-react';
+import { LayoutDashboard, Wallet, Target, LogOut, Sun, Moon, ArrowRightLeft, Github } from 'lucide-react';
 
 interface SidebarProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-/**
- * Componente Sidebar Principal
- * Maneja la navegación, el perfil de usuario y el cambio de tema.
- */
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -31,10 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         document.documentElement.classList.contains('dark')
     );
 
-    /**
-     * Alterna entre modo claro y oscuro.
-     * Modifica la clase en document.documentElement y guarda la preferencia en localStorage.
-     */
+    // Alterna entre modo claro y oscuro
     const toggleTheme = () => {
         const newDarkMode = !darkMode;
         setDarkMode(newDarkMode);
