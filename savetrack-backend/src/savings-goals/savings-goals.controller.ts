@@ -1,9 +1,4 @@
-// =============================================
-// Controlador de Metas de Ahorro
-// Ubicación: src/savings-goals/savings-goals.controller.ts
-// =============================================
-import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Request, UseInterceptors, UploadedFile } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Request } from '@nestjs/common';
 import { SavingsGoalsService } from './savings-goals.service';
 import { CreateGoalDto } from './dto/create-goal.dto';
 import { UpdateGoalDto } from './dto/update-goal.dto';

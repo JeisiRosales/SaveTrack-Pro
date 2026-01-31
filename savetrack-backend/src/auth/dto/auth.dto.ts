@@ -14,7 +14,6 @@ export class SignUpDto {
     name?: string; // cambia fullName a name para que coincida con el payload
 }
 
-
 // DTO para inicio de sesión
 export class SignInDto {
     @IsEmail()

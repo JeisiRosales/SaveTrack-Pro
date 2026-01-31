@@ -1,34 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, UseGuards, Request } from '@nestjs/common';
 import { UserSettingsService } from './user-settings.service';
 import { CreateUserSettingDto } from './dto/create-user-setting.dto';
 import { UpdateUserSettingDto } from './dto/update-user-setting.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user-settings')
+@UseGuards(AuthGuard('jwt'))
 export class UserSettingsController {
-  constructor(private readonly userSettingsService: UserSettingsService) {}
+  constructor(private readonly userSettingsService: UserSettingsService) { }
 
+  // Crear configuración de usuario
   @Post()
-  create(@Body() createUserSettingDto: CreateUserSettingDto) {
-    return this.userSettingsService.create(createUserSettingDto);
+  create(@Request() req, @Body() createDto: CreateUserSettingDto) {
+    return this.userSettingsService.create(req.user.sub, createDto);
   }
 
+  // Obtener configuración de usuario
   @Get()
-  findAll() {
-    return this.userSettingsService.findAll();
+  findMine(@Request() req) {
+    return this.userSettingsService.findByUserId(req.user.sub);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userSettingsService.findOne(+id);
+  // Modificar configuración de usuario
+  @Patch()
+  update(@Request() req, @Body() updateDto: UpdateUserSettingDto) {
+    return this.userSettingsService.update(req.user.sub, updateDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserSettingDto: UpdateUserSettingDto) {
-    return this.userSettingsService.update(+id, updateUserSettingDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userSettingsService.remove(+id);
+  // Eliminar configuración de usuario
+  @Delete()
+  remove(@Request() req) {
+    return this.userSettingsService.remove(req.user.sub);
   }
 }

@@ -1,7 +1,3 @@
-// =============================================
-// Controlador de Transacciones
-// Ubicación: src/transactions/transactions.controller.ts
-// =============================================
 import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TransactionsService } from './transactions.service';

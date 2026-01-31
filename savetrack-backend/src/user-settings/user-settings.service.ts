@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { SupabaseService } from '../supabase/supabase.service';
 import { CreateUserSettingDto } from './dto/create-user-setting.dto';
 import { UpdateUserSettingDto } from './dto/update-user-setting.dto';
 
 @Injectable()
 export class UserSettingsService {
-  create(createUserSettingDto: CreateUserSettingDto) {
-    return 'This action adds a new userSetting';
+  constructor(private supabase: SupabaseService) { }
+
+  async create(userId: string, createDto: CreateUserSettingDto) {
+    const { data, error } = await this.supabase.getAdminClient()
+      .from('user_settings')
+      .insert({ user_id: userId, ...createDto })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 
-  findAll() {
-    return `This action returns all userSettings`;
+  async findByUserId(userId: string) {
+    const { data, error } = await this.supabase.getAdminClient()
+      .from('user_settings')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // Si no existen configuraciones, las creamos con valores por defecto
+        console.log(`No settings found for user ${userId}, creating defaults...`);
+        return this.create(userId, {
+          base_currency: 'USD',
+          saving_percentage: 20,
+          budget_period: 'monthly'
+        });
+      }
+      throw error;
+    }
+    return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userSetting`;
+  async update(userId: string, updateDto: UpdateUserSettingDto) {
+    const { data, error } = await this.supabase.getAdminClient()
+      .from('user_settings')
+      .update(updateDto)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 
-  update(id: number, updateUserSettingDto: UpdateUserSettingDto) {
-    return `This action updates a #${id} userSetting`;
-  }
+  async remove(userId: string) {
+    const { error } = await this.supabase.getAdminClient()
+      .from('user_settings')
+      .delete()
+      .eq('user_id', userId);
 
-  remove(id: number) {
-    return `This action removes a #${id} userSetting`;
+    if (error) throw error;
   }
 }
