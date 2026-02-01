@@ -1,26 +1,88 @@
 import { Injectable } from '@nestjs/common';
+import { SupabaseService } from '../supabase/supabase.service';
 import { CreateIncomeCategoryDto } from './dto/create-income-category.dto';
 import { UpdateIncomeCategoryDto } from './dto/update-income-category.dto';
 
 @Injectable()
 export class IncomeCategoriesService {
-  create(createIncomeCategoryDto: CreateIncomeCategoryDto) {
-    return 'This action adds a new incomeCategory';
+  constructor(private supabase: SupabaseService) { }
+
+  // Crear categoría de ingresos
+  async create(userId: string, createDto: CreateIncomeCategoryDto) {
+    const { data, error } = await this.supabase.getAdminClient()
+      .from('income_categories')
+      .insert({ user_id: userId, ...createDto })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 
-  findAll() {
-    return `This action returns all incomeCategories`;
+  // Crear múltiples categorías de ingresos
+  async createMany(userId: string, createDtos: CreateIncomeCategoryDto[]) {
+    // Preparar datos para inserción masiva
+    const dataToInsert = createDtos.map(dto => ({
+      user_id: userId,
+      ...dto
+    }));
+
+    const { data, error } = await this.supabase.getAdminClient()
+      .from('income_categories')
+      .insert(dataToInsert)
+      .select();
+
+    if (error) throw error;
+    return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} incomeCategory`;
+  // Buscar todas las categorías de ingresos
+  async findAll(userId: string) {
+    const { data, error } = await this.supabase.getAdminClient()
+      .from('income_categories')
+      .select('*')
+      .eq('user_id', userId)
+      .order('name', { ascending: true });
+
+    if (error) throw error;
+    return data;
   }
 
-  update(id: number, updateIncomeCategoryDto: UpdateIncomeCategoryDto) {
-    return `This action updates a #${id} incomeCategory`;
+  // Buscar una categoría de ingresos
+  async findOne(id: string, userId: string) {
+    const { data, error } = await this.supabase.getAdminClient()
+      .from('income_categories')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', userId)
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} incomeCategory`;
+  // Actualizar categoría de ingresos
+  async update(id: string, userId: string, updateDto: UpdateIncomeCategoryDto) {
+    const { data, error } = await this.supabase.getAdminClient()
+      .from('income_categories')
+      .update(updateDto)
+      .eq('id', id)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  // Eliminar categoría de ingresos
+  async remove(id: string, userId: string) {
+    const { error } = await this.supabase.getAdminClient()
+      .from('income_categories')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', userId);
+
+    if (error) throw error;
   }
 }

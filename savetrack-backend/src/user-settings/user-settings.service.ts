@@ -7,6 +7,7 @@ import { UpdateUserSettingDto } from './dto/update-user-setting.dto';
 export class UserSettingsService {
   constructor(private supabase: SupabaseService) { }
 
+  // Crear configuraciones de usuario
   async create(userId: string, createDto: CreateUserSettingDto) {
     const { data, error } = await this.supabase.getAdminClient()
       .from('user_settings')
@@ -18,6 +19,7 @@ export class UserSettingsService {
     return data;
   }
 
+  // Buscar configuraciones de usuario
   async findByUserId(userId: string) {
     const { data, error } = await this.supabase.getAdminClient()
       .from('user_settings')
@@ -40,6 +42,7 @@ export class UserSettingsService {
     return data;
   }
 
+  // Actualizar configuraciones de usuario
   async update(userId: string, updateDto: UpdateUserSettingDto) {
     const { data, error } = await this.supabase.getAdminClient()
       .from('user_settings')
@@ -52,6 +55,7 @@ export class UserSettingsService {
     return data;
   }
 
+  // Eliminar configuraciones de usuario
   async remove(userId: string) {
     const { error } = await this.supabase.getAdminClient()
       .from('user_settings')
