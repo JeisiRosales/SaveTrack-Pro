@@ -1,1 +1,18 @@
-export class CreateIncomeTransactionDto {}
+import { IsUUID, IsNumber, IsString, IsOptional, Min } from 'class-validator';
+
+export class CreateIncomeTransactionDto {
+    @IsUUID()
+    account_id: string;
+
+    @IsUUID()
+    @IsOptional()
+    category_id?: string;
+
+    @IsNumber()
+    @Min(0.01)
+    amount: number;
+
+    @IsString()
+    @IsOptional()
+    description?: string;
+}
