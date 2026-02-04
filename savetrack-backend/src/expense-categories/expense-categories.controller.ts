@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { ExpenseCategoriesService } from './expense-categories.service';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 import { UpdateExpenseCategoryDto } from './dto/update-expense-category.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('expense-categories')
+@UseGuards(AuthGuard('jwt'))
 export class ExpenseCategoriesController {
-  constructor(private readonly expenseCategoriesService: ExpenseCategoriesService) {}
+  constructor(private readonly expenseCategoriesService: ExpenseCategoriesService) { }
 
+  // Crear una nueva categoría de gastos
   @Post()
-  create(@Body() createExpenseCategoryDto: CreateExpenseCategoryDto) {
-    return this.expenseCategoriesService.create(createExpenseCategoryDto);
+  create(@Request() req, @Body() createDto: CreateExpenseCategoryDto) {
+    return this.expenseCategoriesService.create(req.user.sub, createDto);
   }
 
+  // Obtener todas las categorías de gastos del usuario
   @Get()
-  findAll() {
-    return this.expenseCategoriesService.findAll();
+  findAll(@Request() req) {
+    return this.expenseCategoriesService.findAll(req.user.sub);
   }
 
+  // Obtener una categoría de gastos por ID
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.expenseCategoriesService.findOne(+id);
+  findOne(@Request() req, @Param('id') id: string) {
+    return this.expenseCategoriesService.findOne(id, req.user.sub);
   }
 
+  // Actualizar una categoría de gastos
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExpenseCategoryDto: UpdateExpenseCategoryDto) {
-    return this.expenseCategoriesService.update(+id, updateExpenseCategoryDto);
+  update(@Request() req, @Param('id') id: string, @Body() updateDto: UpdateExpenseCategoryDto) {
+    return this.expenseCategoriesService.update(id, req.user.sub, updateDto);
   }
 
+  // Eliminar una categoría de gastos
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.expenseCategoriesService.remove(+id);
+  remove(@Request() req, @Param('id') id: string) {
+    return this.expenseCategoriesService.remove(id, req.user.sub);
   }
 }

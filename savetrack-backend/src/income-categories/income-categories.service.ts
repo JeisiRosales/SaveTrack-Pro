@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateIncomeCategoryDto } from './dto/create-income-category.dto';
 import { UpdateIncomeCategoryDto } from './dto/update-income-category.dto';
@@ -63,6 +63,18 @@ export class IncomeCategoriesService {
 
   // Actualizar categoría de ingresos
   async update(id: string, userId: string, updateDto: UpdateIncomeCategoryDto) {
+    if (updateDto.name) {
+      const { data: existingCategories } = await this.supabase.getAdminClient()
+        .from('income_categories')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('name', updateDto.name)
+        .neq('id', id);
+
+      if (existingCategories && existingCategories.length > 0) {
+        throw new BadRequestException('Ya existe una categoría con ese nombre.');
+      }
+    }
     const { data, error } = await this.supabase.getAdminClient()
       .from('income_categories')
       .update(updateDto)
