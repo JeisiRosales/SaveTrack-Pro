@@ -2,37 +2,46 @@ import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Request }
 import { AuthGuard } from '@nestjs/passport';
 import { FundingAccountsService } from './funding-accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { TransferDto } from './dto/transfer.dto';
 
 @Controller('funding-accounts')
 @UseGuards(AuthGuard('jwt'))
 export class FundingAccountsController {
     constructor(private readonly accountsService: FundingAccountsService) { }
 
-    // Crear una cuenta de ahorro
-    @Post()
-    create(@Request() req, @Body() dto: CreateAccountDto) {
-        const userId = req.user.id;
-        return this.accountsService.create(userId, dto);
-    }
-
     // Obtener todas las cuentas de ahorro del usuario
     @Get()
     findAll(@Request() req) {
-        const userId = req.user.id;
-        return this.accountsService.findAll(userId);
+        return this.accountsService.findAll(req.user.id);
+    }
+
+    // Crear una cuenta de ahorro
+    @Post()
+    create(@Request() req, @Body() dto: CreateAccountDto) {
+        return this.accountsService.create(req.user.id, dto);
+    }
+
+    // transferencia entre cuentas
+    @Post('transfer')
+    transfer(@Body() dto: TransferDto) {
+        return this.accountsService.transferBetweenAccounts(dto);
     }
 
     // Actualizar una cuenta de ahorro
     @Patch(':id')
     update(@Request() req, @Param('id') id: string, @Body() updates: Partial<CreateAccountDto>) {
-        const userId = req.user.id;
-        return this.accountsService.update(id, userId, updates);
+        return this.accountsService.update(id, req.user.id, updates);
     }
 
     // Eliminar una cuenta de ahorro
     @Delete(':id')
     remove(@Request() req, @Param('id') id: string) {
-        const userId = req.user.id;
-        return this.accountsService.delete(id, userId);
+        return this.accountsService.delete(id, req.user.id);
+    }
+
+    // Obtener transacciones de una cuenta específica
+    @Get(':id/transactions')
+    findTransactions(@Param('id') id: string) {
+        return this.accountsService.findByAccount(id);
     }
 }

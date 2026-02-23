@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsIn, IsOptional, Min, Max } from 'class-validator';
+import { IsString, IsNumber, IsIn, IsOptional, Min, Max, IsBoolean } from 'class-validator';
 
 export class CreateUserSettingDto {
     @IsString()
@@ -15,4 +15,22 @@ export class CreateUserSettingDto {
     @IsIn(['weekly', 'monthly', 'yearly'])
     @IsOptional()
     budget_period?: 'weekly' | 'monthly' | 'yearly' = 'monthly';
+
+    @IsNumber()
+    @IsOptional()
+    @Min(0)
+    monthly_income_target?: number;
+
+    @IsNumber()
+    @IsOptional()
+    @Min(0)
+    monthly_expense_budget?: number;
+
+    @IsBoolean()
+    @IsOptional()
+    auto_save_enabled?: boolean = false;
+
+    @IsString()
+    @IsOptional()
+    savings_account_id?: string;
 }

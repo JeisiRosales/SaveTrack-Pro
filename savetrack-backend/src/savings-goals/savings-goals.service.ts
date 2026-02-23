@@ -20,7 +20,7 @@ export class SavingsGoalsService {
                 name: dto.name,
                 target_amount: dto.targetAmount,
                 initial_amount: dto.initialAmount || 0,
-                current_amount: dto.initialAmount || 0, // El monto actual inicia igual al inicial
+                current_amount: dto.initialAmount || 0,
                 start_date: dto.startDate,
                 end_date: dto.endDate,
                 image_url: dto.imageUrl,

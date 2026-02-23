@@ -3,25 +3,25 @@ import { IsString, IsNotEmpty, IsNumber, IsOptional, IsDateString, IsUrl } from 
 export class CreateGoalDto {
     @IsString()
     @IsNotEmpty()
-    name: string; // Nombre de la meta (ej: "Vacaciones en Europa")
+    name: string;
 
     @IsNumber()
     @IsNotEmpty()
-    targetAmount: number; // Monto objetivo a alcanzar
+    targetAmount: number;
 
     @IsNumber()
     @IsOptional()
-    initialAmount?: number; // Monto inicial (opcional)
+    initialAmount?: number;
 
     @IsDateString()
     @IsNotEmpty()
-    startDate: string; // Fecha de inicio (formato ISO: YYYY-MM-DD)
+    startDate: string;
 
     @IsDateString()
     @IsNotEmpty()
-    endDate: string; // Fecha límite (formato ISO: YYYY-MM-DD)
+    endDate: string;
 
     @IsUrl()
     @IsOptional()
-    imageUrl?: string; // URL de la imagen (opcional)
+    imageUrl?: string;
 }

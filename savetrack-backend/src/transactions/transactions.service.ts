@@ -1,19 +1,61 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { TransferDto } from './dto/transfer.dto';
 import { Transaction } from './entities/transaction.entity';
+import { UserSettingsService } from '../user-settings/user-settings.service';
 
 @Injectable()
 export class TransactionsService {
-    constructor(private supabase: SupabaseService) { }
+    constructor(
+        private supabase: SupabaseService,
+        private userSettingsService: UserSettingsService
+    ) { }
 
     /**
      * Crea una nueva transacción y actualiza los balances automáticamente
+     * @param userId - ID del usuario
      * @param dto - Datos de la transacción
      */
-    async create(dto: CreateTransactionDto): Promise<Transaction> {
+    async create(userId: string, dto: CreateTransactionDto): Promise<Transaction> {
         const supabase = this.supabase.getAdminClient();
+
+        // 0. Validar si la cuenta debe ser la de ahorros designada
+        const settings = await this.userSettingsService.findByUserId(userId);
+        if (settings.savings_account_id && dto.accountId !== settings.savings_account_id) {
+            throw new BadRequestException('Las transacciones de metas de ahorro solo pueden realizarse desde la cuenta de ahorros designada.');
+        }
+
+        // Contexto de la cuenta
+        const { data: account, error: accountError } = await supabase
+            .from('funding_accounts')
+            .select('balance')
+            .eq('id', dto.accountId)
+            .eq('user_id', userId)
+            .single();
+
+        // Contexto de la meta
+        const { data: goal, error: goalError } = await supabase
+            .from('savings_goals')
+            .select('current_amount')
+            .eq('id', dto.goalId)
+            .single();
+
+        // ------ VALIDACIONES ------
+
+        // Validación de la cuenta
+        if (accountError || !account) {
+            throw new NotFoundException(`Cuenta no encontrada: ${dto.accountId}`);
+        }
+
+        // Validación de la meta
+        if (goalError || !goal) {
+            throw new NotFoundException(`Meta no encontrada: ${dto.goalId}`);
+        }
+
+        // Validación de saldo
+        if (dto.amount > account.balance) {
+            throw new Error('Saldo insuficiente en la cuenta');
+        }
 
         // Crear el registro de la transacción
         const { data: transaction, error: txError } = await supabase
@@ -29,17 +71,6 @@ export class TransactionsService {
 
         if (txError) throw txError;
 
-        // Actualizar current_amount de la meta
-        const { data: goal, error: goalError } = await supabase
-            .from('savings_goals')
-            .select('current_amount')
-            .eq('id', dto.goalId)
-            .single();
-
-        if (goalError || !goal) {
-            throw new NotFoundException(`Goal not found: ${dto.goalId}`);
-        }
-
         // Si es depósito: suma, si es retiro: resta
         const newAmount = dto.type === 'deposit'
             ? goal.current_amount + dto.amount
@@ -49,17 +80,6 @@ export class TransactionsService {
             .from('savings_goals')
             .update({ current_amount: newAmount })
             .eq('id', dto.goalId);
-
-        // Actualizar balance de la cuenta
-        const { data: account, error: accountError } = await supabase
-            .from('funding_accounts')
-            .select('balance')
-            .eq('id', dto.accountId)
-            .single();
-
-        if (accountError || !account) {
-            throw new NotFoundException(`Account not found: ${dto.accountId}`);
-        }
 
         // Si es depósito: resta de la cuenta, si es retiro: suma a la cuenta
         const newBalance = dto.type === 'deposit'
@@ -119,85 +139,5 @@ export class TransactionsService {
 
         if (error) throw error;
         return data as Transaction[];
-    }
-
-    /**
-     * Obtiene todas las transacciones de una cuenta específica
-     * @param accountId - ID de la cuenta
-     */
-    async findByAccount(accountId: string): Promise<Transaction[]> {
-        const { data, error } = await this.supabase.getClient()
-            .from('transactions')
-            .select('*, savings_goals(name)')
-            .eq('account_id', accountId)
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        return data as Transaction[];
-    }
-
-
-    async transferBetweenAccounts(dto: TransferDto) {
-        const supabase = this.supabase.getAdminClient();
-
-        // Obtener y validar cuenta de origen (Saldo suficiente)
-        const { data: fromAccount, error: fromError } = await supabase
-            .from('funding_accounts')
-            .select('balance, name')
-            .eq('id', dto.fromAccountId)
-            .single();
-
-        if (fromError || !fromAccount) throw new NotFoundException('Cuenta de origen no encontrada');
-        if (fromAccount.balance < dto.amount) throw new Error('Saldo insuficiente en la cuenta de origen');
-
-        // Obtener cuenta de destino
-        const { data: toAccount, error: toError } = await supabase
-            .from('funding_accounts')
-            .select('balance, name')
-            .eq('id', dto.toAccountId)
-            .single();
-
-        if (toError || !toAccount) throw new NotFoundException('Cuenta de destino no encontrada');
-
-        // Ejecutar las actualizaciones de balance
-        // Restar de origen
-        const { error: updateFromError } = await supabase
-            .from('funding_accounts')
-            .update({ balance: fromAccount.balance - dto.amount })
-            .eq('id', dto.fromAccountId);
-
-        if (updateFromError) throw updateFromError;
-
-        // Sumar a destino
-        const { error: updateToError } = await supabase
-            .from('funding_accounts')
-            .update({ balance: toAccount.balance + dto.amount })
-            .eq('id', dto.toAccountId);
-
-        if (updateToError) {
-            // "Rollback" manual simple: Si falla el destino, devolvemos el dinero al origen
-            await supabase.from('funding_accounts').update({ balance: fromAccount.balance }).eq('id', dto.fromAccountId);
-            throw new Error('Error al acreditar en la cuenta destino');
-        }
-
-        // Registrar la transacción en el historial
-        const { data: transaction, error: txError } = await supabase
-            .from('transactions')
-            .insert({
-                account_id: dto.fromAccountId,
-                amount: dto.amount,
-                type: 'transfer', // Debes asegurarte que este tipo exista en tu ENUM de base de datos
-                description: `Transferencia a ${toAccount.name}`
-            })
-            .select()
-            .single();
-
-        if (txError) console.error("Error registrando log de transferencia:", txError);
-
-        return {
-            message: 'Transferencia realizada con éxito',
-            newFromBalance: fromAccount.balance - dto.amount,
-            transaction
-        };
     }
 }

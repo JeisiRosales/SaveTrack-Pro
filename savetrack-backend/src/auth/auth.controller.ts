@@ -21,7 +21,6 @@ export class AuthController {
     // Cierre de sesión
     @Post('logout')
     async signOut(@Body('accessToken') accessToken: string) {
-        // Nota: En un caso real, el token vendría del header Authorization
         return this.authService.signOut(accessToken);
     }
 
@@ -33,10 +32,7 @@ export class AuthController {
 
     // Restablecimiento de contraseña
     @Post('reset-password')
-    async resetPassword(
-        @Body('password') password: string,
-        @Headers('authorization') authHeader: string
-    ) {
+    async resetPassword(@Body('password') password: string, @Headers('authorization') authHeader: string) {
         if (!authHeader) throw new UnauthorizedException('No se proporcionó token.');
         const token = authHeader.replace('Bearer ', '');
         return this.authService.updatePassword(token, password);

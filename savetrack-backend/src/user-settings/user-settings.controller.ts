@@ -26,10 +26,4 @@ export class UserSettingsController {
   update(@Request() req, @Body() updateDto: UpdateUserSettingDto) {
     return this.userSettingsService.update(req.user.sub, updateDto);
   }
-
-  // Eliminar configuración de usuario
-  @Delete()
-  remove(@Request() req) {
-    return this.userSettingsService.remove(req.user.sub);
-  }
 }

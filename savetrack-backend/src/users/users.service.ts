@@ -7,7 +7,11 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(private readonly supabase: SupabaseService) { }
 
-
+  /**
+   * Actualiza el perfil del usuario tanto en Auth como en la tabla profiles
+   * @param userId - ID del usuario
+   * @param data - Datos a actualizar (nombre)
+   */
   async updateProfile(userId: string, data: any): Promise<{ message: string }> {
     // Actualizar metadata de auth
     const { error: authError } = await this.supabase.getClient().auth.updateUser({
@@ -26,10 +30,13 @@ export class UsersService {
     return { message: 'Perfil actualizado correctamente en base de datos' };
   }
 
+  /**
+   * Elimina un usuario de Supabase Auth (Admin only)
+   * @param userId - ID del usuario a eliminar
+   */
   async deleteUser(userId: string): Promise<{ message: string }> {
     const { error } = await this.supabase.getAdminClient().auth.admin.deleteUser(userId);
     if (error) throw new BadRequestException(error.message);
     return { message: 'Usuario eliminado correctamente' };
   }
-
 }

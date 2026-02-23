@@ -4,4 +4,8 @@ export interface UserSetting {
     base_currency: string;
     saving_percentage: number;
     budget_period: 'weekly' | 'monthly' | 'yearly';
+    monthly_income_target: number;
+    monthly_expense_budget: number;
+    auto_save_enabled: boolean;
+    savings_account_id?: string;
 }

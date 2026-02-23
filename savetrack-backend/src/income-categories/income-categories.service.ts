@@ -2,13 +2,18 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateIncomeCategoryDto } from './dto/create-income-category.dto';
 import { UpdateIncomeCategoryDto } from './dto/update-income-category.dto';
+import { IncomeCategory } from './entities/income-category.entity';
 
 @Injectable()
 export class IncomeCategoriesService {
   constructor(private supabase: SupabaseService) { }
 
-  // Crear categoría de ingresos
-  async create(userId: string, createDto: CreateIncomeCategoryDto) {
+  /**
+   * Crear categoría de ingresos
+   * @param userId - ID del usuario propietario
+   * @param createDto - Datos de la categoría
+   */
+  async create(userId: string, createDto: CreateIncomeCategoryDto): Promise<IncomeCategory> {
     const { data, error } = await this.supabase.getAdminClient()
       .from('income_categories')
       .insert({ user_id: userId, ...createDto })
@@ -16,28 +21,14 @@ export class IncomeCategoriesService {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as IncomeCategory;
   }
 
-  // Crear múltiples categorías de ingresos
-  async createMany(userId: string, createDtos: CreateIncomeCategoryDto[]) {
-    // Preparar datos para inserción masiva
-    const dataToInsert = createDtos.map(dto => ({
-      user_id: userId,
-      ...dto
-    }));
-
-    const { data, error } = await this.supabase.getAdminClient()
-      .from('income_categories')
-      .insert(dataToInsert)
-      .select();
-
-    if (error) throw error;
-    return data;
-  }
-
-  // Buscar todas las categorías de ingresos
-  async findAll(userId: string) {
+  /**
+   * Buscar todas las categorías de ingresos
+   * @param userId - ID del usuario
+   */
+  async findAll(userId: string): Promise<IncomeCategory[]> {
     const { data, error } = await this.supabase.getAdminClient()
       .from('income_categories')
       .select('*')
@@ -45,11 +36,15 @@ export class IncomeCategoriesService {
       .order('name', { ascending: true });
 
     if (error) throw error;
-    return data;
+    return data as IncomeCategory[];
   }
 
-  // Buscar una categoría de ingresos
-  async findOne(id: string, userId: string) {
+  /**
+   * Buscar una categoría de ingresos por ID
+   * @param id - ID de la categoría
+   * @param userId - ID del usuario (para validación)
+   */
+  async findOne(id: string, userId: string): Promise<IncomeCategory> {
     const { data, error } = await this.supabase.getAdminClient()
       .from('income_categories')
       .select('*')
@@ -58,11 +53,16 @@ export class IncomeCategoriesService {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as IncomeCategory;
   }
 
-  // Actualizar categoría de ingresos
-  async update(id: string, userId: string, updateDto: UpdateIncomeCategoryDto) {
+  /**
+   * Actualizar categoría de ingresos
+   * @param id - ID de la categoría
+   * @param userId - ID del usuario (para validación)
+   * @param updateDto - Datos a actualizar
+   */
+  async update(id: string, userId: string, updateDto: UpdateIncomeCategoryDto): Promise<IncomeCategory> {
     if (updateDto.name) {
       const { data: existingCategories } = await this.supabase.getAdminClient()
         .from('income_categories')
@@ -84,11 +84,15 @@ export class IncomeCategoriesService {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as IncomeCategory;
   }
 
-  // Eliminar categoría de ingresos
-  async remove(id: string, userId: string) {
+  /**
+   * Eliminar categoría de ingresos
+   * @param id - ID de la categoría
+   * @param userId - ID del usuario (para validación)
+   */
+  async remove(id: string, userId: string): Promise<{ message: string }> {
     const { error } = await this.supabase.getAdminClient()
       .from('income_categories')
       .delete()
@@ -96,5 +100,6 @@ export class IncomeCategoriesService {
       .eq('user_id', userId);
 
     if (error) throw error;
+    return { message: 'Categoría eliminada correctamente.' };
   }
 }

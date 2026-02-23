@@ -1,1 +1,8 @@
-export class ExpenseTransaction {}
+export interface ExpenseTransaction {
+    id: string;
+    account_id: string;
+    category_id?: string;
+    amount: number;
+    description?: string;
+    created_at: Date;
+}

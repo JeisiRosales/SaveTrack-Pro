@@ -7,5 +7,6 @@ import { SupabaseModule } from '../supabase/supabase.module';
   imports: [SupabaseModule],
   controllers: [UserSettingsController],
   providers: [UserSettingsService],
+  exports: [UserSettingsService],
 })
 export class UserSettingsModule { }

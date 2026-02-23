@@ -15,12 +15,6 @@ export class IncomeCategoriesController {
     return this.incomeCategoriesService.create(req.user.sub, createDto);
   }
 
-  // Crear múltiples categorías de ingresos
-  @Post('bulk')
-  createMany(@Request() req, @Body() createDtos: CreateIncomeCategoryDto[]) {
-    return this.incomeCategoriesService.createMany(req.user.sub, createDtos);
-  }
-
   // Buscar todas las categorías de ingresos
   @Get()
   findAll(@Request() req) {

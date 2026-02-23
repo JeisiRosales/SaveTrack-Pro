@@ -6,12 +6,12 @@ export class SignUpDto {
     email: string;
 
     @IsString()
-    @MinLength(6, { message: 'Password must be at least 6 characters long' })
+    @MinLength(6, { message: 'La contraseña debe tener 6 carácteres mínimo.' })
     password: string;
 
     @IsString()
     @IsOptional()
-    name?: string; // cambia fullName a name para que coincida con el payload
+    name?: string;
 }
 
 // DTO para inicio de sesión

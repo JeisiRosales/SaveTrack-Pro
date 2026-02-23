@@ -1,4 +1,4 @@
-import { IsUUID, IsNumber, IsString, IsOptional, Min } from 'class-validator';
+import { IsUUID, IsNumber, IsString, IsOptional, Min, IsNotEmpty, IsBoolean } from 'class-validator';
 
 export class CreateIncomeTransactionDto {
     @IsUUID()
@@ -15,4 +15,8 @@ export class CreateIncomeTransactionDto {
     @IsString()
     @IsOptional()
     description?: string;
+
+    @IsBoolean()
+    @IsOptional()
+    perform_auto_save?: boolean;
 }

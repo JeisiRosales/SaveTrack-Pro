@@ -1,54 +1,88 @@
 # SaveTrack Pro - Backend (NestJS)
 
-Este es el backend de **SaveTrack Pro**, una aplicación inteligente para la gestión de metas de ahorro. Está construido con **NestJS** y utiliza **Supabase** como infraestructura principal (Base de Datos, Autenticación y Almacenamiento).
+Este es el backend de **SaveTrack Pro**, una plataforma robusta para la gestión inteligente de finanzas personales y metas de ahorro. Construido bajo una arquitectura modular con **NestJS**, integra **Supabase** para ofrecer una infraestructura segura de base de datos, autenticación y almacenamiento.
 
-## Características Principales
+## Propósito y Funcionalidad
 
-- **Gestión de Metas de Ahorro:** Creación, actualización (DTOs parciales) y seguimiento de objetivos financieros.
-- **Cuentas de Financiamiento:** Gestión de las fuentes de dinero (ahorros, corriente, etc.).
-- **Transacciones Automáticas:** Historial de depósitos y retiros que actualizan automáticamente los balances de las cuentas y el progreso de las metas.
-- **Cálculo de Salud Financiera:** Algoritmos internos que comparan el progreso real vs. esperado según las fechas límite.
-- **Sistema de Archivos:** Subida de imágenes para metas con asociación automática a la base de datos.
-
-## Stack Tecnológico
-
-- **Framework:** [NestJS](https://nestjs.com/) (TypeScript)
-- **Base de Datos:** [Supabase](https://supabase.com/) (PostgreSQL)
-- **Autenticación:** Supabase Auth + Passport JWT (NestJS)
-- **Almacenamiento:** Supabase Storage (Bucket: `goal-images`)
-- **Validación:** Class-validator y Class-transformer
-
-## Seguridad y Autenticación
-
-### Supabase Auth & JWT
-El sistema utiliza el mecanismo de autenticación de Supabase. El backend de NestJS está protegido mediante el decorador `@UseGuards(AuthGuard('jwt'))`, lo que asegura que solo usuarios autenticados con un token válido puedan acceder a sus datos.
-
-### Row Level Security (RLS)
-La seguridad está reforzada en la capa de base de datos mediante políticas **RLS** en PostgreSQL:
-- Cada usuario solo puede ver y modificar sus propios perfiles, metas y cuentas.
-- Se utiliza un **Trigger** en Supabase para crear automáticamente el perfil del usuario en la tabla `profiles` tras el registro en `auth.users`.
+El backend actúa como el núcleo lógico de SaveTrack Pro, permitiendo a los usuarios:
+- **Gestión de Liquidez:** Control total sobre cuentas de financiamiento y balances.
+- **Planificación de Metas:** Definición de objetivos de ahorro con seguimiento de progreso en tiempo real.
+- **Automatización Financiera:** Registro de transacciones que impactan automáticamente los balances de cuentas y el cumplimiento de metas.
+- **Análisis de Salud:** Algoritmos que determinan si el ritmo de ahorro es suficiente para alcanzar una meta en la fecha establecida.
 
 ## Estructura del Proyecto
 
-- `src/auth`: Manejo de registro y login integrando Supabase.
-- `src/funding-accounts`: Gestión de cuentas bancarias/fuentes de dinero.
-- `src/savings-goals`: Corazón del proyecto, maneja las metas y su lógica de salud.
-- `src/transactions`: Lógica para mover dinero entre cuentas y metas.
-- `src/supabase`: Módulo global para la conexión con el cliente de Supabase.
+El proyecto sigue el estándar de NestJS, organizando la lógica por módulos funcionales dentro de `src/`:
 
-## Instalación y Uso
+### Módulos Principales
+| Módulo | Función |
+| :--- | :--- |
+| `auth` | Gestión de identidad y sesiones mediante Supabase Auth y JWT. |
+| `users` | Manejo de perfiles de usuario y metadatos básicos. |
+| `user-settings` | Configuraciones personalizadas (moneda, preferencias de UI, etc.). |
+| `funding-accounts` | Gestión de las fuentes de dinero (Cuentas bancarias, efectivo, tarjetas). |
+| `savings-goals` | El motor del sistema; gestiona metas, plazos y cálculos de salud. |
+| `transactions` | Gestión de depósitos y retiros vinculados a metas de ahorro. |
+| `income-categories` | Clasificación para fuentes de ingresos (Salario, Inversiones, etc.). |
+| `expense-categories` | Clasificación para tipos de gastos (Renta, Comida, Entretenimiento). |
+| `income-transactions` | Registro detallado de entradas de dinero. |
+| `expense-transactions` | Registro detallado de salidas de dinero. |
+| `supabase` | Módulo de infraestructura para la conexión global con el cliente Supabase. |
 
-1. Clonar el repositorio.
-2. Configurar el archivo `.env` con las credenciales de Supabase:
+### Organización Interna de Módulos
+Cada módulo suele contener:
+- `*.controller.ts`: Define los endpoints de la API (REST).
+- `*.service.ts`: Implementa la lógica de negocio y comunicación con Supabase.
+- `dto/`: Objetos de transferencia de datos para validación (class-validator).
+- `entities/`: Definición de tipos o clases que representan el modelo de datos.
+
+## Flujo de Datos y Arquitectura
+
+1. **Autenticación**: El cliente envía un JWT de Supabase. El `AuthGuard('jwt')` valida el token antes de permitir el acceso a los controladores.
+2. **Ciclo de Vida de una Transacción**:
+   - Una petición llega a `TransactionsController`.
+   - El `TransactionsService` procesa la lógica: descuenta saldo de una `FundingAccount` y lo suma al progreso de una `SavingsGoal`.
+   - La base de datos en Supabase asegura la integridad mediante políticas RLS y triggers automáticos.
+3. **Cálculo de Salud**: Al consultar una meta, el `SavingsGoalsService` calcula dinámicamente el progreso esperado vs. el real, proporcionando alertas si el usuario está atrasado.
+
+## Stack Tecnológico
+
+- **Core:** [NestJS](https://nestjs.com/) (Framework de Node.js progresivo).
+- **Lenguaje:** TypeScript.
+- **Backend-as-a-Service:** [Supabase](https://supabase.com/).
+  - **DB:** PostgreSQL con Row Level Security (RLS).
+  - **Storage:** Manejo de imágenes para las metas de ahorro.
+- **Seguridad:** Passport JWT + Supabase Auth.
+- **Validación:** `class-validator` y `class-transformer`.
+
+## Instalación y Configuración
+
+1. **Clonar el repositorio.**
+2. **Configurar el entorno:**
+   Crea un archivo `.env` basado en el siguiente ejemplo:
    ```env
-   SUPABASE_URL=tu_url
-   SUPABASE_ANON_KEY=tu_anon_key
-   JWT_SECRET=tu_secreto
+   SUPABASE_URL=tu_url_de_supabase
+   SUPABASE_ANON_KEY=tu_anon_key_publica
+   SUPABASE_SERVICE_KEY=tu_service_key_privada
+   JWT_SECRET=tu_secreto_para_validar_tokens
+   PORT=3000
+   FRONTEND_URL=http://localhost:5173
    ```
-3. Instalar dependencias: `npm install`
-4. Ejecutar en modo desarrollo: `npm run start:dev`
+3. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
+4. **Ejecutar el servidor:**
+   ```bash
+   # Modo desarrollo
+   npm run start:dev
+   
+   # Modo producción
+   npm run build
+   npm run start:prod
+   ```
 
-## Métricas de Salud
-El `SavingsGoalsService` incluye lógica para calcular:
-- % de salud (Progreso real vs. esperado).
-- Cuotas diarias/semanales/mensuales requeridas para alcanzar la meta a tiempo.
+## Métricas de Salud Financiera
+El sistema no solo guarda datos, sino que analiza el comportamiento:
+- **Salud (%)**: `(Ahorro Real / Ahorro Esperado) * 100`.
+- **Cuota Sugerida**: Cálculo automático de cuánto debe ahorrar el usuario diariamente para llegar a la fecha límite.
