@@ -83,8 +83,3 @@ Cada módulo suele contener:
    npm run build
    npm run start:prod
    ```
-
-## Métricas de Salud Financiera
-El sistema no solo guarda datos, sino que analiza el comportamiento:
-- **Salud (%)**: `(Ahorro Real / Ahorro Esperado) * 100`.
-- **Cuota Sugerida**: Cálculo automático de cuánto debe ahorrar el usuario diariamente para llegar a la fecha límite.
