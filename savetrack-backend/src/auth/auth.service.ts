@@ -56,6 +56,11 @@ export class AuthService {
             { name: 'Otros', is_fixed: false } // No es fijo
         ];
 
+        const defaultAccounts = [
+            { name: 'Cuenta Principal', balance: 0.00 },
+            { name: 'Cuenta de Ahorros', balance: 0.00 }
+        ];
+
         // Crear categorías de ingreso
         await this.supabase.getAdminClient()
             .from('income_categories')
@@ -66,14 +71,25 @@ export class AuthService {
             .from('expense_categories')
             .insert(defaultExpenseCategories.map(cat => ({ user_id: userId, ...cat })));
 
+        // Crear cuentas por defecto y obtener los IDs
+        const { data: accounts } = await this.supabase.getAdminClient()
+            .from('funding_accounts')
+            .insert(defaultAccounts.map(account => ({ user_id: userId, ...account })))
+            .select();
+
+        // Buscar el ID de la cuenta de ahorros
+        const savingsAccount = accounts?.find(acc => acc.name === 'Cuenta de Ahorros');
+
         // Crear configuraciones por defecto
         await this.supabase.getAdminClient()
             .from('user_settings')
             .insert({
                 user_id: userId,
                 base_currency: 'USD',
-                saving_percentage: 10.00,
-                budget_period: 'monthly'
+                saving_percentage: 20.00,
+                budget_period: 'monthly',
+                savings_account_id: savingsAccount?.id || null,
+                auto_save_enabled: false
             });
     }
 
