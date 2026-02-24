@@ -4,11 +4,12 @@ Este es el backend de **SaveTrack Pro**, una plataforma robusta para la gestión
 
 ## Propósito y Funcionalidad
 
-El backend actúa como el núcleo lógico de SaveTrack Pro, permitiendo a los usuarios:
+El backend actúa como el núcleo lógico de SaveTrack Pro, ofreciendo una API REST modular que facilita:
 - **Gestión de Liquidez:** Control total sobre cuentas de financiamiento y balances.
 - **Planificación de Metas:** Definición de objetivos de ahorro con seguimiento de progreso en tiempo real.
 - **Automatización Financiera:** Registro de transacciones que impactan automáticamente los balances de cuentas y el cumplimiento de metas.
 - **Análisis de Salud:** Algoritmos que determinan si el ritmo de ahorro es suficiente para alcanzar una meta en la fecha establecida.
+- **Dashboard Holístico:** Generación de reportes detallados y estadísticas para una visión clara de la situación financiera.
 
 ## Estructura del Proyecto
 
@@ -22,11 +23,12 @@ El proyecto sigue el estándar de NestJS, organizando la lógica por módulos fu
 | `user-settings` | Configuraciones personalizadas (moneda, preferencias de UI, etc.). |
 | `funding-accounts` | Gestión de las fuentes de dinero (Cuentas bancarias, efectivo, tarjetas). |
 | `savings-goals` | El motor del sistema; gestiona metas, plazos y cálculos de salud. |
-| `transactions` | Gestión de depósitos y retiros vinculados a metas de ahorro. |
+| `transactions` | Registro de depósitos y retiros vinculados directamente a metas. |
 | `income-categories` | Clasificación para fuentes de ingresos (Salario, Inversiones, etc.). |
 | `expense-categories` | Clasificación para tipos de gastos (Renta, Comida, Entretenimiento). |
 | `income-transactions` | Registro detallado de entradas de dinero. |
 | `expense-transactions` | Registro detallado de salidas de dinero. |
+| `reports` | Motor de reportes; genera estadísticas de dashboard, comparativas mensuales y balances. |
 | `supabase` | Módulo de infraestructura para la conexión global con el cliente Supabase. |
 
 ### Organización Interna de Módulos
