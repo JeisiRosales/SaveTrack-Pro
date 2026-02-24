@@ -25,7 +25,6 @@ Este proyecto está dividido en dos partes principales, cada una con su propia d
 - **Framework:** [NestJS](https://nestjs.com/) (TypeScript)
 - **Base de Datos:** [PostgreSQL](https://www.postgresql.org/) vía [Supabase](https://supabase.com/)
 - **Autenticación:** Supabase Auth + Passport JWT
-- **Almacenamiento:** Supabase Storage (Bucket: `goal-images`)
 - **Validación:** Class-validator y Class-transformer
 
 ### Infraestructura
