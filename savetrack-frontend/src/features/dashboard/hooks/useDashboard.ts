@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '@/lib/api';
+import { getDashboardSummary } from '../api/dashboard.api';
 import { Account, Goal, Transaction } from '../types';
 
 export const useDashboard = () => {
@@ -12,11 +12,7 @@ export const useDashboard = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const [accRes, goalRes, txRes] = await Promise.allSettled([
-                api.get('/funding-accounts'),
-                api.get('/savings-goals'),
-                api.get('/transactions')
-            ]);
+            const [accRes, goalRes, txRes] = await getDashboardSummary();
 
             if (accRes.status === 'fulfilled') setAccounts(accRes.value.data);
             if (goalRes.status === 'fulfilled') setGoals(goalRes.value.data);

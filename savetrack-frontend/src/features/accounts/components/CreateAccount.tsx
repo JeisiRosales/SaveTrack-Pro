@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Wallet, DollarSign, Loader2 } from 'lucide-react';
-import api from '../../lib/api';
+import { createAccount } from '../api/accounts.api';
 
 interface CreateAccountModalProps {
     isOpen: boolean;
@@ -35,10 +35,7 @@ const CreateAccountModal: React.FC<CreateAccountModalProps> = ({ isOpen, onClose
         setError(null);
 
         try {
-            await api.post('/funding-accounts', {
-                name,
-                balance: Number(balance)
-            });
+            await createAccount({ name, balance: Number(balance) });
 
             onAccountCreated();
             onClose();
