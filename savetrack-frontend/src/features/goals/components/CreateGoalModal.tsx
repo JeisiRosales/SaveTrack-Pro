@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { X, Target, DollarSign, Calendar, Loader2 } from 'lucide-react';
-import api from '../../lib/api';
+import api from '../../../lib/api';
 
+// interface para las props del componente CreateGoalModal
 interface CreateGoalModalProps {
     isOpen: boolean;
     onClose: () => void;
     onGoalCreated: () => void;
 }
 
-/**
- * Modal de Creación de Metas de Ahorro
- * Proporciona un formulario premium para crear nuevos objetivos financieros.
- */
+// componente para crear una meta
 const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGoalCreated }) => {
     const [name, setName] = useState('');
     const [targetAmount, setTargetAmount] = useState('');

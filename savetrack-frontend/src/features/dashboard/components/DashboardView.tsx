@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Menu, Loader2, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/layout/Sidebar';
-import CreateGoalModal from '@/components/modals/CreateGoalModal';
+import CreateGoalModal from '@/features/goals/components/CreateGoalModal';
 import { useDashboard } from '../hooks/useDashboard';
 import { AccountCard } from './AccountCard';
 import { GoalCard } from './GoalCard';

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { X, Target, DollarSign, Calendar, Loader2 } from 'lucide-react';
-import api from '../../lib/api';
+import api from '../../../lib/api';
 
+// interface para las props del componente EditGoalModal
 interface EditGoalModalProps {
     isOpen: boolean;
     goal: any;
@@ -9,10 +10,7 @@ interface EditGoalModalProps {
     onGoalUpdated: () => void;
 }
 
-/**
- * Modal de Edición de Metas de Ahorro
- * Permite editar nombre, monto objetivo, monto actual y fecha de culminación.
- */
+// componente para editar una meta
 const EditGoalModal: React.FC<EditGoalModalProps> = ({
     isOpen,
     goal,
