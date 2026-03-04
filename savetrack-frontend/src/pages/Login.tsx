@@ -38,7 +38,7 @@ const Login: React.FC = () => {
             const response = await api.post('/auth/login', { email, password });
 
             // Extraemos el token y la info del usuario
-            const { user, session } = response.data;
+            const { user, session } = response.data.data;
 
             // Guardamos en el contexto global y localStorage
             login(user, session);
