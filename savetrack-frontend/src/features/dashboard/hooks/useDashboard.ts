@@ -1,0 +1,50 @@
+import { useState, useEffect } from 'react';
+import api from '@/lib/api';
+import { Account, Goal, Transaction } from '../types';
+
+export const useDashboard = () => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [accounts, setAccounts] = useState<Account[]>([]);
+    const [goals, setGoals] = useState<Goal[]>([]);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const [accRes, goalRes, txRes] = await Promise.allSettled([
+                api.get('/funding-accounts'),
+                api.get('/savings-goals'),
+                api.get('/transactions')
+            ]);
+
+            if (accRes.status === 'fulfilled') setAccounts(accRes.value.data);
+            if (goalRes.status === 'fulfilled') setGoals(goalRes.value.data);
+            if (txRes.status === 'fulfilled') setTransactions(txRes.value.data);
+
+            if (accRes.status === 'rejected' || goalRes.status === 'rejected') {
+                throw new Error("Error al cargar datos esenciales.");
+            }
+        } catch (err) {
+            setError("No se pudo sincronizar la información.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => { fetchData(); }, []);
+
+    const totalBalance = accounts.reduce((acc, curr) => acc + (curr.balance || 0), 0);
+    const totalSavedInGoals = goals.reduce((acc, curr) => acc + (curr.current_amount || 0), 0);
+
+    return {
+        loading,
+        error,
+        accounts,
+        goals,
+        transactions,
+        totalBalance,
+        totalSavedInGoals,
+        refresh: fetchData
+    };
+};
