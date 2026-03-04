@@ -1,6 +1,8 @@
 import { Goal } from '../types';
 
+// Interfaz para las propiedades de la tarjeta de meta
 export const GoalCard = ({ goal }: { goal: Goal }) => {
+    // Calcula el progreso de la meta
     const progress = Math.min(Math.round((goal.current_amount / goal.target_amount) * 100), 100);
 
     return (

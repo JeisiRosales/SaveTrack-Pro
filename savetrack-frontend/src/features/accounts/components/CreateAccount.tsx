@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import { X, Wallet, DollarSign, Loader2 } from 'lucide-react';
 import { createAccount } from '../api/accounts.api';
 
+// Interfaz para las propiedades del modal de creación de cuenta
 interface CreateAccountModalProps {
     isOpen: boolean;
     onClose: () => void;
     onAccountCreated: () => void;
 }
 
-/**
- * Modal de Creación de Cuentas de Financiamiento
- * Proporciona un formulario premium para agregar nuevas fuentes de capital.
- */
+// Componente para crear una cuenta
 const CreateAccountModal: React.FC<CreateAccountModalProps> = ({ isOpen, onClose, onAccountCreated }) => {
     const [name, setName] = useState('');
     const [balance, setBalance] = useState('');
@@ -29,6 +27,7 @@ const CreateAccountModal: React.FC<CreateAccountModalProps> = ({ isOpen, onClose
 
     if (!isOpen) return null;
 
+    // Manejamos el envío del formulario
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);

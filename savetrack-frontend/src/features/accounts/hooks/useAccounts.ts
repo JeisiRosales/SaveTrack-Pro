@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import * as accountsApi from '../api/accounts.api';
 import { Account, TransferForm } from '../types';
 
+// Hook para manejar las cuentas
 export const useAccounts = () => {
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState(true);
@@ -32,6 +33,7 @@ export const useAccounts = () => {
 
     const totalBalance = accounts.reduce((acc, curr) => acc + (curr.balance || 0), 0);
 
+    // Manejamos la transferencia de fondos
     const handleTransfer = async (formData: TransferForm) => {
         setStatusMessage({ text: '', type: null });
         try {

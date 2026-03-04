@@ -4,6 +4,7 @@ import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { loginRequest } from '../api/auth.api';
 
+// Interfaz para las propiedades del formulario de inicio de sesión
 export const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

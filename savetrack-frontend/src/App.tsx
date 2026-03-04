@@ -13,7 +13,6 @@ import GoalDetailsPage from './pages/GoalDetailsPage';
 function App() {
   const { user, loading } = useAuth();
 
-  // Mientras se recupera la sesión del localStorage, mostramos una pantalla de carga
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">

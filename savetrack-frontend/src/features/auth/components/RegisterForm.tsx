@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Loader2, Eye, EyeOff } from 'lucide-react';
 import { registerRequest } from '../api/auth.api';
 
+// Interfaz para las propiedades del formulario de registro
 export const RegisterForm = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');

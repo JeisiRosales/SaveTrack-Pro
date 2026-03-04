@@ -12,6 +12,7 @@ export const useTransactions = () => {
     const [typeFilter, setTypeFilter] = useState<'All' | 'deposit' | 'withdrawal'>('All');
     const [accountFilter, setAccountFilter] = useState<string>('All');
 
+    // Hook para obtener transacciones y cuentas
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -30,10 +31,12 @@ export const useTransactions = () => {
         }
     };
 
+    // Hook para obtener transacciones y cuentas
     useEffect(() => {
         fetchData();
     }, []);
 
+    // Filtra las transacciones según los filtros aplicados
     const filteredTransactions = useMemo(() => {
         return transactions.filter(t => {
             const description = `${t.savings_goals?.name || 'Ahorro'} (${t.type === 'deposit' ? 'Depósito' : 'Retiro'})`;
@@ -44,6 +47,7 @@ export const useTransactions = () => {
         });
     }, [transactions, searchTerm, typeFilter, accountFilter]);
 
+    // Calcula estadísticas de transacciones
     const stats = useMemo(() => {
         const incomes = filteredTransactions
             .filter(t => t.type === 'deposit')
@@ -60,6 +64,7 @@ export const useTransactions = () => {
         };
     }, [filteredTransactions]);
 
+    // Exporta las transacciones a CSV
     const exportToCSV = () => {
         const headers = "Fecha,Meta,Flujo,Cuenta Origen,Tipo,Monto\n";
         const rows = transactions.map(t => {

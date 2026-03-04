@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { loginRequest } from '../api/auth.api';
 
+// Hook para manejar el inicio de sesión
 export const useLoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -11,6 +12,7 @@ export const useLoginForm = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
 
+    // Manejamos el inicio de sesión
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);

@@ -1,11 +1,14 @@
 import { Account } from "../types";
 
+// Interfaz para las propiedades de la tarjeta de cuenta
 interface AccountCardProps {
     account: Account;
     totalBalance: number;
 }
 
+// Componente de tarjeta de cuenta
 export const AccountCard = ({ account, totalBalance }: AccountCardProps) => {
+    // Calcula el porcentaje de la cuenta
     const percentage = totalBalance > 0
         ? `${Math.round((account.balance / totalBalance) * 100)}%`
         : '0%';

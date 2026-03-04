@@ -9,6 +9,7 @@ import { AccountCard } from './AccountCard';
 import { GoalCard } from './GoalCard';
 import { TransactionItem } from './TransactionItem';
 
+// Vista de dashboard
 export const DashboardView: React.FC = () => {
     const { user } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);

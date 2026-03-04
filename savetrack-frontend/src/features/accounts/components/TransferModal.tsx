@@ -3,6 +3,7 @@ import { X, Loader2, Plus, AlertCircle } from 'lucide-react';
 import { Account, TransferForm } from '../types';
 import { AccountSelector } from './AccountSelector';
 
+// Interfaz para las propiedades del modal de transferencia
 interface TransferModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -12,6 +13,7 @@ interface TransferModalProps {
     onTransfer: (data: TransferForm) => Promise<boolean>;
 }
 
+// Componente para transferir fondos
 export const TransferModal: React.FC<TransferModalProps> = ({
     isOpen,
     onClose,
@@ -26,6 +28,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
         amount: 0
     });
 
+    // Manejamos el envío del formulario
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const success = await onTransfer(form);

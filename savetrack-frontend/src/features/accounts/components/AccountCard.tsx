@@ -2,12 +2,14 @@ import React from 'react';
 import { Wallet } from 'lucide-react';
 import { Account } from '../types';
 
+// Interfaz para las propiedades de la tarjeta de cuenta
 interface AccountCardProps {
     account: Account;
     totalBalance: number;
     onClick: () => void;
 }
 
+// Componente para mostrar una tarjeta de cuenta
 export const AccountCard: React.FC<AccountCardProps> = ({ account, totalBalance, onClick }) => {
     return (
         <div

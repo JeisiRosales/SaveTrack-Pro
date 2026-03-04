@@ -3,6 +3,7 @@ import { Search, Filter, Wallet, Tag } from 'lucide-react';
 import CustomDropdown from '@/components/ui/CustomDropdown';
 import { Account } from '@/features/accounts/types';
 
+// Filtros para transacciones
 interface TransactionFiltersProps {
     searchTerm: string;
     onSearchChange: (val: string) => void;
@@ -13,6 +14,7 @@ interface TransactionFiltersProps {
     accounts: Account[];
 }
 
+// Componente de filtros para transacciones
 export const TransactionFilters: React.FC<TransactionFiltersProps> = ({
     searchTerm,
     onSearchChange,
@@ -73,12 +75,14 @@ export const TransactionFilters: React.FC<TransactionFiltersProps> = ({
     );
 };
 
+// Iconos para filtros
 const Plus = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
     </svg>
 );
 
+// Iconos para filtros
 const Minus = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />

@@ -2,10 +2,12 @@ import React from 'react';
 import { Calendar, Plus, Minus } from 'lucide-react';
 import { Transaction } from '../types';
 
+// Interfaz para las propiedades de la tabla de transacciones
 interface TransactionsTableProps {
     transactions: Transaction[];
 }
 
+// Componente de tabla para transacciones
 export const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) => {
     return (
         <div className="bg-[var(--card)] rounded-2xl border border-[var(--card-border)] overflow-hidden shadow-sm">

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Loader2, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { resetPasswordRequest } from '../api/auth.api';
 
+// Interfaz para las propiedades del formulario de restablecimiento de contraseña
 export const ResetPasswordForm = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -12,6 +13,7 @@ export const ResetPasswordForm = () => {
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
+    // Hook para obtener el token de restablecimiento de contraseña
     useEffect(() => {
         const hash = window.location.hash;
         if (hash) {
@@ -23,7 +25,7 @@ export const ResetPasswordForm = () => {
         }
     }, []);
 
-    // manejamos el envio del formulario
+    // Manejamos el envio del formulario
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (password !== confirmPassword) return setError('Las contraseñas no coinciden');

@@ -2,6 +2,7 @@ import React from 'react';
 import { LoginForm } from '@/features/auth';
 import { Github } from 'lucide-react';
 
+// Página de Inicio de Sesión
 const Login: React.FC = () => {
     return (
         <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col relative overflow-hidden">

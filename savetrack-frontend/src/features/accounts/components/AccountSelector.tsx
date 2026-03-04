@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Account } from '../types';
 
+// Interfaz para las propiedades del selector de cuentas
 interface AccountSelectorProps {
     label: string;
     accounts: Account[];
@@ -10,6 +11,7 @@ interface AccountSelectorProps {
     placeholder: string;
 }
 
+// Componente para seleccionar una cuenta
 export const AccountSelector: React.FC<AccountSelectorProps> = ({
     label,
     accounts,

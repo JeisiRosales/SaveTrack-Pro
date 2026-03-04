@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getDashboardSummary } from '../api/dashboard.api';
 import { Account, Goal, Transaction } from '../types';
 
+// Hook para obtener el resumen del dashboard
 export const useDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -9,6 +10,7 @@ export const useDashboard = () => {
     const [goals, setGoals] = useState<Goal[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
+    // Hook para obtener el resumen del dashboard
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -28,9 +30,12 @@ export const useDashboard = () => {
         }
     };
 
+    // Hook para obtener el resumen del dashboard
     useEffect(() => { fetchData(); }, []);
 
+    // Calcula el balance total
     const totalBalance = accounts.reduce((acc, curr) => acc + (curr.balance || 0), 0);
+    // Calcula el total ahorrado en metas
     const totalSavedInGoals = goals.reduce((acc, curr) => acc + (curr.current_amount || 0), 0);
 
     return {

@@ -5,6 +5,7 @@ import { getAccounts } from '@/features/accounts/api/accounts.api';
 import { Account } from '@/features/accounts/types';
 import { AccountSelector } from '@/features/accounts/components/AccountSelector';
 
+// Interfaz para las propiedades del modal de transacciones
 interface TransactionModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -12,6 +13,7 @@ interface TransactionModalProps {
     onSuccess: () => void;
 }
 
+// Componente de modal para transacciones
 export const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onClose, goalId, onSuccess }) => {
     const [type, setType] = useState<'deposit' | 'withdrawal'>('deposit');
     const [amount, setAmount] = useState('');
@@ -20,6 +22,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onCl
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Hook para obtener cuentas cuando el modal se abre
     useEffect(() => {
         if (isOpen) {
             getAccounts().then(res => setAccounts(res.data));
@@ -27,6 +30,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onCl
         }
     }, [isOpen]);
 
+    // Maneja el envío del formulario
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!accountId) {
@@ -51,6 +55,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onCl
         }
     };
 
+    // Renderiza el modal si está abierto
     if (!isOpen) return null;
 
     return (

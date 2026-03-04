@@ -1,7 +1,9 @@
 import { Plus } from "lucide-react";
 import { Transaction } from "../types";
 
+// Interfaz para las propiedades del item de transacción
 export const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
+    // Determina si la transacción es un depósito
     const isDeposit = transaction.type === 'deposit';
 
     return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ResetPasswordForm } from '@/features/auth';
 
+// Página de Restablecimiento de Contraseña
 const ResetPassword: React.FC = () => {
     return (
         <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">

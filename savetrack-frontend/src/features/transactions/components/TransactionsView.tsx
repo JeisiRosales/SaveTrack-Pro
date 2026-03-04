@@ -5,6 +5,7 @@ import { useTransactions } from '../hooks/useTransactions';
 import { TransactionFilters } from './TransactionFilters';
 import { TransactionsTable } from './TransactionsTable';
 
+// Vista de transacciones
 export const TransactionsView: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

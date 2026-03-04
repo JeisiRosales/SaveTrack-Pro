@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as accountsApi from '../api/accounts.api';
 import { Account, EditAccountForm, Transaction } from '../types';
 
+// Hook para manejar los detalles de una cuenta
 export const useAccountDetails = (initialAccount: Account | null) => {
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(initialAccount);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -12,6 +13,7 @@ export const useAccountDetails = (initialAccount: Account | null) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loadingTransactions, setLoadingTransactions] = useState(false);
 
+    // Manejamos la apertura del modal de detalle de cuenta
     const openDetails = async (account: Account) => {
         setSelectedAccount(account);
         setEditForm({ name: account.name, balance: account.balance });
@@ -30,6 +32,7 @@ export const useAccountDetails = (initialAccount: Account | null) => {
         }
     };
 
+    // Manejamos la actualización de una cuenta
     const handleUpdate = async (onSuccess: () => void) => {
         if (!selectedAccount) return;
         try {
@@ -46,6 +49,7 @@ export const useAccountDetails = (initialAccount: Account | null) => {
         }
     };
 
+    // Manejamos la eliminación de una cuenta
     const handleDelete = async (onSuccess: () => void) => {
         if (!selectedAccount) return;
         try {

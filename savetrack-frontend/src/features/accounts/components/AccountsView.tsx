@@ -9,6 +9,7 @@ import { AccountCard } from './AccountCard';
 import { TransferModal } from './TransferModal';
 import { AccountDetailModal } from './AccountDetailModal';
 
+// Componente para mostrar la vista de cuentas
 export const AccountsView: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -28,6 +29,7 @@ export const AccountsView: React.FC = () => {
 
     const accountDetails = useAccountDetails(null);
 
+    // Manejamos la apertura del modal de detalle de cuenta
     const handleOpenDetails = (account: any) => {
         accountDetails.openDetails(account);
         setIsDetailModalOpen(true);

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
 import { forgotPasswordRequest } from '../api/auth.api';
 
+// Interfaz para las propiedades del formulario de contraseña olvidada
 export const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);

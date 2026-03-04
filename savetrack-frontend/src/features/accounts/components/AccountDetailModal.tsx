@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Loader2, Clock, Wallet, Pencil, Trash2, Plus } from 'lucide-react';
 import { Account, EditAccountForm, Transaction } from '../types';
 
+// Interfaz para las propiedades del modal de detalle de cuenta
 interface AccountDetailModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -20,6 +21,7 @@ interface AccountDetailModalProps {
     loadingTransactions: boolean;
 }
 
+// Componente para mostrar el modal de detalle de cuenta
 export const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
     isOpen,
     onClose,
