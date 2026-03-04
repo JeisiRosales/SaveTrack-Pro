@@ -67,3 +67,15 @@ body {
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* Suprime el botón nativo para revelar contraseña en Chrome, Edge y Safari.
+   Sin esto, el navegador muestra su propio ojito encima del personalizado
+   cuando el campo tiene contenido y está enfocado. */
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+}

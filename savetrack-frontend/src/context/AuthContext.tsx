@@ -68,11 +68,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const logout = async () => {
-        await supabase.auth.signOut();
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
-        window.location.href = '/login';
+        try {
+            await supabase.auth.signOut();
+        } catch (error) {
+            console.error('[AuthContext] Error en signOut de Supabase:', error);
+        } finally {
+            // Limpieza Total
+            localStorage.clear(); // Limpia token, user, theme, etc.
+            setUser(null);
+
+            // Usamos replace para evitar volver atrás al dashboard
+            window.location.replace('/login');
+        }
     };
 
     return (
