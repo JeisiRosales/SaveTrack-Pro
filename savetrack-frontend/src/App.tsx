@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -9,6 +10,19 @@ import Goals from './pages/Goals';
 import Accounts from './pages/Accounts';
 import Transactions from './pages/Transactions';
 import GoalDetailsPage from './pages/GoalDetailsPage';
+import MainLayout from './components/layout/MainLayout';
+
+// Configuración de React Query para caché global
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutos de caché "fresca"
+      gcTime: 1000 * 60 * 30,    // 30 minutos en recolector de basura
+      refetchOnWindowFocus: false, // Evita recargas molestas al cambiar de pestaña
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   const { user, loading } = useAuth();
@@ -22,20 +36,28 @@ function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-        <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/goals" element={user ? <Goals /> : <Navigate to="/login" />} />
-        <Route path="/goals/:id" element={<GoalDetailsPage />} />
-        <Route path="/accounts" element={user ? <Accounts /> : <Navigate to="/login" />} />
-        <Route path="/transactions" element={user ? <Transactions /> : <Navigate to="/login" />} />
-        <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
-      </Routes>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          {/* Rutas Públicas */}
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+          <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+
+          {/* Rutas Privadas con Layout Persistente */}
+          <Route element={user ? <MainLayout /> : <Navigate to="/login" />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/goals/:id" element={<GoalDetailsPage />} />
+            <Route path="/accounts" element={<Accounts />} />
+            <Route path="/transactions" element={<Transactions />} />
+          </Route>
+
+          <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+        </Routes>
+      </Router>
+    </QueryClientProvider>
   );
 }
 

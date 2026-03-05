@@ -1,54 +1,39 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import * as goalsApi from '../api/goals.api';
 import { Goal } from '../types';
 import { calculateWeeklyStatus } from '../utils/goal-calculations';
 
-// hook para obtener las metas
+// hook para obtener las metas con React Query
 export const useGoals = () => {
-    const [goals, setGoals] = useState<Goal[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const fetchGoals = async () => {
-        try {
-            setLoading(true);
+    const {
+        data: goals = [],
+        isLoading: loading,
+        error: queryError,
+        refetch: refreshGoals
+    } = useQuery({
+        queryKey: ['goals'],
+        queryFn: async () => {
             const response = await goalsApi.getGoals();
-            setGoals(response.data);
-            setError(null);
-        } catch (err: any) {
-            console.error("Error fetching goals:", err);
-            setError("No se pudieron cargar tus metas. Por favor, intenta de nuevo.");
-        } finally {
-            setLoading(false);
+            return response.data;
         }
-    };
+    });
 
-    useEffect(() => {
-        fetchGoals();
-    }, []);
-
-    // refrescar las metas
-    const refreshGoals = async () => {
-        try {
-            const response = await goalsApi.getGoals();
-            setGoals(response.data);
-        } catch (err) {
-            console.error("Error refreshing goals:", err);
-        }
-    };
+    const error = queryError ? "No se pudieron cargar tus metas. Por favor, intenta de nuevo." : null;
 
     // Cálculos globales
     const stats = useMemo(() => {
-        const totalSaved = goals.reduce((acc, curr) => acc + (curr.current_amount || 0), 0);
-        const totalWeeklyInstallments = goals.reduce((acc, goal) => {
+        const totalSaved = goals.reduce((acc: number, curr: Goal) => acc + (curr.current_amount || 0), 0);
+        const totalWeeklyInstallments = goals.reduce((acc: number, goal: Goal) => {
             const status = calculateWeeklyStatus(goal);
             return acc + status.weeklyInstallment;
         }, 0);
 
-        const globalStatus = goals.reduce((acc, goal) => {
+        const globalStatus = goals.reduce((acc: any, goal: Goal) => {
             const status = calculateWeeklyStatus(goal);
-            const isCompleted = goal.current_amount >= goal.target_amount;
+            const isCompleted = (goal.current_amount || 0) >= (goal.target_amount || 0);
 
             if (!isCompleted) {
                 acc.totalBalanceToPay += status.balanceToStayOnTrack;
@@ -69,10 +54,10 @@ export const useGoals = () => {
 
     const filteredGoals = useMemo(() => {
         return goals
-            .filter((goal) =>
+            .filter((goal: Goal) =>
                 goal.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
-            .sort((a, b) => new Date(a.end_date).getTime() - new Date(b.end_date).getTime());
+            .sort((a: Goal, b: Goal) => new Date(a.end_date).getTime() - new Date(b.end_date).getTime());
     }, [goals, searchTerm]);
 
     return {
@@ -84,6 +69,6 @@ export const useGoals = () => {
         setSearchTerm,
         stats,
         refreshGoals,
-        fetchGoals
+        fetchGoals: refreshGoals
     };
 };

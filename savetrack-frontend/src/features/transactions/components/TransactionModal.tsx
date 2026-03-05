@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, Loader2 } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import * as transactionsApi from '../api/transactions.api';
 import { getAccounts } from '@/features/accounts/api/accounts.api';
 import { Account } from '@/features/accounts/types';
@@ -21,6 +22,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onCl
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
     // Hook para obtener cuentas cuando el modal se abre
     useEffect(() => {
@@ -46,6 +48,11 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onCl
                 type,
                 amount: Number(amount)
             });
+
+            // Invalidar cachés
+            queryClient.invalidateQueries({ queryKey: ['goals'] });
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
+
             onSuccess();
             onClose();
         } catch (err: any) {

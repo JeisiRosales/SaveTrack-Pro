@@ -1,46 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import * as accountsApi from '../api/accounts.api';
 import { Account, TransferForm } from '../types';
 
-// Hook para manejar las cuentas
+// Hook para manejar las cuentas con React Query
 export const useAccounts = () => {
-    const [accounts, setAccounts] = useState<Account[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
     const [statusMessage, setStatusMessage] = useState<{
         text: string;
         type: 'success' | 'error' | null;
     }>({ text: '', type: null });
     const [isTransferring, setIsTransferring] = useState(false);
 
-    const fetchAccounts = async () => {
-        try {
-            setLoading(true);
+    const {
+        data: accounts = [],
+        isLoading: loading,
+        error: queryError,
+        refetch: fetchAccounts
+    } = useQuery({
+        queryKey: ['accounts'],
+        queryFn: async () => {
             const response = await accountsApi.getAccounts();
-            setAccounts(response.data);
-            setError(null);
-        } catch (err: any) {
-            console.error("Error fetching accounts:", err);
-            setError("No se pudieron cargar tus cuentas.");
-        } finally {
-            setLoading(false);
+            return response.data;
         }
-    };
+    });
 
-    useEffect(() => {
-        fetchAccounts();
-    }, []);
+    const error = queryError ? "No se pudieron cargar tus cuentas." : null;
+    const totalBalance = accounts.reduce((acc: number, curr: Account) => acc + (curr.balance || 0), 0);
 
-    const totalBalance = accounts.reduce((acc, curr) => acc + (curr.balance || 0), 0);
-
-    // Manejamos la transferencia de fondos
+    // Manejamos la transferencia de fondos e invalidamos cachés
     const handleTransfer = async (formData: TransferForm) => {
         setStatusMessage({ text: '', type: null });
         try {
             setIsTransferring(true);
             await accountsApi.transferFunds(formData);
+
+            // Invalidamos las consultas relacionadas para forzar actualización
+            await queryClient.invalidateQueries({ queryKey: ['accounts'] });
+            await queryClient.invalidateQueries({ queryKey: ['dashboard-summary'] });
+
             setStatusMessage({ text: '¡Transferencia realizada con éxito!', type: 'success' });
-            await fetchAccounts();
             return true;
         } catch (err: any) {
             const errorMsg = err.response?.data?.message || 'Error al procesar la transferencia';

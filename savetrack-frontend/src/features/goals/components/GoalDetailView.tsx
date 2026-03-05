@@ -1,30 +1,34 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useOutletContext, Link } from 'react-router-dom';
 import {
     ArrowLeft,
     Calendar,
     Target,
     TrendingUp,
-    Clock,
-    Plus,
-    Pencil,
-    Trash2,
     AlertCircle,
     CheckCircle2,
     Menu,
-    Loader2
+    Loader2,
+    Plus,
+    Minus,
+    Trash,
+    Pencil
 } from 'lucide-react';
 import { useGoalDetails } from '../hooks/useGoalDetails';
 import { calculateWeeklyStatus } from '../utils/goal-calculations';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
+import { TransactionModal } from '@/features/transactions/components/TransactionModal';
 import EditGoalModal from './EditGoalModal';
+import DeleteGoalModal from './DeleteGoalModal';
 
-interface GoalDetailViewProps {
-    onSidebarOpen: () => void;
+interface ContextType {
+    toggleSidebar: () => void;
 }
 
-const GoalDetailView: React.FC<GoalDetailViewProps> = ({ onSidebarOpen }) => {
+const GoalDetailView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { toggleSidebar } = useOutletContext<ContextType>();
     const {
         goal,
         transactions,
@@ -35,7 +39,9 @@ const GoalDetailView: React.FC<GoalDetailViewProps> = ({ onSidebarOpen }) => {
     } = useGoalDetails(id);
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
 
     if (loading) {
         return (
@@ -62,267 +68,313 @@ const GoalDetailView: React.FC<GoalDetailViewProps> = ({ onSidebarOpen }) => {
     }
 
     const progress = Math.min(Math.round((goal.current_amount / goal.target_amount) * 100), 100);
-    const status = calculateWeeklyStatus(goal);
-    const isCompleted = goal.current_amount >= goal.target_amount;
 
-    const onDelete = async () => {
-        if (window.confirm("¿Estás seguro de que deseas eliminar esta meta? Esta acción no se puede deshacer.")) {
-            try {
-                setIsDeleting(true);
-                await handleDeleteGoal();
-                navigate('/goals');
-            } catch (err) {
-                alert("Error al eliminar la meta. Intenta de nuevo.");
-            } finally {
-                setIsDeleting(false);
-            }
+    const onDelete = () => {
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            setIsDeleting(true);
+            await handleDeleteGoal();
+            navigate('/goals');
+        } catch (err) {
+            alert("Error al eliminar la meta. Intenta de nuevo.");
+        } finally {
+            setIsDeleting(false);
+            setIsDeleteModalOpen(false);
         }
     };
 
     return (
-        <main className="flex-1 p-4 lg:p-10 relative">
-            {/* Header */}
-            <header className="mb-8 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => navigate('/goals')}
-                        className="p-2 lg:p-3 hover:bg-[var(--card)] rounded-xl transition-colors text-[var(--muted)] hover:text-[var(--foreground)]"
-                    >
-                        <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6" />
-                    </button>
-                    <div>
-                        <h1 className="text-xl lg:text-3xl font-bold text-[var(--foreground)] tracking-tight">
-                            {goal.name}
-                        </h1>
-                        <div className="flex items-center gap-2 mt-1 text-[var(--muted)] text-xs lg:text-sm font-medium">
-                            <Calendar className="w-4 h-4" />
-                            Finaliza el {new Date(goal.end_date).toLocaleDateString()}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-2 lg:gap-3">
-                    <button
-                        onClick={() => setIsEditModalOpen(true)}
-                        className="p-2 lg:p-3 bg-[var(--card)] text-[var(--foreground)] rounded-xl border border-[var(--card-border)] hover:bg-[var(--background)] transition-all flex items-center gap-2 group shadow-sm"
-                    >
-                        <Pencil className="w-4 h-4 text-indigo-500 group-hover:scale-110 transition-transform" />
-                        <span className="hidden lg:inline text-sm font-semibold">Editar</span>
-                    </button>
-                    <button
-                        onClick={onDelete}
-                        disabled={isDeleting}
-                        className="p-2 lg:p-3 bg-[var(--card)] text-rose-500 rounded-xl border border-[var(--card-border)] hover:bg-rose-50 transition-all flex items-center gap-2 group shadow-sm disabled:opacity-50"
-                    >
-                        {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />}
-                        <span className="hidden lg:inline text-sm font-semibold">Eliminar</span>
-                    </button>
-                    <button
-                        onClick={onSidebarOpen}
-                        className="lg:hidden p-3 bg-[var(--card)] rounded-xl border border-[var(--card-border)]"
-                    >
-                        <Menu className="w-6 h-6" />
-                    </button>
-                </div>
+        <main className="flex-1 p-4 lg:p-10 relative overflow-x-hidden">
+            <header className="mb-6 flex items-center justify-between">
+                <Link to="/goals" className="inline-flex items-center text-sm font-medium text-[var(--muted)] hover:text-[var(--color-primary)] transition-colors">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Volver a metas
+                </Link>
+                <button
+                    onClick={toggleSidebar}
+                    className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors flex items-center justify-center"
+                >
+                    <Menu className="w-6 h-6" />
+                </button>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-                {/* Columna Izquierda: Detalles y Progreso */}
-                <div className="lg:col-span-2 space-y-6 lg:space-y-8">
-                    {/* Card de Progreso Principal */}
-                    <div className="bg-[var(--card)] p-6 lg:p-10 rounded-[2.5rem] border border-[var(--card-border)] shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-8">
-                            <div className="bg-indigo-500/10 p-4 rounded-3xl">
-                                <TrendingUp className="w-8 h-8 text-indigo-600" />
-                            </div>
+            {/* SECCIÓN 1: SALDO TOTAL Y CUENTAS */}
+            <div className="bg-[var(--card)] p-4 sm:p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
+                <div className="mb-6">
+
+                    {/* Nombre de la Meta y Acciones */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+                        <div>
+                            <h1 className="text-2xl sm:text-3xl font-black text-[var(--foreground)] mt-2 tracking-tight">{goal.name}</h1>
+                            <p className="text-[var(--muted)] text-[10px] sm:text-xs mt-1 font-medium uppercase tracking-wider">Detalles de la meta financiera</p>
                         </div>
 
-                        <div className="relative z-10">
-                            <span className="text-indigo-600 font-bold text-sm tracking-widest uppercase mb-2 block">Progreso Actual</span>
-                            <div className="flex items-baseline gap-3 mb-6">
-                                <h2 className="text-4xl lg:text-5xl font-black text-[var(--foreground)]">
-                                    ${goal.current_amount.toLocaleString()}
-                                </h2>
-                                <span className="text-xl lg:text-2xl font-medium text-[var(--muted)]">
-                                    / ${goal.target_amount.toLocaleString()}
-                                </span>
-                            </div>
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <button
+                                onClick={() => setIsEditModalOpen(true)}
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-[var(--accent-soft)] text-[var(--accent-text)] hover:bg-[var(--background)] transition-all"
+                                title="Editar meta"
+                            >
+                                <Pencil className="w-4 h-4" />
+                                <span className="sm:hidden">Editar</span>
+                            </button>
 
-                            <div className="w-full h-4 bg-[var(--background)] rounded-full overflow-hidden mb-6 border border-[var(--card-border)]">
-                                <div
-                                    className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(79,70,229,0.3)]"
-                                    style={{ width: `${progress}%` }}
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-4 lg:gap-8">
-                                <div className="bg-[var(--background)] p-4 rounded-3xl border border-[var(--card-border)]">
-                                    <p className="text-[var(--muted)] text-[10px] lg:text-xs font-bold uppercase tracking-wider mb-1">Porcentaje</p>
-                                    <p className="text-lg lg:text-xl font-black text-[var(--foreground)]">{progress}%</p>
-                                </div>
-                                <div className="bg-[var(--background)] p-4 rounded-3xl border border-[var(--card-border)]">
-                                    <p className="text-[var(--muted)] text-[10px] lg:text-xs font-bold uppercase tracking-wider mb-1">Restante</p>
-                                    <p className="text-lg lg:text-xl font-black text-rose-500">
-                                        ${Math.max(0, goal.target_amount - goal.current_amount).toLocaleString()}
-                                    </p>
-                                </div>
-                                <div className="bg-[var(--background)] p-4 rounded-3xl border border-[var(--card-border)]">
-                                    <p className="text-[var(--muted)] text-[10px] lg:text-xs font-bold uppercase tracking-wider mb-1">Días</p>
-                                    <p className="text-lg lg:text-xl font-black text-indigo-600">
-                                        {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))}
-                                    </p>
-                                </div>
-                            </div>
+                            <button
+                                onClick={() => onDelete()}
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-rose-600 text-white hover:bg-rose-700 transition-all shadow-sm"
+                                title="Eliminar meta"
+                            >
+                                <Trash className="w-4 h-4" />
+                                <span className="sm:hidden">Eliminar</span>
+                            </button>
                         </div>
                     </div>
 
-                    {/* Nueva Card: Salud de la Meta (Weekly Tracker) */}
-                    <div className={`p-6 lg:p-8 rounded-[2.5rem] border transition-all ${isCompleted
-                        ? 'bg-emerald-500/5 border-emerald-500/20'
-                        : status.isBehind ? 'bg-rose-500/5 border-rose-500/20' : 'bg-emerald-500/5 border-emerald-500/20'
-                        }`}>
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                            <div className="flex items-center gap-4">
-                                <div className={`p-4 rounded-3xl ${isCompleted
-                                    ? 'bg-emerald-500/20 text-emerald-600'
-                                    : status.isBehind ? 'bg-rose-500/20 text-rose-600' : 'bg-emerald-500/20 text-emerald-600'
-                                    }`}>
-                                    {isCompleted ? <CheckCircle2 className="w-8 h-8" /> : (status.isBehind ? <AlertCircle className="w-8 h-8" /> : <CheckCircle2 className="w-8 h-8" />)}
-                                </div>
-                                <div>
-                                    <h3 className={`text-xl lg:text-2xl font-bold ${isCompleted
-                                        ? 'text-emerald-700'
-                                        : status.isBehind ? 'text-rose-700' : 'text-emerald-700'
-                                        }`}>
-                                        {isCompleted ? "¡Meta Cumplida!"
-                                            : status.balanceToStayOnTrack > 0
-                                                ? `Debes ahorrar $${status.balanceToStayOnTrack.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                                                : "¡Vas al día con tus ahorros!"
-                                        }
-                                    </h3>
-                                    <p className="text-sm lg:text-base text-[var(--muted)] font-medium mt-1">
-                                        {isCompleted
-                                            ? "Has alcanzado tu objetivo financiero con éxito."
-                                            : status.isBehind
-                                                ? `Te has retrasado un poco. Necesitas este monto para volver al carril.`
-                                                : "Estás ahorrando lo necesario según tu plan semanal."}
-                                    </p>
-                                </div>
-                            </div>
-                            {!isCompleted && (
-                                <div className="bg-white/50 p-4 rounded-2xl border border-[var(--card-border)] min-w-[180px]">
-                                    <p className="text-[var(--muted)] text-[10px] font-bold uppercase mb-1">Cuota Semanal Recomendada</p>
-                                    <p className="text-xl font-black text-[var(--foreground)]">${status.weeklyInstallment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Transacciones de la Meta */}
-                    <div className="bg-[var(--card)] rounded-[2.5rem] border border-[var(--card-border)] shadow-sm overflow-hidden">
-                        <div className="p-6 lg:p-8 border-b border-[var(--card-border)] flex items-center justify-between">
-                            <h3 className="font-bold text-lg lg:text-xl flex items-center gap-2">
-                                <div className="w-2 h-6 bg-indigo-600 rounded-full" />
-                                Historial de Ahorros
+                    {/* Saldo Actual y Objetivo*/}
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mt-8 gap-4 sm:gap-0">
+                        <div>
+                            <h2 className="text-xs font-semibold text-[var(--muted)] tracking-wider uppercase">Saldo Actual</h2>
+                            <h3 className="text-3xl sm:text-4xl font-black mt-1 text-[var(--accent-text)]">
+                                ${goal.current_amount.toLocaleString()}
                             </h3>
-                            <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">
-                                {transactions.length} movimientos
-                            </span>
                         </div>
-
-                        <div className="divide-y divide-[var(--card-border)]">
-                            {transactions.length > 0 ? (
-                                transactions.map((t) => (
-                                    <div key={t.id} className="p-4 lg:p-6 hover:bg-[var(--background)] transition-all flex items-center justify-between group">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600">
-                                                <Plus className="w-5 h-5 lg:w-6 lg:h-6" />
-                                            </div>
-                                            <div>
-                                                <p className="font-bold text-[var(--foreground)] text-sm lg:text-base">{t.description}</p>
-                                                <p className="text-[var(--muted)] text-xs font-medium flex items-center gap-1.5 mt-0.5">
-                                                    <Clock className="w-3 h-3" />
-                                                    {new Date(t.date).toLocaleDateString(undefined, {
-                                                        day: 'numeric',
-                                                        month: 'long',
-                                                        year: 'numeric'
-                                                    })}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="font-black text-emerald-600 text-base lg:text-lg">+${t.amount.toLocaleString()}</p>
-                                            <p className="text-[var(--muted)] text-[10px] font-bold uppercase tracking-tighter">Depósito</p>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="p-10 lg:p-20 text-center">
-                                    <div className="bg-[var(--background)] w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center mx-auto mb-4 border border-[var(--card-border)]">
-                                        <Target className="w-8 h-8 lg:w-10 lg:h-10 text-[var(--muted)] opacity-20" />
-                                    </div>
-                                    <p className="text-[var(--muted)] text-sm font-medium">Aún no hay transacciones para esta meta.</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Columna Derecha: Información adicional y consejos */}
-                <div className="space-y-6 lg:space-y-8">
-                    <div className="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-indigo-200 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-indigo-500 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity" />
-                        <div className="relative z-10">
-                            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                                <Plus className="w-6 h-6" /> Tip de Ahorro
-                            </h3>
-                            <p className="text-indigo-50 text-sm leading-relaxed font-medium">
-                                "Para alcanzar esta meta antes de lo previsto, intenta automatizar una pequeña transferencia semanal desde tu cuenta principal."
+                        <div className="sm:text-right">
+                            <p className="text-xs text-[var(--muted)] font-semibold tracking-wider uppercase">Objetivo</p>
+                            <p className="text-3xl sm:text-4xl font-black mt-1 text-[var(--foreground)]">
+                                ${goal.target_amount.toLocaleString()}
                             </p>
                         </div>
                     </div>
 
-                    <div className="bg-[var(--card)] p-8 rounded-[2.5rem] border border-[var(--card-border)] shadow-sm">
-                        <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
-                            Analítica de Plan
-                        </h3>
-                        <div className="space-y-6">
-                            <div>
-                                <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-2">
-                                    <span>Plan Completado</span>
-                                    <span>{Math.round((status.weeksElapsed / status.weeksDuration) * 100)}%</span>
-                                </div>
-                                <div className="w-full h-1.5 bg-[var(--background)] rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-indigo-600"
-                                        style={{ width: `${(status.weeksElapsed / status.weeksDuration) * 100}%` }}
-                                    />
-                                </div>
-                                <p className="text-[var(--muted)] text-[10px] mt-2 font-medium">
-                                    Semana {status.weeksElapsed} de {status.weeksDuration}
-                                </p>
-                            </div>
+                    <div className="mt-6 flex flex-wrap items-center gap-3">
+                        {/* Etiqueta de Días Transcurridos */}
+                        <div className="flex-shrink-0">
+                            <span className="text-[10px] font-bold text-[var(--accent-text)] bg-[var(--accent-soft)] px-4 py-2 rounded-full uppercase tracking-wider">
+                                {(() => {
+                                    const daysElapsed = Math.max(0, Math.floor((new Date().getTime() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)));
+                                    return (
+                                        <>
+                                            {daysElapsed} {daysElapsed === 1 ? "Día" : "Días"}
+                                        </>
+                                    );
+                                })()}
+                            </span>
+                        </div>
 
-                            <div className="pt-6 border-t border-[var(--card-border)] space-y-4">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-[var(--muted)] font-medium">Fecha Inicio</span>
-                                    <span className="font-bold text-[var(--foreground)]">{new Date(goal.created_at).toLocaleDateString()}</span>
-                                </div>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-[var(--muted)] font-medium">Vencimiento</span>
-                                    <span className="font-bold text-[var(--foreground)]">{new Date(goal.end_date).toLocaleDateString()}</span>
-                                </div>
+                        {/* Etiqueta de Días Restantes */}
+                        <span className="text-[10px] text-[var(--muted)] font-bold tracking-widest uppercase">
+                            {Math.max(0, Math.ceil((new Date(goal.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} días restantes
+                        </span>
+                    </div>
+
+                    {/* BARRA DE PROGRESO */}
+                    <div className="space-y-3 mb-6 mt-6">
+                        <div className="flex justify-between text-sm font-semibold text-[var(--foreground)]">
+                            <span>Progreso</span>
+                            <span className="">{progress.toFixed(1)}%</span>
+                        </div>
+                        <div className="h-4 bg-[var(--background)] rounded-full overflow-hidden border border-[var(--card-border)]">
+                            <div
+                                className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(79,70,229,0.4)]"
+                                style={{ width: `${Math.min(100, progress)}%` }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* GRID DE INFORMACIÓN */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="p-4 rounded-2xl bg-[var(--background)] border border-[var(--card-border)]">
+                            <div className="flex items-center gap-3 mb-2 text-[var(--muted)]">
+                                <TrendingUp className="w-4 h-4" />
+                                <span className="text-xs font-semibold uppercase">Ahorro estimado</span>
                             </div>
+                            <p className="text-xm font-bold">${calculateWeeklyStatus(goal).expectedAccumulated.toFixed(2)}</p>
+                        </div>
+
+                        <div className="p-4 rounded-2xl bg-[var(--background)] border border-[var(--card-border)]">
+                            <div className="flex items-center gap-3 mb-2 text-[var(--muted)]">
+                                <Calendar className="w-4 h-4" />
+                                <span className="text-xs font-semibold uppercase">Creación</span>
+                            </div>
+                            <p className="text-xm font-bold text-sm">Creado el {new Date(goal.created_at).toLocaleDateString()}</p>
+                        </div>
+
+                        <div className="p-4 rounded-2xl bg-[var(--background)] border border-[var(--card-border)]">
+                            <div className="flex items-center gap-3 mb-2 text-[var(--muted)]">
+                                <Calendar className="w-4 h-4" />
+                                <span className="text-xs font-semibold uppercase">Plazo</span>
+                            </div>
+                            <p className="text-xm font-bold text-sm">Vence el {new Date(goal.end_date).toLocaleDateString()}</p>
+                        </div>
+
+                        <div className="p-4 rounded-2xl bg-[var(--background)] border border-[var(--card-border)]">
+                            <div className="flex items-center gap-3 mb-2 text-[var(--muted)]">
+                                <Target className="w-4 h-4" />
+                                <span className="text-xs font-semibold uppercase">Cuota Ideal</span>
+                            </div>
+                            <p className="text-xm font-bold">${calculateWeeklyStatus(goal).weeklyInstallment.toFixed(2)}/sem</p>
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* SECCIÓN DE ESTADO DE LA META */}
+            {(() => {
+                const status = calculateWeeklyStatus(goal);
+                const isCompleted = goal.current_amount >= goal.target_amount;
+
+                // Definimos los estilos basados en el estado
+                const config = isCompleted
+                    ? { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-600', icon: <CheckCircle2 className="w-6 h-6" />, iconBg: 'bg-emerald-500/20' }
+                    : status.isBehind
+                        ? { bg: 'bg-rose-500/5', border: 'border-rose-500/20', text: 'text-rose-600', icon: <AlertCircle className="w-6 h-6" />, iconBg: 'bg-rose-500/10' }
+                        : { bg: 'bg-emerald-500/5', border: 'border-emerald-500/20', text: 'text-emerald-600', icon: <CheckCircle2 className="w-6 h-6" />, iconBg: 'bg-emerald-500/10' };
+
+                return (
+                    <div className={`mt-6 p-6 rounded-3xl border transition-all ${config.bg} ${config.border}`}>
+                        <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-2xl ${config.iconBg} ${config.text}`}>
+                                {config.icon}
+                            </div>
+                            <div>
+                                <h3 className={`text-lg font-bold ${config.text}`}>
+                                    {isCompleted
+                                        ? "¡Felicidades, has cumplido con tu meta!"
+                                        : status.balanceToPay > 0
+                                            ? `Debe saldar $${status.balanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2 })} esta semana`
+                                            : "¡Estás al día con tu meta!"
+                                    }
+                                </h3>
+                                <p className="text-sm text-[var(--muted)] mt-1">
+                                    {isCompleted
+                                        ? "Has alcanzado el 100% de tu objetivo financiero. ¡Excelente trabajo!"
+                                        : status.isBehind
+                                            ? `Semana ${status.weeksElapsed} de ${status.weeksDuration}. Incluye saldo pendiente acumulado.`
+                                            : "Has cumplido con los depósitos programados para esta semana."
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })()}
+
+            {/* SECCIÓN DE HISTORIAL DE TRANSACCIONES */}
+            <div>
+                <div className="flex items-center gap-2 mt-6">
+                    <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Historial de Transacciones</h1>
+                </div>
+                <p className="text-[var(--muted)] text-xs font-medium tracking-wider">
+                    Control detallado de tus movimientos.
+                </p>
+            </div>
+
+            <div className="bg-[var(--card)] rounded-2xl border border-[var(--card-border)] overflow-hidden shadow-sm mt-4">
+                {loading ? (
+                    <div className="p-20 flex flex-col items-center justify-center gap-4">
+                        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                        <p className="text-[var(--muted)] text-sm font-medium">Cargando transacciones...</p>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-[var(--background)] border-b border-[var(--card-border)]">
+                                    <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Fecha</th>
+                                    <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Flujo</th>
+                                    <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Cuenta Origen</th>
+                                    <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Tipo</th>
+                                    <th className="px-6 py-4 text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider text-right">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-[var(--card-border)]">
+                                {transactions && transactions.length > 0 ? (
+                                    transactions.map((t) => {
+                                        const isDeposit = t.type === 'deposit';
+                                        return (
+                                            <tr key={t.id} className="hover:bg-[var(--background)] transition-colors group">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <Calendar className="w-3.5 h-3.5 text-[var(--muted)]" />
+                                                        <span className="text-xs font-medium">{t.created_at ? new Date(t.created_at).toLocaleDateString() : '---'}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-bold text-[var(--foreground)]">
+                                                            {goal.name || 'Ahorro General'}
+                                                        </span>
+                                                        <span className="text-[10px] text-[var(--muted)] font-medium italic">
+                                                            {isDeposit ? 'Hacia Meta' : 'Desde Meta'}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="px-2.5 py-1 bg-[var(--accent-soft)] text-[var(--accent-text)] text-[10px] font-bold rounded-lg uppercase">
+                                                        {t.funding_accounts?.name || 'Desconocida'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <div className={`w-6 h-6 rounded-md flex items-center justify-center ${isDeposit ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
+                                                            {isDeposit ? <Plus className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+                                                        </div>
+                                                        <span className={`text-xs font-bold ${isDeposit ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                                            {isDeposit ? 'Depósito' : 'Retiro'}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <span className={`text-sm font-black ${isDeposit ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                                        {isDeposit ? '+' : '-'}${t.amount?.toLocaleString() || '0'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan={5} className="px-6 py-12 text-center">
+                                            <div className="flex flex-col items-center gap-2">
+                                                <AlertCircle className="w-5 h-5 text-[var(--muted)]" />
+                                                <p className="text-[var(--muted)] text-sm font-medium">
+                                                    No hay movimientos registrados en esta meta.
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+
+            <FloatingActionButton onClick={() => setIsTransactionModalOpen(true)} />
+
+            <TransactionModal
+                isOpen={isTransactionModalOpen}
+                onClose={() => setIsTransactionModalOpen(false)}
+                onSuccess={refresh}
+                goalId={id}
+            />
+
             <EditGoalModal
                 isOpen={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
                 goal={goal}
+                onClose={() => setIsEditModalOpen(false)}
                 onGoalUpdated={refresh}
+            />
+
+            <DeleteGoalModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                goalName={goal.name}
+                isDeleting={isDeleting}
             />
         </main>
     );

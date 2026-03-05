@@ -71,16 +71,17 @@ export class SavingsGoalsService {
      * @param userId - ID del usuario (para validación)
      */
     async update(id: string, dto: any, userId: string): Promise<SavingsGoal> {
+        const updateData: any = {};
+        if (dto.name !== undefined) updateData.name = dto.name;
+        if (dto.targetAmount !== undefined) updateData.target_amount = dto.targetAmount;
+        if (dto.initialAmount !== undefined) updateData.initial_amount = dto.initialAmount;
+        if (dto.startDate !== undefined) updateData.start_date = dto.startDate;
+        if (dto.endDate !== undefined) updateData.end_date = dto.endDate;
+        if (dto.imageUrl !== undefined) updateData.image_url = dto.imageUrl;
+
         const { data, error } = await this.supabase.getAdminClient()
             .from('savings_goals')
-            .update({
-                name: dto.name,
-                target_amount: dto.targetAmount,
-                initial_amount: dto.initialAmount,
-                start_date: dto.startDate,
-                end_date: dto.endDate,
-                image_url: dto.imageUrl,
-            })
+            .update(updateData)
             .eq('id', id)
             .eq('user_id', userId)
             .select()

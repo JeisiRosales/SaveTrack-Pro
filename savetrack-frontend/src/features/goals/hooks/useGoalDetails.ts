@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import * as goalsApi from '../api/goals.api';
 import { Goal, GoalFormData } from '../types';
 
@@ -8,6 +9,7 @@ export const useGoalDetails = (id: string | undefined) => {
     const [transactions, setTransactions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
     // obtener los detalles de una meta
     const fetchGoalData = async () => {
@@ -39,6 +41,8 @@ export const useGoalDetails = (id: string | undefined) => {
         try {
             const response = await goalsApi.updateGoal(id, data);
             setGoal(response.data);
+            // Invalidar caché de la lista de metas
+            queryClient.invalidateQueries({ queryKey: ['goals'] });
             return response.data;
         } catch (err) {
             console.error("Error updating goal:", err);
@@ -51,6 +55,8 @@ export const useGoalDetails = (id: string | undefined) => {
         if (!id) return;
         try {
             await goalsApi.deleteGoal(id);
+            // Invalidar caché de la lista de metas
+            queryClient.invalidateQueries({ queryKey: ['goals'] });
         } catch (err) {
             console.error("Error deleting goal:", err);
             throw err;

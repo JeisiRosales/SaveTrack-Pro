@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { Target, Menu, Search, X, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 import { useGoals } from '../hooks/useGoals';
 import GoalCard from './GoalCard';
 import CreateGoalModal from './CreateGoalModal';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
+import { Goal } from '../types';
 
-// interface para las props del componente GoalsView
-interface GoalsViewProps {
-    onSidebarOpen: () => void;
+interface ContextType {
+    toggleSidebar: () => void;
 }
 
 // componente para mostrar las metas
-const GoalsView: React.FC<GoalsViewProps> = ({ onSidebarOpen }) => {
+const GoalsView: React.FC = () => {
+    const { toggleSidebar } = useOutletContext<ContextType>();
     const {
         filteredGoals,
         loading,
@@ -45,7 +47,7 @@ const GoalsView: React.FC<GoalsViewProps> = ({ onSidebarOpen }) => {
                     <p className="text-[var(--muted)] text-xs mt-1 font-medium">Gestiona tus objetivos financieros a largo plazo.</p>
                 </div>
                 <button
-                    onClick={onSidebarOpen}
+                    onClick={toggleSidebar}
                     className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors"
                 >
                     <Menu className="w-6 h-6" />
@@ -129,7 +131,7 @@ const GoalsView: React.FC<GoalsViewProps> = ({ onSidebarOpen }) => {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6">
                     {filteredGoals.length > 0 ? (
-                        filteredGoals.map((goal) => (
+                        filteredGoals.map((goal: Goal) => (
                             <GoalCard key={goal.id} goal={goal} />
                         ))
                     ) : (

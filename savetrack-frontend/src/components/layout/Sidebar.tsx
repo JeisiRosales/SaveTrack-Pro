@@ -43,8 +43,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
             <aside className={`
                 fixed inset-y-0 left-0 z-50 w-64 bg-[var(--card)] border-r border-[var(--card-border)] 
-                flex flex-col p-5 transition-transform duration-300 ease-in-out
-                lg:translate-x-0 lg:static lg:inset-auto lg:h-auto
+                flex flex-col p-5 transition-transform duration-300 ease-in-out overflow-y-auto
+                lg:translate-x-0
                 ${isOpen ? 'translate-x-0 shadowed-sidebar' : '-translate-x-full'}
             `}>
                 {/* Botón de cierre para móviles */}
@@ -70,28 +70,28 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         label="Dashboard"
                         nav="/dashboard"
                         active={location.pathname === '/dashboard'}
-                        onClick={() => navigate('/dashboard')}
+                        onClick={() => { navigate('/dashboard'); onClose(); }}
                     />
                     <NavItem
                         icon={<Wallet />}
                         label="Cuentas"
                         nav="/accounts"
                         active={location.pathname === '/accounts'}
-                        onClick={() => navigate('/accounts')}
+                        onClick={() => { navigate('/accounts'); onClose(); }}
                     />
                     <NavItem
                         icon={<Target />}
                         label="Metas"
                         nav="/goals"
                         active={location.pathname === '/goals'}
-                        onClick={() => navigate('/goals')}
+                        onClick={() => { navigate('/goals'); onClose(); }}
                     />
                     <NavItem
                         icon={<ArrowRightLeft />}
                         label="Transacciones"
                         nav="/transactions"
                         active={location.pathname === '/transactions'}
-                        onClick={() => navigate('/transactions')}
+                        onClick={() => { navigate('/transactions'); onClose(); }}
                     />
                 </nav>
 

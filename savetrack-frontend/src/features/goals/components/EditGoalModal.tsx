@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Target, DollarSign, Calendar, Loader2 } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import api from '../../../lib/api';
 
 // interface para las props del componente EditGoalModal
@@ -23,6 +24,7 @@ const EditGoalModal: React.FC<EditGoalModalProps> = ({
     const [endDate, setEndDate] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
     // Precargar datos al abrir el modal
     React.useEffect(() => {
@@ -55,6 +57,9 @@ const EditGoalModal: React.FC<EditGoalModalProps> = ({
                 initialAmount: Number(currentAmount),
                 endDate
             });
+
+            // Invalidar caché de la lista de metas
+            queryClient.invalidateQueries({ queryKey: ['goals'] });
 
             onGoalUpdated();
             onClose();

@@ -1,37 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { getDashboardSummary } from '../api/dashboard.api';
 import { Account, Goal, Transaction } from '../types';
 
-// Hook para obtener el resumen del dashboard
+// Hook para obtener el resumen del dashboard con React Query
 export const useDashboard = () => {
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [accounts, setAccounts] = useState<Account[]>([]);
-    const [goals, setGoals] = useState<Goal[]>([]);
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-
-    // Hook para obtener el resumen del dashboard
-    const fetchData = async () => {
-        try {
-            setLoading(true);
+    const {
+        data,
+        isLoading: loading,
+        error: queryError,
+        refetch: refresh
+    } = useQuery({
+        queryKey: ['dashboard-summary'],
+        queryFn: async () => {
             const [accRes, goalRes, txRes] = await getDashboardSummary();
-
-            if (accRes.status === 'fulfilled') setAccounts(accRes.value.data);
-            if (goalRes.status === 'fulfilled') setGoals(goalRes.value.data);
-            if (txRes.status === 'fulfilled') setTransactions(txRes.value.data);
 
             if (accRes.status === 'rejected' || goalRes.status === 'rejected') {
                 throw new Error("Error al cargar datos esenciales.");
             }
-        } catch (err) {
-            setError("No se pudo sincronizar la información.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    // Hook para obtener el resumen del dashboard
-    useEffect(() => { fetchData(); }, []);
+            return {
+                accounts: accRes.value.data as Account[],
+                goals: goalRes.value.data as Goal[],
+                transactions: txRes.status === 'fulfilled' ? (txRes.value.data as Transaction[]) : []
+            };
+        }
+    });
+
+    const accounts = data?.accounts || [];
+    const goals = data?.goals || [];
+    const transactions = data?.transactions || [];
+    const error = queryError ? "No se pudo sincronizar la información." : null;
 
     // Calcula el balance total
     const totalBalance = accounts.reduce((acc, curr) => acc + (curr.balance || 0), 0);
@@ -46,6 +44,6 @@ export const useDashboard = () => {
         transactions,
         totalBalance,
         totalSavedInGoals,
-        refresh: fetchData
+        refresh
     };
 };

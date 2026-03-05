@@ -1,44 +1,40 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import * as transactionsApi from '../api/transactions.api';
 import { getAccounts } from '@/features/accounts/api/accounts.api';
 import { Transaction } from '../types';
 import { Account } from '@/features/accounts/types';
 
+// Hook para obtener transacciones y cuentas con React Query
 export const useTransactions = () => {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [accounts, setAccounts] = useState<Account[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [typeFilter, setTypeFilter] = useState<'All' | 'deposit' | 'withdrawal'>('All');
     const [accountFilter, setAccountFilter] = useState<string>('All');
 
-    // Hook para obtener transacciones y cuentas
-    const fetchData = async () => {
-        try {
-            setLoading(true);
+    const {
+        data,
+        isLoading: loading,
+        refetch: refresh
+    } = useQuery({
+        queryKey: ['transactions-data'],
+        queryFn: async () => {
             const [transRes, accRes] = await Promise.all([
                 transactionsApi.getTransactions(),
                 getAccounts()
             ]);
-            setTransactions(Array.isArray(transRes.data) ? transRes.data : []);
-            setAccounts(Array.isArray(accRes.data) ? accRes.data : []);
-        } catch (err) {
-            console.error("Error fetching transactions data:", err);
-            setTransactions([]);
-            setAccounts([]);
-        } finally {
-            setLoading(false);
+            return {
+                transactions: (Array.isArray(transRes.data) ? transRes.data : []) as Transaction[],
+                accounts: (Array.isArray(accRes.data) ? accRes.data : []) as Account[]
+            };
         }
-    };
+    });
 
-    // Hook para obtener transacciones y cuentas
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const transactions = data?.transactions || [];
+    const accounts = data?.accounts || [];
 
     // Filtra las transacciones según los filtros aplicados
     const filteredTransactions = useMemo(() => {
-        return transactions.filter(t => {
+        return transactions.filter((t: Transaction) => {
             const description = `${t.savings_goals?.name || 'Ahorro'} (${t.type === 'deposit' ? 'Depósito' : 'Retiro'})`;
             const matchesSearch = description.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesType = typeFilter === 'All' || t.type === typeFilter;
@@ -50,12 +46,12 @@ export const useTransactions = () => {
     // Calcula estadísticas de transacciones
     const stats = useMemo(() => {
         const incomes = filteredTransactions
-            .filter(t => t.type === 'deposit')
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
+            .filter((t: Transaction) => t.type === 'deposit')
+            .reduce((sum: number, t: Transaction) => sum + (t.amount || 0), 0);
 
         const expenses = filteredTransactions
-            .filter(t => t.type === 'withdrawal')
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
+            .filter((t: Transaction) => t.type === 'withdrawal')
+            .reduce((sum: number, t: Transaction) => sum + (t.amount || 0), 0);
 
         return {
             totalIncomes: incomes,
@@ -67,7 +63,7 @@ export const useTransactions = () => {
     // Exporta las transacciones a CSV
     const exportToCSV = () => {
         const headers = "Fecha,Meta,Flujo,Cuenta Origen,Tipo,Monto\n";
-        const rows = transactions.map(t => {
+        const rows = transactions.map((t: Transaction) => {
             const fecha = new Date(t.created_at).toLocaleDateString();
             const meta = t.savings_goals?.name || 'General';
             const flujo = t.type === 'deposit' ? 'Ingreso' : 'Egreso';
@@ -98,6 +94,6 @@ export const useTransactions = () => {
         setAccountFilter,
         stats,
         exportToCSV,
-        refresh: fetchData
+        refresh
     };
 };
