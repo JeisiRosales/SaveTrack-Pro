@@ -51,11 +51,13 @@ export class IncomeTransactionsService {
     try {
       const settings = await this.userSettingsService.findByUserId(userId);
 
-      // Se ahorra si: el ahorro automático global está activo O si se solicita específicamente en esta transacción
+      // Se ahorra si: el ahorro automático global está activo O si se solicita específicamente en esta transacción via boton modal
       const shouldSave = settings.auto_save_enabled || createDto.perform_auto_save;
 
-      if (shouldSave && settings.savings_account_id && settings.saving_percentage > 0) {
-        const amountToSave = (createDto.amount * settings.saving_percentage) / 100;
+      if (shouldSave && settings.savings_account_id) {
+        // Si no hay porcentaje global configurado pero se mandó perform_auto_save, aplicaremos un 10% por defecto para que no falle el botón vacío
+        const activePercentage = settings.saving_percentage > 0 ? settings.saving_percentage : 10;
+        const amountToSave = (createDto.amount * activePercentage) / 100;
 
         if (amountToSave > 0) {
           await this.fundingAccountsService.transferBetweenAccounts({

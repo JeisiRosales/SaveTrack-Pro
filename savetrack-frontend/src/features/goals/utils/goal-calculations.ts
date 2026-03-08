@@ -14,7 +14,9 @@ export const calculateWeeklyStatus = (goal: Goal): WeeklyStatus => {
 
     // Semanas completadas hasta hoy (empezamos en 0 para la semana actual)
     const elapsedDiffInMs = today.getTime() - startDate.getTime();
-    const weeksElapsed = Math.max(0, Math.floor(elapsedDiffInMs / weekInMs));
+    // Limitar elapsedWeeks a la duración total de la meta
+    let weeksElapsed = Math.max(0, Math.floor(elapsedDiffInMs / weekInMs));
+    weeksElapsed = Math.min(weeksElapsed, weeksDuration);
 
     // Cuota semanal FIJA basándose en lo que falta por ahorrar
     // (Monto Total - Monto Inicial) / Duración Total
@@ -23,7 +25,9 @@ export const calculateWeeklyStatus = (goal: Goal): WeeklyStatus => {
 
     // Lo que debería tener hoy: Inicial + (Cuotas de semanas COMPLETADAS)
     // Usamos weeksElapsed (sin +1) para que el usuario tenga toda la semana actual para ahorrar.
-    const expectedAccumulated = (goal.initial_amount || 0) + (weeklyInstallment * weeksElapsed);
+    // Limitar lo esperado al monto objetivo máximo
+    let expectedAccumulated = (goal.initial_amount || 0) + (weeklyInstallment * weeksElapsed);
+    expectedAccumulated = Math.min(expectedAccumulated, goal.target_amount);
 
     // Lo que le falta para estar al día
     const balanceToStayOnTrack = Math.max(0, expectedAccumulated - goal.current_amount);
@@ -32,7 +36,7 @@ export const calculateWeeklyStatus = (goal: Goal): WeeklyStatus => {
         balanceToStayOnTrack,
         isBehind: goal.current_amount < expectedAccumulated,
         balanceToPay: balanceToStayOnTrack,
-        weeksElapsed: weeksElapsed + 1, // Mostramos 1 para la primera semana
+        weeksElapsed: Math.min(weeksElapsed + 1, weeksDuration), // Limitar semanas mostradas al máximo de la meta
         totalWeeksDuration: weeksDuration,
         weeklyInstallment,
         weeksDuration,

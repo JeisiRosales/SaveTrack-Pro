@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { Menu, Loader2, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useGlobalSettings } from '@/context/SettingsContext';
 import CreateGoalModal from '@/features/goals/components/CreateGoalModal';
 import { useDashboard } from '../hooks/useDashboard';
 import { AccountCard } from './AccountCard';
@@ -15,6 +16,7 @@ interface ContextType {
 // Vista de dashboard
 export const DashboardView: React.FC = () => {
     const { user } = useAuth();
+    const { currencySymbol } = useGlobalSettings();
     const { toggleSidebar } = useOutletContext<ContextType>();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -59,7 +61,7 @@ export const DashboardView: React.FC = () => {
                             <h2 className="text-xl font-semibold">Saldo Total</h2>
                             <p className="text-[var(--muted)] text-xs">Tu capital neto disponible</p>
                             <h3 className="text-4xl font-bold text-[var(--accent-text)] mt-3">
-                                ${totalBalance.toLocaleString()}
+                                {currencySymbol}{totalBalance.toLocaleString()}
                             </h3>
                             <p className="text-[var(--muted)] text-xs mt-2">Distribuido en {accounts.length} cuentas</p>
                         </div>
@@ -80,7 +82,7 @@ export const DashboardView: React.FC = () => {
                         <div className="flex justify-between items-center mb-4">
                             <div>
                                 <h2 className="font-bold text-lg">Tus Metas</h2>
-                                <p className="text-[var(--muted)] text-xs">Progreso acumulado: ${totalSavedInGoals.toLocaleString()}</p>
+                                <p className="text-[var(--muted)] text-xs">Progreso acumulado: {currencySymbol}{totalSavedInGoals.toLocaleString()}</p>
                             </div>
                             <Link to="/goals" className="text-indigo-500 text-sm font-bold hover:underline transition-all">Ver Todo</Link>
                         </div>

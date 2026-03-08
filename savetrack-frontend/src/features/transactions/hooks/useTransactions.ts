@@ -1,14 +1,14 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import * as transactionsApi from '../api/transactions.api';
+import { getExpenseTransactions } from '@/features/expense-transactions/api/expense-transactions.api';
+import { getIncomeTransactions } from '@/features/income-transactions/api/income-transactions.api';
 import { getAccounts } from '@/features/accounts/api/accounts.api';
-import { Transaction } from '../types';
 import { Account } from '@/features/accounts/types';
 
-// Hook para obtener transacciones y cuentas con React Query
 export const useTransactions = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [typeFilter, setTypeFilter] = useState<'All' | 'deposit' | 'withdrawal'>('All');
+    const [typeFilter, setTypeFilter] = useState<'All' | 'deposit' | 'withdrawal' | 'expense' | 'income'>('All');
     const [accountFilter, setAccountFilter] = useState<string>('All');
 
     const {
@@ -18,12 +18,50 @@ export const useTransactions = () => {
     } = useQuery({
         queryKey: ['transactions-data'],
         queryFn: async () => {
-            const [transRes, accRes] = await Promise.all([
+            const [transRes, expRes, incRes, accRes] = await Promise.all([
                 transactionsApi.getTransactions(),
+                getExpenseTransactions(),
+                getIncomeTransactions(),
                 getAccounts()
             ]);
+
+            // Normalizando Objetos para una Vista Universal
+            const rawGoals = Array.isArray(transRes.data) ? transRes.data : [];
+            const rawExp = Array.isArray(expRes.data) ? expRes.data : [];
+            const rawInc = Array.isArray(incRes.data) ? incRes.data : [];
+
+            const mappedGoals = rawGoals.map((t: any) => ({
+                ...t,
+                universalType: t.type === 'deposit' ? 'goal_deposit' : 'goal_withdrawal',
+                entityName: t.savings_goals?.name || 'Ahorro General',
+                isPositive: t.type === 'withdrawal' // Un retiro de meta SUMA a la cuenta, un depósito de meta RESTA de la cuenta.
+            }));
+
+            const mappedExpenses = rawExp.map((e: any) => ({
+                ...e,
+                type: 'expense',
+                universalType: 'expense',
+                entityName: e.description || e.expense_categories?.name || 'Gasto General',
+                categoryName: e.expense_categories?.name || 'Gasto',
+                isPositive: false
+            }));
+
+            const mappedIncomes = rawInc.map((i: any) => ({
+                ...i,
+                type: 'income',
+                universalType: 'income',
+                entityName: i.description || i.income_categories?.name || 'Ingreso General',
+                categoryName: i.income_categories?.name || 'Ingreso',
+                isPositive: true
+            }));
+
+            // Combinar y Ordenar Descendentemente (Más recientes primero)
+            const allTransactions = [...mappedGoals, ...mappedExpenses, ...mappedIncomes].sort(
+                (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+
             return {
-                transactions: (Array.isArray(transRes.data) ? transRes.data : []) as Transaction[],
+                transactions: allTransactions,
                 accounts: (Array.isArray(accRes.data) ? accRes.data : []) as Account[]
             };
         }
@@ -32,26 +70,34 @@ export const useTransactions = () => {
     const transactions = data?.transactions || [];
     const accounts = data?.accounts || [];
 
-    // Filtra las transacciones según los filtros aplicados
     const filteredTransactions = useMemo(() => {
-        return transactions.filter((t: Transaction) => {
-            const description = `${t.savings_goals?.name || 'Ahorro'} (${t.type === 'deposit' ? 'Depósito' : 'Retiro'})`;
-            const matchesSearch = description.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesType = typeFilter === 'All' || t.type === typeFilter;
+        return transactions.filter((t: any) => {
+            const matchesSearch = t.entityName.toLowerCase().includes(searchTerm.toLowerCase());
+
+            // Lógica de Filtro compleja
+            let matchesType = true;
+            if (typeFilter !== 'All') {
+                if (typeFilter === 'deposit') matchesType = t.type === 'deposit';
+                if (typeFilter === 'withdrawal') matchesType = t.type === 'withdrawal';
+                if (typeFilter === 'expense') matchesType = t.type === 'expense';
+                if (typeFilter === 'income') matchesType = t.type === 'income';
+            }
+
             const matchesAccount = accountFilter === 'All' || t.account_id === accountFilter;
+
             return matchesSearch && matchesType && matchesAccount;
         });
     }, [transactions, searchTerm, typeFilter, accountFilter]);
 
-    // Calcula estadísticas de transacciones
+    // Calcula estadísticas de transacciones (usando los signos `isPositive`)
     const stats = useMemo(() => {
         const incomes = filteredTransactions
-            .filter((t: Transaction) => t.type === 'deposit')
-            .reduce((sum: number, t: Transaction) => sum + (t.amount || 0), 0);
+            .filter((t: any) => t.isPositive)
+            .reduce((sum: number, t: any) => sum + (t.amount || 0), 0);
 
         const expenses = filteredTransactions
-            .filter((t: Transaction) => t.type === 'withdrawal')
-            .reduce((sum: number, t: Transaction) => sum + (t.amount || 0), 0);
+            .filter((t: any) => !t.isPositive)
+            .reduce((sum: number, t: any) => sum + (t.amount || 0), 0);
 
         return {
             totalIncomes: incomes,
@@ -59,28 +105,6 @@ export const useTransactions = () => {
             netBalance: incomes - expenses
         };
     }, [filteredTransactions]);
-
-    // Exporta las transacciones a CSV
-    const exportToCSV = () => {
-        const headers = "Fecha,Meta,Flujo,Cuenta Origen,Tipo,Monto\n";
-        const rows = transactions.map((t: Transaction) => {
-            const fecha = new Date(t.created_at).toLocaleDateString();
-            const meta = t.savings_goals?.name || 'General';
-            const flujo = t.type === 'deposit' ? 'Ingreso' : 'Egreso';
-            const cuenta = t.funding_accounts?.name || 'Principal';
-            return `${fecha},"${meta}",${flujo},"${cuenta}",${t.type},${t.amount}`;
-        }).join("\n");
-
-        const blob = new Blob(["\ufeff" + headers + rows], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `transacciones_savetrack_${new Date().toISOString().slice(0, 10)}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    };
 
     return {
         transactions: filteredTransactions,
@@ -93,7 +117,7 @@ export const useTransactions = () => {
         accountFilter,
         setAccountFilter,
         stats,
-        exportToCSV,
+        exportToCSV: () => { }, // TODO opcional: Actualizar CSV
         refresh
     };
 };

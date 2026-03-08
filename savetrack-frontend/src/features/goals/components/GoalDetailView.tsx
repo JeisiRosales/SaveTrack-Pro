@@ -20,12 +20,14 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { TransactionModal } from '@/features/transactions/components/TransactionModal';
 import EditGoalModal from './EditGoalModal';
 import DeleteGoalModal from './DeleteGoalModal';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 interface ContextType {
     toggleSidebar: () => void;
 }
 
 const GoalDetailView: React.FC = () => {
+    const { currencySymbol } = useGlobalSettings();
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { toggleSidebar } = useOutletContext<ContextType>();
@@ -138,13 +140,13 @@ const GoalDetailView: React.FC = () => {
                         <div>
                             <h2 className="text-xs font-semibold text-[var(--muted)] tracking-wider uppercase">Saldo Actual</h2>
                             <h3 className="text-3xl sm:text-4xl font-black mt-1 text-[var(--accent-text)]">
-                                ${goal.current_amount.toLocaleString()}
+                                {currencySymbol}{goal.current_amount.toLocaleString()}
                             </h3>
                         </div>
                         <div className="sm:text-right">
                             <p className="text-xs text-[var(--muted)] font-semibold tracking-wider uppercase">Objetivo</p>
                             <p className="text-3xl sm:text-4xl font-black mt-1 text-[var(--foreground)]">
-                                ${goal.target_amount.toLocaleString()}
+                                {currencySymbol}{goal.target_amount.toLocaleString()}
                             </p>
                         </div>
                     </div>
@@ -191,7 +193,7 @@ const GoalDetailView: React.FC = () => {
                                 <TrendingUp className="w-4 h-4" />
                                 <span className="text-xs font-semibold uppercase">Ahorro estimado</span>
                             </div>
-                            <p className="text-xm font-bold">${calculateWeeklyStatus(goal).expectedAccumulated.toFixed(2)}</p>
+                            <p className="text-xm font-bold">{currencySymbol}{calculateWeeklyStatus(goal).expectedAccumulated.toFixed(2)}</p>
                         </div>
 
                         <div className="p-4 rounded-2xl bg-[var(--background)] border border-[var(--card-border)]">
@@ -215,7 +217,7 @@ const GoalDetailView: React.FC = () => {
                                 <Target className="w-4 h-4" />
                                 <span className="text-xs font-semibold uppercase">Cuota Ideal</span>
                             </div>
-                            <p className="text-xm font-bold">${calculateWeeklyStatus(goal).weeklyInstallment.toFixed(2)}/sem</p>
+                            <p className="text-xm font-bold">{currencySymbol}{calculateWeeklyStatus(goal).weeklyInstallment.toFixed(2)}/sem</p>
                         </div>
                     </div>
                 </div>
@@ -244,7 +246,7 @@ const GoalDetailView: React.FC = () => {
                                     {isCompleted
                                         ? "¡Felicidades, has cumplido con tu meta!"
                                         : status.balanceToPay > 0
-                                            ? `Debe saldar $${status.balanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2 })} esta semana`
+                                            ? `Debe saldar ${currencySymbol}${status.balanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2 })} esta semana`
                                             : "¡Estás al día con tu meta!"
                                     }
                                 </h3>
@@ -329,7 +331,7 @@ const GoalDetailView: React.FC = () => {
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
                                                     <span className={`text-sm font-black ${isDeposit ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                                        {isDeposit ? '+' : '-'}${t.amount?.toLocaleString() || '0'}
+                                                        {isDeposit ? '+' : '-'}{currencySymbol}{t.amount?.toLocaleString() || '0'}
                                                     </span>
                                                 </td>
                                             </tr>

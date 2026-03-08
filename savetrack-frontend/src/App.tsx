@@ -11,6 +11,9 @@ import Accounts from './pages/Accounts';
 import Transactions from './pages/Transactions';
 import GoalDetailsPage from './pages/GoalDetailsPage';
 import MainLayout from './components/layout/MainLayout';
+import Categories from './pages/Categories';
+import Settings from './pages/Settings';
+import { SettingsProvider } from './context/SettingsContext';
 
 // Configuración de React Query para caché global
 const queryClient = new QueryClient({
@@ -37,26 +40,30 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          {/* Rutas Públicas */}
-          <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-          <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+      <SettingsProvider>
+        <Router>
+          <Routes>
+            {/* Rutas Públicas */}
+            <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+            <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Rutas Privadas con Layout Persistente */}
-          <Route element={user ? <MainLayout /> : <Navigate to="/login" />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/goals" element={<Goals />} />
-            <Route path="/goals/:id" element={<GoalDetailsPage />} />
-            <Route path="/accounts" element={<Accounts />} />
-            <Route path="/transactions" element={<Transactions />} />
-          </Route>
+            {/* Rutas Privadas con Layout Persistente */}
+            <Route element={user ? <MainLayout /> : <Navigate to="/login" />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/goals" element={<Goals />} />
+              <Route path="/goals/:id" element={<GoalDetailsPage />} />
+              <Route path="/accounts" element={<Accounts />} />
+              <Route path="/transactions" element={<Transactions />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
 
-          <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
-        </Routes>
-      </Router>
+            <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+          </Routes>
+        </Router>
+      </SettingsProvider>
     </QueryClientProvider>
   );
 }

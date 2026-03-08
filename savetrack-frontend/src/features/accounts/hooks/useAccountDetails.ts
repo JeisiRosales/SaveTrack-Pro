@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as accountsApi from '../api/accounts.api';
+import api from '@/lib/api';
 import { Account, EditAccountForm, Transaction } from '../types';
 
 // Hook para manejar los detalles de una cuenta
@@ -22,8 +23,53 @@ export const useAccountDetails = (initialAccount: Account | null) => {
 
         try {
             setLoadingTransactions(true);
-            const response = await accountsApi.getAccountTransactions(account.id);
-            setTransactions(response.data);
+
+            // Promesa concurrente para obtener todas las transacciones vinculadas a esta cuenta
+            const [goalsTx, incomesTx, expensesTx] = await Promise.all([
+                accountsApi.getAccountTransactions(account.id),
+                api.get(`/income-transactions?account_id=${account.id}`),
+                api.get(`/expense-transactions?account_id=${account.id}`)
+            ]);
+
+            // Formatear Metas
+            const mappedGoals = (goalsTx.data || []).map((t: any) => ({
+                id: t.id,
+                created_at: t.created_at,
+                amount: t.amount,
+                type: t.type, // 'deposit' | 'withdrawal'
+                universalType: t.type === 'deposit' ? 'goal_deposit' : 'goal_withdrawal',
+                entityName: t.savings_goals?.title || 'Meta Eliminada'
+            }));
+
+            // Formatear Ingresos
+            const mappedIncomes = (incomesTx.data || [])
+                .filter((t: any) => t.account_id === account.id)
+                .map((t: any) => ({
+                    id: t.id,
+                    created_at: t.created_at,
+                    amount: t.amount,
+                    type: 'deposit',
+                    universalType: 'income',
+                    entityName: t.description || t.income_categories?.name || 'Ingreso'
+                }));
+
+            // Formatear Gastos
+            const mappedExpenses = (expensesTx.data || [])
+                .filter((t: any) => t.account_id === account.id)
+                .map((t: any) => ({
+                    id: t.id,
+                    created_at: t.created_at,
+                    amount: t.amount,
+                    type: 'withdrawal',
+                    universalType: 'expense',
+                    entityName: t.description || t.expense_categories?.name || 'Gasto'
+                }));
+
+            // Combinar y ordenar
+            const allTransactions = [...mappedGoals, ...mappedIncomes, ...mappedExpenses]
+                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+            setTransactions(allTransactions);
         } catch (err) {
             console.error("Error fetching transactions:", err);
             setTransactions([]);

@@ -1,8 +1,11 @@
 import { Plus } from "lucide-react";
 import { Transaction } from "../types";
 
+import { useGlobalSettings } from "@/context/SettingsContext";
+
 // Interfaz para las propiedades del item de transacción
 export const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
+    const { currencySymbol } = useGlobalSettings();
     // Determina si la transacción es un depósito
     const isDeposit = transaction.type === 'deposit';
 
@@ -23,7 +26,7 @@ export const TransactionItem = ({ transaction }: { transaction: Transaction }) =
             </div>
             <div className="text-right">
                 <p className={`text-sm font-bold ${isDeposit ? 'text-emerald-500' : 'text-rose-500'}`}>
-                    {isDeposit ? '+' : '-'}${transaction.amount.toLocaleString()}
+                    {isDeposit ? '+' : '-'}{currencySymbol}{transaction.amount.toLocaleString()}
                 </p>
                 <p className="text-[10px] text-[var(--muted-foreground)] mt-0.5">
                     {new Date(transaction.created_at).toLocaleDateString()}
