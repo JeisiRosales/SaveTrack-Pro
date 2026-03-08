@@ -64,36 +64,47 @@ export const CategoryList: React.FC<CategoryListProps> = ({
                 {icon} {title}
             </h2>
 
-            <div className="space-y-3 max-h-[400px] overflow-y-auto mb-6 pr-2 scrollbar-thin">
-                {loading ? <div className="flex items-center gap-2 text-[var(--muted)]"><Loader2 className="w-4 h-4 animate-spin" /> Cargando...</div> : categories.length === 0 ? <p className="text-[var(--muted)] text-sm">No hay categorías registradas.</p> : categories.map(cat => (
-                    <div key={cat.id} className="flex justify-between items-center bg-[var(--background)] border border-[var(--card-border)] p-3.5 rounded-2xl group transition-all hover:border-[var(--card-border-hover)]">
+            <div className="space-y-2 max-h-[400px] overflow-y-auto mb-6 pr-2 scrollbar-thin">
+                {loading ? (
+                    <div className="flex items-center gap-2 text-[var(--muted)] py-4 justify-center">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-xs font-medium">Cargando...</span>
+                    </div>
+                ) : categories.length === 0 ? (
+                    <p className="text-[var(--muted)] text-sm py-4 text-center">No hay categorías registradas.</p>
+                ) : categories.map(cat => (
+                    <div key={cat.id} className="flex justify-between items-center bg-[var(--card)] border border-[var(--card-border)]/50 p-2.5 px-4 rounded-xl group transition-all hover:border-indigo-500/30 hover:bg-[var(--background)]">
                         {editingId === cat.id ? (
-                            <div className="flex-1 flex items-center gap-3">
+                            <div className="flex-1 flex items-center gap-2">
                                 <input
                                     type="text" autoFocus
                                     value={editName} onChange={e => setEditName(e.target.value)}
-                                    className="flex-1 bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--foreground)] text-sm rounded-xl px-3 py-2 outline-none focus:border-indigo-500"
+                                    className="flex-1 bg-[var(--input-bg)] border-none text-[var(--foreground)] text-sm rounded-lg px-2 py-1 outline-none ring-1 ring-[var(--input-border)] focus:ring-2 focus:ring-indigo-500/50 transition-all"
                                 />
                                 {showIsFixed && (
-                                    <label className="flex items-center gap-1.5 text-xs text-[var(--muted)] cursor-pointer">
-                                        <input type="checkbox" checked={editIsFixed} onChange={e => setEditIsFixed(e.target.checked)} className="rounded" />
+                                    <label className="flex items-center gap-1.5 text-[10px] text-[var(--muted)] cursor-pointer select-none">
+                                        <input type="checkbox" checked={editIsFixed} onChange={e => setEditIsFixed(e.target.checked)} className="rounded-sm accent-indigo-500" />
                                         Fijo
                                     </label>
                                 )}
-                                <div className="flex gap-1 ml-2">
-                                    <button disabled={updating} onClick={() => saveEdit(cat.id)} className="text-emerald-500 hover:bg-emerald-500/10 p-2 rounded-xl transition-colors disabled:opacity-50">
-                                        {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                                <div className="flex gap-1 ml-1">
+                                    <button disabled={updating} onClick={() => saveEdit(cat.id)} className="text-emerald-500 hover:bg-emerald-500/10 p-1.5 rounded-lg transition-colors">
+                                        {updating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                                     </button>
-                                    <button disabled={updating} onClick={cancelEdit} className="text-rose-500 hover:bg-rose-500/10 p-2 rounded-xl transition-colors disabled:opacity-50">
-                                        <X className="w-4 h-4" />
+                                    <button disabled={updating} onClick={cancelEdit} className="text-rose-500 hover:bg-rose-500/10 p-1.5 rounded-lg transition-colors">
+                                        <X className="w-3.5 h-3.5" />
                                     </button>
                                 </div>
                             </div>
                         ) : (
                             <>
-                                <div className="flex-1">
-                                    <p className="text-[var(--foreground)] font-semibold text-sm">{cat.name}</p>
-                                    {showIsFixed && cat.is_fixed && <span className="text-[10px] mt-1 inline-block bg-indigo-500/10 text-indigo-400 font-bold px-2 py-0.5 rounded-lg border border-indigo-500/20">FIJO</span>}
+                                <div className="flex items-center gap-3 overflow-hidden">
+                                    <p className="text-[var(--foreground)] font-medium text-sm truncate">{cat.name}</p>
+                                    {showIsFixed && cat.is_fixed && (
+                                        <span className="text-[9px] tracking-tighter bg-indigo-500/5 text-indigo-500/70 font-bold px-1.5 py-0.5 rounded border border-indigo-500/10 uppercase">
+                                            Fijo
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="flex gap-1 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button onClick={() => startEdit(cat)} className="text-indigo-400 hover:bg-indigo-400/10 p-2 rounded-xl transition-colors">

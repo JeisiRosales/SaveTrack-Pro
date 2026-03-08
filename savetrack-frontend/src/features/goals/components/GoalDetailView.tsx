@@ -111,7 +111,7 @@ const GoalDetailView: React.FC = () => {
                     <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
                         <div>
                             <h1 className="text-2xl sm:text-3xl font-black text-[var(--foreground)] mt-2 tracking-tight">{goal.name}</h1>
-                            <p className="text-[var(--muted)] text-[10px] sm:text-xs mt-1 font-medium uppercase tracking-wider">Detalles de la meta financiera</p>
+                            <p className="text-[var(--muted)] text-[10px] sm:text-xs mt-1 font-medium tracking-wider">Detalles de la meta financiera</p>
                         </div>
 
                         <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -138,13 +138,13 @@ const GoalDetailView: React.FC = () => {
                     {/* Saldo Actual y Objetivo*/}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mt-8 gap-4 sm:gap-0">
                         <div>
-                            <h2 className="text-xs font-semibold text-[var(--muted)] tracking-wider uppercase">Saldo Actual</h2>
+                            <h2 className="text-xs font-semibold text-[var(--muted)] tracking-wider">Saldo Actual</h2>
                             <h3 className="text-3xl sm:text-4xl font-black mt-1 text-[var(--accent-text)]">
                                 {currencySymbol}{goal.current_amount.toLocaleString()}
                             </h3>
                         </div>
                         <div className="sm:text-right">
-                            <p className="text-xs text-[var(--muted)] font-semibold tracking-wider uppercase">Objetivo</p>
+                            <p className="text-xs text-[var(--muted)] font-semibold tracking-wider">Objetivo</p>
                             <p className="text-3xl sm:text-4xl font-black mt-1 text-[var(--foreground)]">
                                 {currencySymbol}{goal.target_amount.toLocaleString()}
                             </p>

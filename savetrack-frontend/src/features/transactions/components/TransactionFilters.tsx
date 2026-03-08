@@ -26,8 +26,6 @@ export const TransactionFilters: React.FC<TransactionFiltersProps> = ({
 }) => {
     const typeOptions = [
         { value: 'All', label: 'Todos los Tipos', icon: <Tag className="w-3 h-3" /> },
-        { value: 'deposit', label: 'Depósitos (Meta)', icon: <Plus className="w-3 h-3 text-emerald-500" /> },
-        { value: 'withdrawal', label: 'Retiros (Meta)', icon: <Minus className="w-3 h-3 text-rose-500" /> },
         { value: 'income', label: 'Ingresos', icon: <Plus className="w-3 h-3 text-emerald-500" /> },
         { value: 'expense', label: 'Gastos', icon: <Minus className="w-3 h-3 text-rose-500" /> },
     ];

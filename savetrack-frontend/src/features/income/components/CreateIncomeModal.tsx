@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useIncomeTransactions } from '../hooks/useIncomeTransactions';
 import { X, Loader2 } from 'lucide-react';
 import { AccountSelector } from '@/features/accounts/components/AccountSelector';
-import { IncomeCategorySelector } from '@/features/income-categories/components/IncomeCategorySelector';
+import { IncomeCategorySelector } from '@/features/income/components/IncomeCategorySelector';
 import { useAccounts } from '@/features/accounts/hooks/useAccounts';
 import { useGlobalSettings } from '@/context/SettingsContext';
 

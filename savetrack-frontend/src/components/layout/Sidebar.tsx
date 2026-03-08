@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <nav className="flex-1 space-y-1">
                     <NavItem icon={<LayoutDashboard />} label="Dashboard" nav="/dashboard" active={location.pathname === '/dashboard'} onClick={() => { navigate('/dashboard'); onClose(); }} />
                     <NavItem icon={<Wallet />} label="Cuentas" nav="/accounts" active={location.pathname === '/accounts'} onClick={() => { navigate('/accounts'); onClose(); }} />
-                    <NavItem icon={<PiggyBank />} label="Metas" nav="/goals" active={location.pathname === '/goals'} onClick={() => { navigate('/goals'); onClose(); }} />
+                    <NavItem icon={<PiggyBank />} label="Cochinito" nav="/goals" active={location.pathname === '/goals'} onClick={() => { navigate('/goals'); onClose(); }} />
                     <NavItem icon={<TrendingUp />} label="Ingresos" nav="/incomes" active={location.pathname === '/incomes'} onClick={() => { navigate('/incomes'); onClose(); }} />
                     <NavItem icon={<TrendingDown />} label="Gastos" nav="/expenses" active={location.pathname === '/expenses' || location.pathname === '/savings'} onClick={() => { navigate('/expenses'); onClose(); }} />
                     <NavItem icon={<ArrowRightLeft />} label="Transacciones" nav="/transactions" active={location.pathname === '/transactions'} onClick={() => { navigate('/transactions'); onClose(); }} />

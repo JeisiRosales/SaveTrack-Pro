@@ -1,14 +1,12 @@
 import React from 'react';
-import { Calendar, Plus, Minus } from 'lucide-react';
+import { Calendar, Plus, Minus, ArrowRightLeft } from 'lucide-react';
 import { Transaction } from '../types';
 import { useGlobalSettings } from '@/context/SettingsContext';
 
-// Interfaz para las propiedades de la tabla de transacciones
 interface TransactionsTableProps {
     transactions: Transaction[];
 }
 
-// Componente de tabla para transacciones
 export const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) => {
     const { currencySymbol } = useGlobalSettings();
 
@@ -33,16 +31,27 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactio
                         <tbody className="divide-y divide-[var(--card-border)]">
                             {transactions.map((t: any) => {
                                 const isPositive = t.isPositive;
+                                const isGoalAction = t.universalType === 'goal_deposit' || t.universalType === 'goal_withdrawal';
                                 const isExpense = t.universalType === 'expense';
                                 const isIncome = t.universalType === 'income';
 
                                 let typeLabel = 'Desconocido';
                                 let subTitle = t.categoryName || '';
 
+                                // Lógica de etiquetas
                                 if (isExpense) { typeLabel = 'Gasto'; }
                                 else if (isIncome) { typeLabel = 'Ingreso'; }
-                                else if (t.universalType === 'goal_deposit') { typeLabel = 'Depósito Meta'; subTitle = 'Hacía Meta'; }
-                                else if (t.universalType === 'goal_withdrawal') { typeLabel = 'Retiro Meta'; subTitle = 'Desde Meta'; }
+                                else if (t.universalType === 'goal_deposit') { typeLabel = 'Hacia Meta'; subTitle = 'Ahorro'; }
+                                else if (t.universalType === 'goal_withdrawal') { typeLabel = 'Desde Meta'; subTitle = 'Liberación'; }
+
+                                // Clases de colores condicionales
+                                const badgeColorClass = isGoalAction
+                                    ? 'bg-[var(--card-border)] text-[var(--muted)]' // Neutro para metas
+                                    : isPositive ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500';
+
+                                const textColorClass = isGoalAction
+                                    ? 'text-[var(--foreground)]' // Color de texto normal para metas
+                                    : isPositive ? 'text-emerald-500' : 'text-rose-500';
 
                                 return (
                                     <tr key={t.id} className="hover:bg-[var(--background)] transition-colors group">
@@ -69,17 +78,21 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactio
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-1.5">
-                                                <div className={`w-6 h-6 rounded-md flex items-center justify-center ${isPositive ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
-                                                    {isPositive ? <Plus className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+                                                <div className={`w-6 h-6 rounded-md flex items-center justify-center ${badgeColorClass}`}>
+                                                    {isGoalAction ? (
+                                                        <ArrowRightLeft className="w-3 h-3" /> // Icono neutro para traspasos
+                                                    ) : (
+                                                        isPositive ? <Plus className="w-3 h-3" /> : <Minus className="w-3 h-3" />
+                                                    )}
                                                 </div>
-                                                <span className={`text-xs font-bold ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                                <span className={`text-xs font-bold ${textColorClass}`}>
                                                     {typeLabel}
                                                 </span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <span className={`text-sm font-black ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                                {isPositive ? '+' : '-'}{currencySymbol}{t.amount?.toLocaleString() || '0'}
+                                            <span className={`text-sm font-black ${textColorClass}`}>
+                                                {isGoalAction ? '' : (isPositive ? '+' : '-')}{currencySymbol}{t.amount?.toLocaleString() || '0'}
                                             </span>
                                         </td>
                                     </tr>

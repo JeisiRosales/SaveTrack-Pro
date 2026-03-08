@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useExpenseCategories } from '@/features/expense/hooks/useExpenseCategories';
 import { useIncomeCategories } from '@/features/income/hooks/useIncomeCategories';
 import { CategoryList } from '@/features/categories/components/CategoryList';
-import { TrendingUp, TrendingDown, Menu } from 'lucide-react';
+import { TrendingUp, TrendingDown, Menu, Tag } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 
 interface ContextType {
@@ -19,23 +19,19 @@ const Categories = () => {
 
     return (
         <div className="flex-1 p-6 lg:p-10 relative overflow-x-hidden min-h-screen bg-[var(--background)]">
-            <header className="mb-8 flex items-center justify-between gap-4">
-                {/* Bloque de Texto */}
+            <header className="mb-6 flex items-center justify-between">
                 <div>
-                    <h1 className="text-xl lg:text-3xl font-black text-[var(--foreground)] tracking-tight">
-                        Gestión de <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-600">Categorías</span>
+                    <h1 className="text-xl lg:text-2xl font-bold text-[var(--foreground)] flex items-center gap-2">
+                        <Tag className="w-6 h-6 text-[var(--accent-text)]" />
+                        Mis Categorías
                     </h1>
-                    <p className="text-[var(--muted)] text-sm mt-2 font-medium max-w-2xl">
-                        Administra y personaliza tus transacciones de manera más eficiente.
-                    </p>
+                    <p className="text-[var(--muted)] text-xs mt-1 font-medium">Gestiona tus categorías de gastos e ingresos.</p>
                 </div>
-
-                {/* Botón de Menú (Mobile Only) */}
                 <button
                     onClick={toggleSidebar}
-                    className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors shrink-0"
+                    className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors"
                 >
-                    <Menu className="w-6 h-6 text-[var(--foreground)]" />
+                    <Menu className="w-6 h-6" />
                 </button>
             </header>
 

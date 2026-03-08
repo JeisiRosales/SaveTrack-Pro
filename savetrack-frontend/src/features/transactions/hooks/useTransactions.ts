@@ -6,10 +6,14 @@ import { getIncomeTransactions } from '@/features/income/api/income-transactions
 import { getAccounts } from '@/features/accounts/api/accounts.api';
 import { Account } from '@/features/accounts/types';
 
+// Definición del tipo de rango de tiempo
+export type TimeRange = 'today' | 'yesterday' | 'week' | 'month' | 'last_month' | 'all';
+
 export const useTransactions = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [typeFilter, setTypeFilter] = useState<'All' | 'deposit' | 'withdrawal' | 'expense' | 'income'>('All');
     const [accountFilter, setAccountFilter] = useState<string>('All');
+    const [timeRange, setTimeRange] = useState<TimeRange>('month');
 
     const {
         data,
@@ -25,7 +29,6 @@ export const useTransactions = () => {
                 getAccounts()
             ]);
 
-            // Normalizando Objetos para una Vista Universal
             const rawGoals = Array.isArray(transRes.data) ? transRes.data : [];
             const rawExp = Array.isArray(expRes.data) ? expRes.data : [];
             const rawInc = Array.isArray(incRes.data) ? incRes.data : [];
@@ -34,7 +37,7 @@ export const useTransactions = () => {
                 ...t,
                 universalType: t.type === 'deposit' ? 'goal_deposit' : 'goal_withdrawal',
                 entityName: t.savings_goals?.name || 'Ahorro General',
-                isPositive: t.type === 'withdrawal' // Un retiro de meta SUMA a la cuenta, un depósito de meta RESTA de la cuenta.
+                isPositive: t.type === 'withdrawal'
             }));
 
             const mappedExpenses = rawExp.map((e: any) => ({
@@ -55,7 +58,6 @@ export const useTransactions = () => {
                 isPositive: true
             }));
 
-            // Combinar y Ordenar Descendentemente (Más recientes primero)
             const allTransactions = [...mappedGoals, ...mappedExpenses, ...mappedIncomes].sort(
                 (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
             );
@@ -71,33 +73,75 @@ export const useTransactions = () => {
     const accounts = data?.accounts || [];
 
     const filteredTransactions = useMemo(() => {
+        const now = new Date();
+
         return transactions.filter((t: any) => {
+            // Filtro de Búsqueda
             const matchesSearch = t.entityName.toLowerCase().includes(searchTerm.toLowerCase());
 
-            // Lógica de Filtro compleja
+            // Filtro de Tipo
             let matchesType = true;
             if (typeFilter !== 'All') {
-                if (typeFilter === 'deposit') matchesType = t.type === 'deposit';
-                if (typeFilter === 'withdrawal') matchesType = t.type === 'withdrawal';
-                if (typeFilter === 'expense') matchesType = t.type === 'expense';
-                if (typeFilter === 'income') matchesType = t.type === 'income';
+                matchesType = t.type === typeFilter;
             }
 
+            // Filtro de Cuenta
             const matchesAccount = accountFilter === 'All' || t.account_id === accountFilter;
 
-            return matchesSearch && matchesType && matchesAccount;
-        });
-    }, [transactions, searchTerm, typeFilter, accountFilter]);
+            // Filtro de Rango de Tiempo (Lógica nueva)
+            const txDate = new Date(t.created_at);
+            let matchesTime = true;
 
-    // Calcula estadísticas de transacciones (usando los signos `isPositive`)
+            switch (timeRange) {
+                case 'today':
+                    matchesTime = txDate.toDateString() === now.toDateString();
+                    break;
+                case 'yesterday':
+                    const yesterday = new Date();
+                    yesterday.setDate(now.getDate() - 1);
+                    matchesTime = txDate.toDateString() === yesterday.toDateString();
+                    break;
+                case 'week':
+                    const startOfWeek = new Date(now);
+                    startOfWeek.setDate(now.getDate() - now.getDay());
+                    startOfWeek.setHours(0, 0, 0, 0);
+                    matchesTime = txDate >= startOfWeek;
+                    break;
+                case 'month':
+                    matchesTime = txDate.getMonth() === now.getMonth() &&
+                        txDate.getFullYear() === now.getFullYear();
+                    break;
+                case 'last_month':
+                    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    matchesTime = txDate.getMonth() === lastMonth.getMonth() &&
+                        txDate.getFullYear() === lastMonth.getFullYear();
+                    break;
+                case 'all':
+                default:
+                    matchesTime = true;
+            }
+
+            return matchesSearch && matchesType && matchesAccount && matchesTime;
+        });
+    }, [transactions, searchTerm, typeFilter, accountFilter, timeRange]);
+
+    // Estadísticas dinámicas basadas en los filtros aplicados
     const stats = useMemo(() => {
         const incomes = filteredTransactions
-            .filter((t: any) => t.isPositive)
-            .reduce((sum: number, t: any) => sum + (t.amount || 0), 0);
+            .filter((t: any) =>
+                t.isPositive &&
+                t.universalType !== 'goal_withdrawal' &&
+                t.universalType !== 'goal_deposit'
+            )
+            .reduce((sum: number, t: any) => sum + Number(t.amount || 0), 0);
 
         const expenses = filteredTransactions
-            .filter((t: any) => !t.isPositive)
-            .reduce((sum: number, t: any) => sum + (t.amount || 0), 0);
+            .filter((t: any) =>
+                !t.isPositive &&
+                t.universalType !== 'goal_deposit' &&
+                t.universalType !== 'goal_withdrawal'
+            )
+            .reduce((sum: number, t: any) => sum + Number(t.amount || 0), 0);
 
         return {
             totalIncomes: incomes,
@@ -116,8 +160,10 @@ export const useTransactions = () => {
         setTypeFilter,
         accountFilter,
         setAccountFilter,
+        timeRange,
+        setTimeRange,
         stats,
-        exportToCSV: () => { }, // TODO opcional: Actualizar CSV
+        exportToCSV: () => { },
         refresh
     };
 };
