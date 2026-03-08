@@ -13,18 +13,17 @@ interface AccountSelectorProps {
 }
 
 export const AccountSelector: React.FC<AccountSelectorProps> = ({
-    label,
-    accounts,
-    selectedId,
-    onSelect,
-    placeholder
+    label, accounts, selectedId, onSelect, placeholder,
 }) => {
-    const { currencySymbol } = useGlobalSettings();
+    const { currencySymbol, settings } = useGlobalSettings();
 
-    const accountOptions = accounts.map(acc => ({
+    // Excluye la cuenta de ahorro principal — es exclusiva para metas
+    const filtered = accounts.filter(acc => acc.id !== settings?.savings_account_id);
+
+    const accountOptions = filtered.map(acc => ({
         value: acc.id,
         label: `${acc.name} - ${currencySymbol}${acc.balance.toLocaleString()}`,
-        icon: <Wallet className="w-4 h-4" />
+        icon: <Wallet className="w-4 h-4" />,
     }));
 
     return (
@@ -35,7 +34,7 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
             <CustomSelect
                 options={accountOptions}
                 value={selectedId}
-                onChange={(val) => onSelect(val)}
+                onChange={val => onSelect(val)}
                 placeholder={placeholder}
             />
         </div>

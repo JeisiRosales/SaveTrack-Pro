@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, Menu, Search, X, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Target, Menu, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 import { useGoals } from '../hooks/useGoals';
 import GoalCard from './GoalCard';
@@ -19,8 +19,6 @@ const GoalsView: React.FC = () => {
         filteredGoals,
         loading,
         error,
-        searchTerm,
-        setSearchTerm,
         stats,
         refreshGoals
     } = useGoals();
@@ -71,7 +69,7 @@ const GoalsView: React.FC = () => {
 
             {/* SECCIÓN DE DINERO A RECOLECTAR */}
             {filteredGoals.length > 0 && (
-                <div className={`mt-6 p-6 rounded-3xl border transition-all ${bannerConfig.bg} ${bannerConfig.border}`}>
+                <div className={`mt-6 mb-6 p-6 rounded-3xl border transition-all ${bannerConfig.bg} ${bannerConfig.border}`}>
                     <div className="flex items-center gap-4">
                         <div className={`p-3 rounded-2xl ${bannerConfig.iconBg} ${bannerConfig.text}`}>
                             {bannerConfig.icon}
@@ -97,31 +95,6 @@ const GoalsView: React.FC = () => {
                     </div>
                 </div>
             )}
-
-            {/* Filters */}
-            <div className="bg-[var(--card)] p-4 rounded-2xl border border-[var(--card-border)] mt-6 mb-6 shadow-sm">
-                <div className="flex flex-col lg:flex-row gap-4 items-center">
-                    <div className="relative flex-1 w-full">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" />
-                        <input
-                            type="text"
-                            placeholder="Buscar meta..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-[var(--background)] border border-[var(--card-border)] rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                        />
-                        {searchTerm && (
-                            <button
-                                onClick={() => setSearchTerm('')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-[var(--accent-soft)] rounded-md transition-colors text-[var(--muted)] hover:text-[var(--accent-text)]"
-                                title="Limpiar búsqueda"
-                            >
-                                <X className="w-3.5 h-3.5" />
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </div>
 
             {loading ? (
                 <div className="flex items-center justify-center h-64">

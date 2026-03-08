@@ -20,7 +20,7 @@ export const AccountsView: React.FC = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-    const { currencySymbol } = useGlobalSettings();
+    const { currencySymbol, settings } = useGlobalSettings();
 
     const {
         accounts,
@@ -108,6 +108,7 @@ export const AccountsView: React.FC = () => {
                                     account={acc}
                                     totalBalance={totalBalance}
                                     onClick={() => handleOpenDetails(acc)}
+                                    isSavings={acc.id === settings?.savings_account_id}
                                 />
                             ))
                         ) : (

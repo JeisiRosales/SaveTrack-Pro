@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { TrendingUp, Menu, Briefcase, Calendar } from 'lucide-react';
+import { TrendingUp, Menu, Briefcase, Calendar, Trash2, Loader2 } from 'lucide-react';
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip,
     ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
-import { TransactionsTable } from '@/features/transactions/components/TransactionsTable';
 import { TimeRange } from '../hooks/UseIncomeData';
 
 const CATEGORY_COLORS = ['#2dd4bf', '#a3e635', '#fb923c', '#818cf8', '#f472b6', '#34d399'];
@@ -22,14 +21,72 @@ interface IncomesViewProps {
     };
     onOpenModal: () => void;
     onToggleSidebar: () => void;
+    onRemove: (id: string) => Promise<unknown>;
+    isRemoving: boolean;
+    removingId: string | undefined;
+    onConfirmingChange?: (confirming: boolean) => void;
 }
+
+// Fila de ingreso con eliminar
+interface IncomeRowProps {
+    tx: any;
+    symbol: string;
+    onRemove: (id: string) => Promise<unknown>;
+    isThisRemoving: boolean;
+    isConfirming: boolean;
+    onConfirmChange: (id: string | null) => void;
+}
+
+const IncomeRow: React.FC<IncomeRowProps> = ({ tx, symbol, onRemove, isThisRemoving, isConfirming, onConfirmChange }) => {
+    const date = new Date(tx.created_at);
+    const dateStr = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+    return (
+        <div className={`flex items-center gap-3 px-4 py-3 border-b border-[var(--card-border)] last:border-0 transition-colors ${isThisRemoving ? 'opacity-40 pointer-events-none' : 'hover:bg-[var(--background)]/50'
+            }`}>
+            {!isConfirming ? (
+                <button
+                    onClick={() => onConfirmChange(tx.id)}
+                    className="ml-1 p-1.5 rounded-lg text-[var(--muted)] hover:text-rose-400 hover:bg-rose-500/10 transition-all flex-shrink-0"
+                >
+                    <Trash2 className="w-3.5 h-3.5" />
+                </button>
+            ) : (
+                <div className="ml-1 flex items-center gap-1 flex-shrink-0">
+                    <button
+                        onClick={() => onRemove(tx.id)}
+                        className="text-[10px] font-black px-2 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-colors"
+                    >
+                        {isThisRemoving ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Sí'}
+                    </button>
+                    <button
+                        onClick={() => onConfirmChange(null)}
+                        className="text-[10px] font-black px-2 py-1 bg-[var(--background)] border border-[var(--card-border)] text-[var(--muted)] rounded-lg hover:text-[var(--foreground)] transition-colors"
+                    >
+                        No
+                    </button>
+                </div>
+            )}
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-[var(--foreground)] truncate">{tx.entityName}</p>
+                <p className="text-[10px] text-[var(--muted)] font-medium">{tx.categoryName} · {dateStr}</p>
+            </div>
+            <p className="text-sm font-black text-emerald-400 flex-shrink-0">
+                +{symbol}{Number(tx.amount).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            </p>
+        </div>
+    );
+};
 
 // Botón de filtro rápido
 const QuickFilterBtn = ({ label, onClick, active }: { label: string; onClick: () => void; active: boolean }) => (
     <button
         onClick={onClick}
         className={`px-4 py-2 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border ${active
-            ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-indigo-500/20'
+            ? 'bg-emerald-600 border-emerald-500 text-white shadow-sm shadow-emerald-500/20'
             : 'bg-[var(--card)] border-[var(--card-border)] text-[var(--muted)] hover:border-emerald-500/50 hover:text-[var(--foreground)]'
             }`}
     >
@@ -42,8 +99,8 @@ const AreaTooltip = ({ active, payload, symbol }: any) => {
     if (!active || !payload?.length) return null;
     return (
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl px-3 py-2 text-xs shadow-lg">
-            <p className="text-[var(--muted)] font-bold mb-0.5">{payload[0]?.payload?.day}/{payload[0]?.payload?.month}</p>
-            <p className="text-emerald-400 font-black text-sm">
+            <p className="text-emerald-400 font-bold mb-0.5">{payload[0]?.payload?.day}/{payload[0]?.payload?.month}</p>
+            <p className="text-lime-400 font-black text-sm">
                 {symbol}{Number(payload[0]?.value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </p>
         </div>
@@ -63,8 +120,16 @@ const DonutTooltip = ({ active, payload, symbol }: any) => {
 };
 
 // Vista principal
-export const IncomesView: React.FC<IncomesViewProps> = ({ data, onToggleSidebar }) => {
+export const IncomesView: React.FC<IncomesViewProps> = ({
+    data, onToggleSidebar, onRemove, removingId, onConfirmingChange,
+}) => {
     const [activeDonutIndex, setActiveDonutIndex] = useState<number | null>(null);
+    const [confirmingId, setConfirmingId] = useState<string | null>(null);
+
+    const handleConfirmChange = (id: string | null) => {
+        setConfirmingId(id);
+        onConfirmingChange?.(id !== null);
+    };
 
     const {
         totalMonthlyIncome, averageWeeklyIncome, currencySymbol,
@@ -120,13 +185,13 @@ export const IncomesView: React.FC<IncomesViewProps> = ({ data, onToggleSidebar 
                 {/* Tarjeta combinada */}
                 <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 shadow-sm relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-400 rounded-tr-full -z-10" />
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-lime-400/5 rounded-tr-full -z-10" />
 
                     <div className="flex items-center gap-2 mb-4">
                         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">
                             Resumen —
                         </p>
-                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                        <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">
                             {periodLabel[timeRange]}
                         </span>
                     </div>
@@ -136,7 +201,7 @@ export const IncomesView: React.FC<IncomesViewProps> = ({ data, onToggleSidebar 
                             <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
                                 Ingreso Total
                             </p>
-                            <p className="text-3xl font-black text-emerald-400 leading-none">
+                            <p className="text-3xl font-black text-emerald-500 leading-none">
                                 {fmt(totalMonthlyIncome)}
                             </p>
                             <p className="text-[10px] text-[var(--muted)] mt-1.5 font-medium">
@@ -255,8 +320,24 @@ export const IncomesView: React.FC<IncomesViewProps> = ({ data, onToggleSidebar 
                             </p>
                         </div>
                     </div>
-                    <div className="p-4">
-                        <TransactionsTable transactions={formattedTransactions} />
+                    <div className="divide-y divide-[var(--card-border)]">
+                        {formattedTransactions.length === 0 ? (
+                            <div className="p-10 text-center text-[var(--muted)] text-sm font-medium">
+                                No hay ingresos en este período.
+                            </div>
+                        ) : (
+                            formattedTransactions.map(tx => (
+                                <IncomeRow
+                                    key={tx.id}
+                                    tx={tx}
+                                    symbol={currencySymbol}
+                                    onRemove={onRemove}
+                                    isThisRemoving={removingId === tx.id}
+                                    isConfirming={confirmingId === tx.id}
+                                    onConfirmChange={handleConfirmChange}
+                                />
+                            ))
+                        )}
                     </div>
                 </div>
 

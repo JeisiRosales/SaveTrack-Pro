@@ -8,8 +8,7 @@ import { TimeRange } from '../hooks/useExpenseData';
 
 const CATEGORY_COLORS = ['#f87171', '#fb923c', '#fbbf24', '#a78bfa', '#60a5fa', '#34d399'];
 
-// ── Subcomponentes ─────────────────────────────────────────────────────────────
-
+// Subcomponentes
 const QuickFilterBtn = ({ label, onClick, active }: { label: string; onClick: () => void; active: boolean }) => (
     <button
         onClick={onClick}
@@ -57,8 +56,7 @@ const EmptyChart = ({ message }: { message: string }) => (
     </div>
 );
 
-// ── Fila de transacción con botón eliminar ─────────────────────────────────────
-
+// Fila de transacción con botón eliminar
 interface ExpenseRowProps {
     tx: any;
     symbol: string;
@@ -127,8 +125,7 @@ const ExpenseRow: React.FC<ExpenseRowProps> = ({ tx, symbol, onRemove, isThisRem
     );
 };
 
-// ── Props ──────────────────────────────────────────────────────────────────────
-
+// Props
 interface ExpensesViewProps {
     data: {
         totalMonthlyExpenses: number;

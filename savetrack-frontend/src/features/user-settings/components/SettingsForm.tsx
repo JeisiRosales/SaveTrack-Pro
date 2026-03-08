@@ -101,9 +101,11 @@ export const SettingsForm = () => {
 
                     {/* Auto-Ahorro */}
                     <div className="bg-[var(--background)] border border-[var(--card-border)] p-5 rounded-2xl">
+
+                        {/* Header con título y toggle */}
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-semibold text-[var(--foreground)]">Automatización: Auto-Ahorro</h3>
-                            <div className="relative inline-block w-12 h-6 cursor-pointer">
+                            <div className="relative inline-flex items-center cursor-pointer">
                                 <input
                                     type="checkbox"
                                     id="auto_save"
@@ -111,13 +113,22 @@ export const SettingsForm = () => {
                                     checked={formData.auto_save_enabled || false}
                                     onChange={e => setFormData({ ...formData, auto_save_enabled: e.target.checked })}
                                 />
-                                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500" />
+                                <label
+                                    htmlFor="auto_save"
+                                    className="w-11 h-6 bg-slate-300 dark:bg-slate-700 rounded-full cursor-pointer peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"
+                                />
                             </div>
                         </div>
 
-                        <div className={`transition-all duration-300 space-y-4 ${formData.auto_save_enabled ? 'opacity-100 max-h-[500px]' : 'opacity-40 max-h-[150px] pointer-events-none'}`}>
+                        {/* Campos — solo visibles si está activo */}
+                        <div className={`transition-all duration-300 space-y-4 ${formData.auto_save_enabled
+                                ? 'opacity-100 max-h-[500px]'
+                                : 'opacity-0 max-h-0 overflow-hidden pointer-events-none'
+                            }`}>
                             <div>
-                                <label className="text-xs font-bold text-[var(--muted)] uppercase mb-2 block">Proporción a desviar (%)</label>
+                                <label className="text-xs font-bold text-[var(--muted)] uppercase mb-2 block">
+                                    Proporción a desviar (%)
+                                </label>
                                 <input
                                     type="number" max="100" min="0" placeholder="0"
                                     value={formData.saving_percentage === 0 ? '' : formData.saving_percentage}
