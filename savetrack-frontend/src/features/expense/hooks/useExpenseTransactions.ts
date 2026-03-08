@@ -1,45 +1,62 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+    getExpenseTransactions,
+    createExpenseTransaction,
+    deleteExpenseTransaction,
+} from '../../expense/api/expense-transactions.api';
 import { ExpenseTransaction, CreateExpenseTransactionForm } from '../types';
-import { getExpenseTransactions, createExpenseTransaction, deleteExpenseTransaction } from '../../expense/api/expense-transactions.api';
 
-/**
- * Hook para la orquestación y administración del historial de Gastos.
- * Maneja el listado completo, inserciones y anulaciones, garantizando su sincronización.
- */
+export const EXPENSE_TRANSACTIONS_KEY = ['expense-transactions'] as const;
+
 export const useExpenseTransactions = () => {
-    const [transactions, setTransactions] = useState<ExpenseTransaction[]>([]);
+    const queryClient = useQueryClient();
 
-    /**
-     * Refresca un listado completo consultando el API del backend.
-     */
-    const fetch = useCallback(async () => {
-        const res = await getExpenseTransactions();
-        setTransactions(res.data);
-    }, []);
+    const { data: transactions = [], isLoading: loading } = useQuery({
+        queryKey: EXPENSE_TRANSACTIONS_KEY,
+        queryFn: async () => {
+            const res = await getExpenseTransactions();
+            return res.data as ExpenseTransaction[];
+        },
+    });
 
-    // Auto-Carga al inicio, ignorando regla de linter por diseño propio
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    useEffect(() => { fetch(); }, [fetch]);
+    const addMutation = useMutation({
+        mutationFn: (data: CreateExpenseTransactionForm) => createExpenseTransaction(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: EXPENSE_TRANSACTIONS_KEY });
+            // Invalida el dashboard para que también se actualice
+            queryClient.invalidateQueries({ queryKey: ['dashboard-summary'] });
+        },
+    });
 
-    /**
-     * Registra un desembolso e inmediatamente vuelve a sincronizar
-     * para rehidratar data anexada via joins (eg. nombre de cuenta/categoría)
-     * @param data Campos del registro provenientes del formulario modal
-     */
-    const add = async (data: CreateExpenseTransactionForm) => {
-        await createExpenseTransaction(data);
-        await fetch(); // Refrescar para obtener joins actualizados
+    const removeMutation = useMutation<void, Error, string, { previous: ExpenseTransaction[] | undefined }>({
+        mutationFn: async (id: string) => { await deleteExpenseTransaction(id); },
+        onMutate: async (id: string) => {
+            await queryClient.cancelQueries({ queryKey: EXPENSE_TRANSACTIONS_KEY });
+            const previous = queryClient.getQueryData<ExpenseTransaction[]>(EXPENSE_TRANSACTIONS_KEY);
+            queryClient.setQueryData<ExpenseTransaction[]>(
+                EXPENSE_TRANSACTIONS_KEY,
+                old => (old ?? []).filter(t => t.id !== id)
+            );
+            return { previous };
+        },
+        onError: (_err, _id, context) => {
+            if (context?.previous) {
+                queryClient.setQueryData(EXPENSE_TRANSACTIONS_KEY, context.previous);
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: EXPENSE_TRANSACTIONS_KEY });
+            queryClient.invalidateQueries({ queryKey: ['dashboard-summary'] });
+        },
+    });
+
+    return {
+        transactions,
+        loading,
+        add: addMutation.mutateAsync,
+        remove: removeMutation.mutateAsync,
+        isAdding: addMutation.isPending,
+        isRemoving: removeMutation.isPending,
+        removingId: removeMutation.variables, // id que se está eliminando actualmente
     };
-
-    /**
-     * Retira la transacción y filtra agresivamente la colección local
-     * optimizando el repintado en la UI sin hacer re-fetch total.
-     * @param id Identificador de operación
-     */
-    const remove = async (id: string) => {
-        await deleteExpenseTransaction(id);
-        setTransactions(prev => prev.filter(t => t.id !== id));
-    };
-
-    return { transactions, add, remove };
 };

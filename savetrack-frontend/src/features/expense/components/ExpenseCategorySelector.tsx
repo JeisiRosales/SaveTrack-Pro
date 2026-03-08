@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, Plus, Repeat, Zap, Loader2 } from 'lucide-react';
+import { ChevronDown, Repeat, Zap, Loader2 } from 'lucide-react';
 import { useExpenseCategories } from '@/features/expense/hooks/useExpenseCategories';
 
 interface Props {
@@ -12,26 +12,10 @@ interface Props {
  * Permite crear nuevas categorías inline sin salir del modal.
  */
 export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect }) => {
-    const { categories, loading, addCategory } = useExpenseCategories();
+    const { categories, loading } = useExpenseCategories();
     const [isOpen, setIsOpen] = useState(false);
-    const [isCreating, setIsCreating] = useState(false);
-    const [newName, setNewName] = useState('');
-    const [newIsFixed, setNewIsFixed] = useState(false);
-    const [saving, setSaving] = useState(false);
 
     const selected = categories.find(c => c.id === selectedId);
-
-    const handleCreate = async () => {
-        if (!newName.trim()) return;
-        setSaving(true);
-        try {
-            await addCategory(newName.trim(), newIsFixed);
-            setNewName('');
-            setIsCreating(false);
-        } finally {
-            setSaving(false);
-        }
-    };
 
     return (
         <div className="relative">
@@ -48,11 +32,10 @@ export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect 
                             : <Zap className="w-3.5 h-3.5 text-orange-400" />
                         }
                         <span>{selected.name}</span>
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
-                            selected.is_fixed
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${selected.is_fixed
                                 ? 'bg-violet-500/10 text-violet-400'
                                 : 'bg-orange-500/10 text-orange-400'
-                        }`}>
+                            }`}>
                             {selected.is_fixed ? 'Fijo' : 'Variable'}
                         </span>
                     </span>
@@ -79,9 +62,8 @@ export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect 
                                 if (items.length === 0) return null;
                                 return (
                                     <div key={group}>
-                                        <p className={`px-3 pt-3 pb-1 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 ${
-                                            group === 'fixed' ? 'text-violet-400' : 'text-orange-400'
-                                        }`}>
+                                        <p className={`px-3 pt-3 pb-1 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 ${group === 'fixed' ? 'text-violet-400' : 'text-orange-400'
+                                            }`}>
                                             {group === 'fixed'
                                                 ? <><Repeat className="w-3 h-3" /> Fijos</>
                                                 : <><Zap className="w-3 h-3" /> Variables</>
@@ -92,9 +74,8 @@ export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect 
                                                 key={cat.id}
                                                 type="button"
                                                 onClick={() => { onSelect(cat.id); setIsOpen(false); }}
-                                                className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--background)] flex items-center gap-2 ${
-                                                    selectedId === cat.id ? 'text-[var(--foreground)] font-bold' : 'text-[var(--muted)]'
-                                                }`}
+                                                className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--background)] flex items-center gap-2 ${selectedId === cat.id ? 'text-[var(--foreground)] font-bold' : 'text-[var(--muted)]'
+                                                    }`}
                                             >
                                                 {cat.is_fixed
                                                     ? <Repeat className="w-3 h-3 text-violet-400 flex-shrink-0" />
@@ -106,73 +87,6 @@ export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect 
                                     </div>
                                 );
                             })}
-
-                            {/* Crear nueva categoría inline */}
-                            <div className="border-t border-[var(--card-border)] p-3">
-                                {!isCreating ? (
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsCreating(true)}
-                                        className="w-full flex items-center gap-2 text-xs font-bold text-[var(--muted)] hover:text-[var(--foreground)] transition-colors py-1"
-                                    >
-                                        <Plus className="w-3.5 h-3.5" /> Nueva categoría
-                                    </button>
-                                ) : (
-                                    <div className="space-y-2">
-                                        <input
-                                            autoFocus
-                                            type="text"
-                                            placeholder="Nombre de la categoría"
-                                            value={newName}
-                                            onChange={e => setNewName(e.target.value)}
-                                            onKeyDown={e => e.key === 'Enter' && handleCreate()}
-                                            className="w-full text-sm bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--foreground)] rounded-lg px-3 py-2 outline-none"
-                                        />
-                                        {/* Toggle fijo/variable */}
-                                        <div className="flex bg-[var(--background)] border border-[var(--card-border)] rounded-lg p-0.5 gap-0.5">
-                                            <button
-                                                type="button"
-                                                onClick={() => setNewIsFixed(false)}
-                                                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md text-[11px] font-bold transition-all ${
-                                                    !newIsFixed
-                                                        ? 'bg-orange-500 text-white'
-                                                        : 'text-[var(--muted)]'
-                                                }`}
-                                            >
-                                                <Zap className="w-3 h-3" /> Variable
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setNewIsFixed(true)}
-                                                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md text-[11px] font-bold transition-all ${
-                                                    newIsFixed
-                                                        ? 'bg-violet-500 text-white'
-                                                        : 'text-[var(--muted)]'
-                                                }`}
-                                            >
-                                                <Repeat className="w-3 h-3" /> Fijo
-                                            </button>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsCreating(false)}
-                                                className="flex-1 text-xs font-bold text-[var(--muted)] py-1.5 rounded-lg hover:bg-[var(--background)] transition-colors"
-                                            >
-                                                Cancelar
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={handleCreate}
-                                                disabled={saving || !newName.trim()}
-                                                className="flex-1 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                                            >
-                                                {saving ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : 'Crear'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
                         </>
                     )}
                 </div>

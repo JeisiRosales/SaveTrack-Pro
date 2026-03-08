@@ -362,6 +362,8 @@ const GoalDetailView: React.FC = () => {
                 onClose={() => setIsTransactionModalOpen(false)}
                 onSuccess={refresh}
                 goalId={id}
+                goalTarget={goal.target_amount}
+                goalCurrent={goal.current_amount}
             />
 
             <EditGoalModal
