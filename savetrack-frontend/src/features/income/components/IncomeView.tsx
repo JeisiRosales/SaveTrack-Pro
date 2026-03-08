@@ -29,7 +29,7 @@ const QuickFilterBtn = ({ label, onClick, active }: { label: string; onClick: ()
     <button
         onClick={onClick}
         className={`px-4 py-2 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border ${active
-            ? 'bg-indigo-600 border-indigo-500 text-white shadow-sm shadow-indigo-500/20'
+            ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-indigo-500/20'
             : 'bg-[var(--card)] border-[var(--card-border)] text-[var(--muted)] hover:border-emerald-500/50 hover:text-[var(--foreground)]'
             }`}
     >
@@ -87,7 +87,7 @@ export const IncomesView: React.FC<IncomesViewProps> = ({ data, onToggleSidebar 
             <header className="mb-6 flex items-center justify-between">
                 <div>
                     <h1 className="text-xl lg:text-2xl font-bold text-[var(--foreground)] flex items-center gap-2">
-                        <TrendingUp className="w-6 h-6 text-indigo-500" />
+                        <TrendingUp className="w-6 h-6 text-emerald-500" />
                         Mis Ingresos
                     </h1>
                     <p className="text-[var(--muted)] text-xs mt-1 font-medium">
@@ -126,7 +126,7 @@ export const IncomesView: React.FC<IncomesViewProps> = ({ data, onToggleSidebar 
                         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">
                             Resumen —
                         </p>
-                        <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
+                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
                             {periodLabel[timeRange]}
                         </span>
                     </div>
@@ -136,7 +136,7 @@ export const IncomesView: React.FC<IncomesViewProps> = ({ data, onToggleSidebar 
                             <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
                                 Ingreso Total
                             </p>
-                            <p className="text-3xl font-black text-indigo-500 leading-none">
+                            <p className="text-3xl font-black text-emerald-400 leading-none">
                                 {fmt(totalMonthlyIncome)}
                             </p>
                             <p className="text-[10px] text-[var(--muted)] mt-1.5 font-medium">
