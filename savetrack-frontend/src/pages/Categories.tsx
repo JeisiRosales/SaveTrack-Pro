@@ -2,10 +2,16 @@ import { useState } from 'react';
 import { useExpenseCategories } from '@/features/expense-categories/hooks/useExpenseCategories';
 import { useIncomeCategories } from '@/features/income-categories/hooks/useIncomeCategories';
 import { CategoryList } from '@/components/ui/CategoryList';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Menu } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
+
+interface ContextType {
+    toggleSidebar: () => void;
+}
 
 const Categories = () => {
     const [tab, setTab] = useState<'expenses' | 'incomes'>('expenses');
+    const { toggleSidebar } = useOutletContext<ContextType>();
 
     // Hooks
     const expenses = useExpenseCategories();
@@ -13,13 +19,24 @@ const Categories = () => {
 
     return (
         <div className="flex-1 p-6 lg:p-10 relative overflow-x-hidden min-h-screen bg-[var(--background)]">
-            <header className="mb-8">
-                <h1 className="text-xl lg:text-3xl font-black text-[var(--foreground)] tracking-tight">
-                    Gestión de <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-600">Categorías</span>
-                </h1>
-                <p className="text-[var(--muted)] text-sm mt-2 font-medium max-w-2xl">
-                    Administra y personaliza las listas desplegables para clasificar tus transacciones de manera más eficiente.
-                </p>
+            <header className="mb-8 flex items-center justify-between gap-4">
+                {/* Bloque de Texto */}
+                <div>
+                    <h1 className="text-xl lg:text-3xl font-black text-[var(--foreground)] tracking-tight">
+                        Gestión de <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-600">Categorías</span>
+                    </h1>
+                    <p className="text-[var(--muted)] text-sm mt-2 font-medium max-w-2xl">
+                        Administra y personaliza tus transacciones de manera más eficiente.
+                    </p>
+                </div>
+
+                {/* Botón de Menú (Mobile Only) */}
+                <button
+                    onClick={toggleSidebar}
+                    className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors shrink-0"
+                >
+                    <Menu className="w-6 h-6 text-[var(--foreground)]" />
+                </button>
             </header>
 
             <div className="mb-8 flex bg-[var(--card)] p-1.5 rounded-2xl border border-[var(--card-border)] w-fit backdrop-blur-md">

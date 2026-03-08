@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { SettingsForm } from '@/features/user-settings/components/SettingsForm';
 import { useAuth } from '@/context/AuthContext';
-import { User, Sun, Moon, Briefcase } from 'lucide-react';
+import { User, Sun, Moon, Briefcase, Menu } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
+
+interface ContextType {
+    toggleSidebar: () => void;
+}
 
 const Settings = () => {
     const { user } = useAuth();
     const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains('dark'));
+    const { toggleSidebar } = useOutletContext<ContextType>();
 
     const toggleTheme = () => {
         const newMode = !darkMode;
@@ -19,14 +25,30 @@ const Settings = () => {
         }
     };
 
+
     return (
         <div className="flex-1 p-6 lg:p-10 relative overflow-x-hidden">
-            <header className="mb-8">
-                <div className="flex items-center gap-2 mb-1">
-                    <User className="w-6 h-6 text-[var(--accent-text)]" />
-                    <h1 className="text-xl lg:text-2xl font-bold text-[var(--foreground)]">Configuración y Perfil</h1>
+            <header className="mb-8 flex items-center justify-between gap-4">
+                {/* Contenedor de Texto e Icono */}
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-2 mb-1">
+                        <User className="w-6 h-6 text-[var(--accent-text)]" />
+                        <h1 className="text-xl lg:text-2xl font-bold text-[var(--foreground)] leading-tight">
+                            Configuración y Perfil
+                        </h1>
+                    </div>
+                    <p className="text-[var(--muted)] text-xs font-medium">
+                        Administra tu cuenta, tema visual y finanzas automáticas.
+                    </p>
                 </div>
-                <p className="text-[var(--muted)] text-xs font-medium">Administra tu cuenta, tema visual y finanzas automáticas.</p>
+
+                {/* Botón de Menú (Solo visible en móvil) */}
+                <button
+                    onClick={toggleSidebar}
+                    className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors shrink-0"
+                >
+                    <Menu className="w-6 h-6 text-[var(--foreground)]" />
+                </button>
             </header>
 
             <div className="flex flex-col lg:flex-row gap-8 max-w-6xl">
