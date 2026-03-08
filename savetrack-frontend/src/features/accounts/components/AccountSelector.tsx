@@ -10,15 +10,18 @@ interface AccountSelectorProps {
     selectedId: string;
     onSelect: (id: string) => void;
     placeholder: string;
+    includeSavings?: boolean;
 }
 
 export const AccountSelector: React.FC<AccountSelectorProps> = ({
-    label, accounts, selectedId, onSelect, placeholder,
+    label, accounts, selectedId, onSelect, placeholder, includeSavings = false,
 }) => {
     const { currencySymbol, settings } = useGlobalSettings();
 
-    // Excluye la cuenta de ahorro principal — es exclusiva para metas
-    const filtered = accounts.filter(acc => acc.id !== settings?.savings_account_id);
+    // Excluye la cuenta de ahorro principal salvo que se indique explícitamente incluirla
+    const filtered = includeSavings
+        ? accounts
+        : accounts.filter(acc => acc.id !== settings?.savings_account_id);
 
     const accountOptions = filtered.map(acc => ({
         value: acc.id,

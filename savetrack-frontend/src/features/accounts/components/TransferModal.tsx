@@ -18,6 +18,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
 }) => {
     const { currencySymbol } = useGlobalSettings();
 
+    const transferableAccounts = accounts;
     const initialState: TransferForm = { fromAccountId: '', toAccountId: '', amount: 0 };
     const [form, setForm] = useState<TransferForm>(initialState);
     const [localError, setLocalError] = useState('');
@@ -108,18 +109,20 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                         <AccountSelector
                             label="Origen"
                             placeholder="¿De dónde sale el dinero?"
-                            accounts={accounts}
+                            accounts={transferableAccounts}
                             selectedId={form.fromAccountId}
                             onSelect={id => { setForm({ ...form, fromAccountId: id }); setLocalError(''); }}
+                            includeSavings
                         />
 
                         {/* Cuenta destino */}
                         <AccountSelector
                             label="Destino"
                             placeholder="¿A dónde va el dinero?"
-                            accounts={accounts.filter(acc => acc.id !== form.fromAccountId)}
+                            accounts={transferableAccounts.filter(acc => acc.id !== form.fromAccountId)}
                             selectedId={form.toAccountId}
                             onSelect={id => { setForm({ ...form, toAccountId: id }); setLocalError(''); }}
+                            includeSavings
                         />
 
                         {/* Monto */}

@@ -23,8 +23,8 @@ export const useExpenseTransactions = () => {
         mutationFn: (data: CreateExpenseTransactionForm) => createExpenseTransaction(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: EXPENSE_TRANSACTIONS_KEY });
-            // Invalida el dashboard para que también se actualice
             queryClient.invalidateQueries({ queryKey: ['dashboard-summary'] });
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
         },
     });
 
@@ -47,6 +47,7 @@ export const useExpenseTransactions = () => {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: EXPENSE_TRANSACTIONS_KEY });
             queryClient.invalidateQueries({ queryKey: ['dashboard-summary'] });
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
         },
     });
 

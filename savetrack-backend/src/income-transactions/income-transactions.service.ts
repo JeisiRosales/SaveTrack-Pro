@@ -32,44 +32,65 @@ export class IncomeTransactionsService {
       throw new BadRequestException('Cuenta no encontrada o no autorizado.');
     }
 
+    // Separar perform_auto_save del resto — no es un campo de la tabla
+    const { perform_auto_save, ...insertDto } = createDto;
+
     // Crear la transacción de ingreso
     const { data, error } = await this.supabase.getAdminClient()
       .from('income_transactions')
-      .insert(createDto)
+      .insert(insertDto)
       .select()
       .single();
 
     if (error) throw error;
 
-    // Actualizar el balance de la cuenta receptora
-    await this.supabase.getAdminClient()
-      .from('funding_accounts')
-      .update({ balance: account.balance + createDto.amount })
-      .eq('id', createDto.account_id);
-
     // Lógica de AUTO-AHORRO
+    // Solo aplica si perform_auto_save no fue explícitamente desactivado (false)
+    let amountToSave = 0;
     try {
       const settings = await this.userSettingsService.findByUserId(userId);
 
-      // Se ahorra si: el ahorro automático global está activo O si se solicita específicamente en esta transacción via boton modal
-      const shouldSave = settings.auto_save_enabled || createDto.perform_auto_save;
+      // Si el frontend pasa perform_auto_save: false, no aplicar aunque esté activo globalmente
+      const shouldSave = perform_auto_save === false
+        ? false
+        : (settings.auto_save_enabled || perform_auto_save === true);
 
       if (shouldSave && settings.savings_account_id) {
-        // Si no hay porcentaje global configurado pero se mandó perform_auto_save, aplicaremos un 10% por defecto para que no falle el botón vacío
         const activePercentage = settings.saving_percentage > 0 ? settings.saving_percentage : 10;
-        const amountToSave = (createDto.amount * activePercentage) / 100;
-
-        if (amountToSave > 0) {
-          await this.fundingAccountsService.transferBetweenAccounts({
-            fromAccountId: createDto.account_id,
-            toAccountId: settings.savings_account_id,
-            amount: amountToSave
-          });
-        }
+        amountToSave = (createDto.amount * activePercentage) / 100;
       }
     } catch (saveError) {
-      console.error('Error procesando el ahorro automático:', saveError);
-      // No lanzamos error para no romper la creación del ingreso, pero lo logueamos
+      console.error('Error calculando el ahorro automático:', saveError);
+    }
+
+    const netAmount = createDto.amount - amountToSave;
+
+    // Acreditar solo el neto a la cuenta origen (ingreso - ahorro)
+    await this.supabase.getAdminClient()
+      .from('funding_accounts')
+      .update({ balance: account.balance + netAmount })
+      .eq('id', createDto.account_id);
+
+    // Acreditar el ahorro directamente a la cuenta de ahorros (sin transferencia entre cuentas)
+    if (amountToSave > 0) {
+      try {
+        const settings = await this.userSettingsService.findByUserId(userId);
+
+        const { data: savingsAccount } = await this.supabase.getAdminClient()
+          .from('funding_accounts')
+          .select('id, balance')
+          .eq('id', settings.savings_account_id)
+          .single();
+
+        if (savingsAccount) {
+          await this.supabase.getAdminClient()
+            .from('funding_accounts')
+            .update({ balance: savingsAccount.balance + amountToSave })
+            .eq('id', settings.savings_account_id);
+        }
+      } catch (saveError) {
+        console.error('Error acreditando el ahorro automático:', saveError);
+      }
     }
 
     return data as IncomeTransaction;
@@ -97,7 +118,7 @@ export class IncomeTransactionsService {
     const { data, error } = await query.order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data as any[]; // data contains joined fields, might need a more complex type but any/IncomeTransaction works for current logic
+    return data as any[];
   }
 
   /**
@@ -128,7 +149,6 @@ export class IncomeTransactionsService {
    * @param updateDto - Datos a actualizar
    */
   async update(id: string, userId: string, updateDto: UpdateIncomeTransactionDto): Promise<IncomeTransaction> {
-    // Obtener la transacción actual para conocer el monto previo y la cuenta
     const { data: transaction, error: fetchError } = await this.supabase.getAdminClient()
       .from('income_transactions')
       .select('*, funding_accounts!inner(user_id, balance)')
@@ -140,10 +160,8 @@ export class IncomeTransactionsService {
       throw new NotFoundException('Transacción no encontrada.');
     }
 
-    // Seguridad: No permitir cambiar la cuenta (account_id)
     delete updateDto.account_id;
 
-    // Si el monto cambió, actualizar el balance de la cuenta
     if (updateDto.amount !== undefined && updateDto.amount !== transaction.amount) {
       const diff = updateDto.amount - transaction.amount;
       const newAccountBalance = transaction.funding_accounts.balance + diff;
@@ -154,7 +172,6 @@ export class IncomeTransactionsService {
         .eq('id', transaction.account_id);
     }
 
-    // Actualizar la transacción
     const { data, error } = await this.supabase.getAdminClient()
       .from('income_transactions')
       .update(updateDto)
@@ -172,7 +189,6 @@ export class IncomeTransactionsService {
    * @param userId - ID del usuario (para validación)
    */
   async remove(id: string, userId: string): Promise<{ message: string }> {
-    // Obtener la transacción para conocer el monto y la cuenta
     const { data: transaction, error: fetchError } = await this.supabase.getAdminClient()
       .from('income_transactions')
       .select('*, funding_accounts!inner(user_id, balance)')
@@ -184,13 +200,11 @@ export class IncomeTransactionsService {
       throw new NotFoundException('Transacción no encontrada.');
     }
 
-    // Revertir el balance de la cuenta (el ingreso ya no existe)
     await this.supabase.getAdminClient()
       .from('funding_accounts')
       .update({ balance: transaction.funding_accounts.balance - transaction.amount })
       .eq('id', transaction.account_id);
 
-    // Eliminar la transacción
     const { error: deleteError } = await this.supabase.getAdminClient()
       .from('income_transactions')
       .delete()

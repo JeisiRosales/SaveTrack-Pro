@@ -58,8 +58,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     const amountNum = Number(amount) || 0;
     const remaining = goalTarget - goalCurrent;
 
-    // Depósito: no puede superar lo que falta para completar la meta
-    const exceedsRemaining = type === 'deposit' && amountNum > remaining && remaining > 0;
+    // Depósito: solo bloquear si hay monto restante Y se supera — metas completadas permiten depósitos adicionales
+    const exceedsRemaining = type === 'deposit' && remaining > 0 && amountNum > remaining;
     // Retiro: no puede superar lo que hay en la meta
     const exceedsGoal = type === 'withdrawal' && amountNum > goalCurrent;
     const exceedsAccountBalance = type === 'deposit' && amountNum > (account?.balance ?? 0);
@@ -250,6 +250,11 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                                 >
                                     Completar meta ({currencySymbol}{remaining.toLocaleString()}) →
                                 </button>
+                            )}
+                            {type === 'deposit' && remaining <= 0 && (
+                                <p className="text-xs font-bold text-emerald-500 ml-1">
+                                    ✓ Meta completada — puedes seguir añadiendo fondos
+                                </p>
                             )}
                         </div>
 

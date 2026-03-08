@@ -88,11 +88,13 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
             if (shouldApplySavings) {
                 // A. Registramos el remanente en la cuenta principal
+                // perform_auto_save: false para que el backend no aplique el ahorro de nuevo
                 await add({
                     account_id: form.accountId,
                     category_id: form.catId || undefined,
                     amount: remainingAmount,
-                    description: form.desc
+                    description: form.desc,
+                    perform_auto_save: false,
                 });
 
                 // B. Registramos el porcentaje desviado en la cuenta de ahorro
@@ -100,7 +102,8 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     account_id: settings?.savings_account_id || '',
                     category_id: form.catId || undefined,
                     amount: savingAmount,
-                    description: `Ahorro Automático: ${form.desc}` // Identificador visual
+                    description: `Ahorro Automático: ${form.desc}`,
+                    perform_auto_save: false,
                 });
             } else {
                 // Flujo normal: todo el dinero va a la cuenta principal

@@ -338,7 +338,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = ({
 
                 {/* Tabla con tabs */}
                 <div className="bg-[var(--card)] rounded-2xl border border-[var(--card-border)] overflow-hidden">
-                    <div className="p-6 border-b border-[var(--card-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--background)]/50">
+                    <div className="p-6 border-b border-[var(--card-border)] flex items-center justify-between gap-2 bg-[var(--background)]/50">
                         <div>
                             <h3 className="text-sm font-bold text-[var(--foreground)]">Detalle de Gastos</h3>
                             <p className="text-[10px] text-[var(--muted)] mt-0.5 font-medium">

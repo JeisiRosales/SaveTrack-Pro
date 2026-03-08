@@ -120,18 +120,45 @@ export const CategoryList: React.FC<CategoryListProps> = ({
                 ))}
             </div>
 
-            <form onSubmit={handleAdd} className="flex gap-3 bg-[var(--background)] p-2 rounded-2xl border border-[var(--card-border)]">
-                <input
-                    type="text" value={name} onChange={e => setName(e.target.value)} required placeholder="Nueva categoría..."
-                    className="flex-1 bg-transparent text-[var(--foreground)] text-sm px-3 py-2 outline-none"
-                />
-                {showIsFixed && (
-                    <label className="flex items-center justify-center gap-2 text-xs text-[var(--muted)] font-medium cursor-pointer px-2 border-l border-[var(--card-border)]">
-                        <input type="checkbox" checked={isFixed} onChange={e => setIsFixed(e.target.checked)} className="rounded" /> Fijo
-                    </label>
-                )}
-                <button type="submit" disabled={adding || !name.trim()} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white p-2.5 rounded-xl transition-transform active:scale-95 flex items-center justify-center">
-                    {adding ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+            <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-3 bg-[var(--background)] p-3 rounded-2xl border border-[var(--card-border)] shadow-sm">
+                <div className="flex flex-1 items-center gap-2">
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        required
+                        placeholder="Nueva categoría..."
+                        className="flex-1 bg-transparent text-[var(--foreground)] text-sm px-3 py-2 outline-none min-w-0"
+                    />
+
+                    {/* En móvil, el checkbox queda al lado del input para ahorrar espacio vertical */}
+                    {showIsFixed && (
+                        <label className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-[var(--muted)] font-black cursor-pointer px-3 py-1 bg-[var(--card)] rounded-lg border border-[var(--card-border)] sm:border-l sm:border-t-0 sm:border-r-0 sm:border-b-0 sm:rounded-none">
+                            <input
+                                type="checkbox"
+                                checked={isFixed}
+                                onChange={e => setIsFixed(e.target.checked)}
+                                className="w-3 h-3 rounded border-[var(--card-border)] accent-indigo-600"
+                            />
+                            Fijo
+                        </label>
+                    )}
+                </div>
+
+                {/* El botón ocupa todo el ancho en móvil para mejor accesibilidad (Fat finger friendly) */}
+                <button
+                    type="submit"
+                    disabled={adding || !name.trim()}
+                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white p-3 sm:p-2.5 rounded-xl transition-all active:scale-95 flex items-center justify-center shadow-lg shadow-indigo-500/20"
+                >
+                    {adding ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                        <>
+                            <Plus className="w-5 h-5 sm:mr-0" />
+                            <span className="ml-2 font-bold text-sm sm:hidden">Agregar Categoría</span>
+                        </>
+                    )}
                 </button>
             </form>
         </div>
