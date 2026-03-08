@@ -26,4 +26,10 @@ export class TransactionsController {
     findByGoal(@Param('goalId') goalId: string) {
         return this.transactionsService.findByGoal(goalId);
     }
+
+    // obtener todas las transacciones de una cuenta
+    @Get('account/:accountId')
+    findByAccount(@Param('accountId') accountId: string) {
+        return this.transactionsService.findByAccount(accountId);
+    }
 }

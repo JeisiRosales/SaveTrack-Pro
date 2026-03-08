@@ -13,6 +13,8 @@ import GoalDetailsPage from './pages/GoalDetailsPage';
 import MainLayout from './components/layout/MainLayout';
 import Categories from './pages/Categories';
 import Settings from './pages/Settings';
+import { Expenses } from './pages/Expenses';
+import { Incomes } from './pages/Incomes';
 import { SettingsProvider } from './context/SettingsContext';
 
 // Configuración de React Query para caché global
@@ -58,6 +60,8 @@ function App() {
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/expenses" element={<Expenses />} />
+              <Route path="/incomes" element={<Incomes />} />
             </Route>
 
             <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />

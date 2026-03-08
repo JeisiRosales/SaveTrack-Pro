@@ -37,8 +37,9 @@ export const useAccountDetails = (initialAccount: Account | null) => {
                 created_at: t.created_at,
                 amount: t.amount,
                 type: t.type, // 'deposit' | 'withdrawal'
+                isPositive: t.type === 'withdrawal', // Retiro de meta SUMA a la cuenta
                 universalType: t.type === 'deposit' ? 'goal_deposit' : 'goal_withdrawal',
-                entityName: t.savings_goals?.title || 'Meta Eliminada'
+                entityName: t.savings_goals?.name || t.savings_goals?.title || 'Meta'
             }));
 
             // Formatear Ingresos
@@ -49,6 +50,7 @@ export const useAccountDetails = (initialAccount: Account | null) => {
                     created_at: t.created_at,
                     amount: t.amount,
                     type: 'deposit',
+                    isPositive: true,
                     universalType: 'income',
                     entityName: t.description || t.income_categories?.name || 'Ingreso'
                 }));
@@ -61,6 +63,7 @@ export const useAccountDetails = (initialAccount: Account | null) => {
                     created_at: t.created_at,
                     amount: t.amount,
                     type: 'withdrawal',
+                    isPositive: false,
                     universalType: 'expense',
                     entityName: t.description || t.expense_categories?.name || 'Gasto'
                 }));

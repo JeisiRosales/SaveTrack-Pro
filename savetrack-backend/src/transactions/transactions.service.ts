@@ -140,4 +140,18 @@ export class TransactionsService {
         if (error) throw error;
         return data as Transaction[];
     }
+    /**
+     * Obtiene todas las transacciones de una cuenta específica
+     * @param accountId - ID de la cuenta
+     */
+    async findByAccount(accountId: string): Promise<Transaction[]> {
+        const { data, error } = await this.supabase.getClient()
+            .from('transactions')
+            .select('*, savings_goals(name)')
+            .eq('account_id', accountId)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data as Transaction[];
+    }
 }

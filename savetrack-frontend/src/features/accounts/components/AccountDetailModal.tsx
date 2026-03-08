@@ -135,22 +135,29 @@ export const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                                     </div>
                                 ) : transactions.length > 0 ? (
                                     <div className="space-y-3">
-                                        {transactions.slice(0, 5).map(tx => (
-                                            <div key={tx.id} className="flex justify-between items-center bg-[var(--background)] p-3 rounded-xl border border-[var(--card-border)]">
-                                                <div className="flex items-center gap-3">
-                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${tx.type === 'deposit' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
-                                                        <Plus className={`w-4 h-4 ${tx.type !== 'deposit' && 'rotate-45'}`} />
+                                        {transactions.slice(0, 5).map((tx: any) => {
+                                            const isPositive = tx.isPositive;
+                                            let typeLabel = tx.universalType === 'income' ? 'Ingreso' :
+                                                tx.universalType === 'expense' ? 'Gasto' :
+                                                    tx.universalType === 'goal_deposit' ? 'Meta (-)' : 'Meta (+)';
+
+                                            return (
+                                                <div key={tx.id} className="flex justify-between items-center bg-[var(--background)] p-3 rounded-xl border border-[var(--card-border)]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isPositive ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
+                                                            <Plus className={`w-4 h-4 ${!isPositive && 'rotate-45'}`} />
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <p className="text-[11px] font-bold text-[var(--foreground)] truncate max-w-[120px]">{tx.entityName}</p>
+                                                            <p className="text-[9px] text-[var(--muted)] font-medium">{typeLabel} • {new Date(tx.created_at).toLocaleDateString()}</p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <p className="text-xs font-bold text-[var(--foreground)] capitalize">{tx.type === 'deposit' ? 'Depósito' : 'Retiro'}</p>
-                                                        <p className="text-[10px] text-[var(--muted)]">{new Date(tx.created_at).toLocaleDateString()}</p>
-                                                    </div>
+                                                    <p className={`text-xs font-black ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                                        {isPositive ? '+' : '-'}${tx.amount.toLocaleString()}
+                                                    </p>
                                                 </div>
-                                                <p className={`text-xs font-black ${tx.type === 'deposit' ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                                    {tx.type === 'deposit' ? '-' : '+'}${tx.amount.toLocaleString()}
-                                                </p>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     <p className="text-xs text-[var(--muted)] text-center py-4 italic">No hay movimientos registrados.</p>
