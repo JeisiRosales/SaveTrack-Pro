@@ -50,10 +50,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     <NavItem icon={<TrendingDown />} label="Gastos" nav="/expenses" active={location.pathname === '/expenses' || location.pathname === '/savings'} onClick={() => { navigate('/expenses'); onClose(); }} />
                     <NavItem icon={<ArrowRightLeft />} label="Transacciones" nav="/transactions" active={location.pathname === '/transactions'} onClick={() => { navigate('/transactions'); onClose(); }} />
                     <NavItem icon={<Tags />} label="Categorías" nav="/categories" active={location.pathname === '/categories'} onClick={() => { navigate('/categories'); onClose(); }} />
+                </nav>
+
+                <nav className="mt-auto border-t border-[var(--card-border)] pt-4">
                     <NavItem icon={<Settings />} label="Configuración" nav="/settings" active={location.pathname === '/settings'} onClick={() => { navigate('/settings'); onClose(); }} />
                 </nav>
 
-                <div className="mt-auto border-t border-[var(--card-border)] pt-4 flex justify-center">
+                <div className="mt-auto border-[var(--card-border)] pt-4 flex justify-center">
                     <a href="https://github.com/JeisiRosales" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--background)] text-[10px] text-[var(--muted)] hover:text-[var(--accent-text)] hover:bg-[var(--accent-soft)] transition-all duration-300 group shadow-sm border border-[var(--card-border)]">
                         <Github className="w-3 h-3 transition-transform group-hover:scale-110" />
                         <span className="font-bold uppercase tracking-wider">Entra a mi GitHub</span>
