@@ -1,5 +1,5 @@
 import api from '@/lib/api';
-import { CreateExpenseCategoryForm } from '../types';
+import { CreateExpenseCategoryForm } from '../../expense/types';
 
 /**
  * Obtiene todas las categorías de gastos registradas por el usuario.

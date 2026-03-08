@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ExpenseTransaction, CreateExpenseTransactionForm } from '../types';
-import { getExpenseTransactions, createExpenseTransaction, deleteExpenseTransaction } from '../api/expense-transactions.api';
+import { getExpenseTransactions, createExpenseTransaction, deleteExpenseTransaction } from '../../expense/api/expense-transactions.api';
 
 /**
  * Hook para la orquestación y administración del historial de Gastos.

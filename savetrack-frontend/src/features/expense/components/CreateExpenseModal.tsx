@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useExpenseTransactions } from '../hooks/useExpenseTransactions';
+import { useExpenseTransactions } from '@/features/expense/hooks/useExpenseTransactions';
 import { X, Loader2 } from 'lucide-react';
 import { useGlobalSettings } from '@/context/SettingsContext';
 
