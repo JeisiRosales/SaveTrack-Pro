@@ -23,36 +23,44 @@ export const Expenses: React.FC = () => {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
-    const monthlyExpenses = transactions.filter(t => {
+    // Ordenar por fecha descendente
+    const sortedExpenses = [...transactions].sort((a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
+    const monthlyExpenses = sortedExpenses.filter(t => {
         const txDate = new Date(t.created_at);
         return txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear;
     });
 
+    // Mostrar todos si no hay del mes
+    const displayExpenses = monthlyExpenses.length > 0 ? monthlyExpenses : sortedExpenses;
+
     // Calcular montos
     const totalMonthlyExpenses = monthlyExpenses.reduce((acc, t) => acc + Number(t.amount), 0);
-    // Asumimos 4 semanas por mes para el promedio semanal rápido
     const averageWeeklyExpenses = totalMonthlyExpenses / 4;
 
-    // Dividir en fijos vs variables basado en una bandera custom o de categoría. 
-    // Como Savetrack no tiene 'is_fixed' nativo, usaremos un hardcode o simplemente simularemos.
-    // Opcional: podrías implementar un filtro real si el motor categoriza fixos/variables.
-    // Para no romper esquemas, mostraremos todo fusionado o filtraremos en listas diferentes.
-
     // Formatear para tablas
-    const formattedFixed = monthlyExpenses.filter(t => t.expense_categories?.name?.toLowerCase().includes('fijo') || t.expense_categories?.name?.toLowerCase().includes('suscripciones')).map((t: any) => ({
+    const formattedFixed = displayExpenses.filter(t =>
+        t.expense_categories?.name?.toLowerCase().includes('fijo') ||
+        t.expense_categories?.name?.toLowerCase().includes('suscripciones')
+    ).map((t: any) => ({
         ...t,
         universalType: 'expense',
         isPositive: false,
         entityName: t.description || t.expense_categories?.name || 'Gasto Fijo',
-        categoryName: t.expense_categories?.name || 'General'
+        categoryName: t.expense_categories?.name || 'Fijo'
     }));
 
-    const formattedVariables = monthlyExpenses.filter(t => !t.expense_categories?.name?.toLowerCase().includes('fijo') && !t.expense_categories?.name?.toLowerCase().includes('suscripciones')).map((t: any) => ({
+    const formattedVariables = displayExpenses.filter(t =>
+        !t.expense_categories?.name?.toLowerCase().includes('fijo') &&
+        !t.expense_categories?.name?.toLowerCase().includes('suscripciones')
+    ).map((t: any) => ({
         ...t,
         universalType: 'expense',
         isPositive: false,
         entityName: t.description || t.expense_categories?.name || 'Gasto Variable',
-        categoryName: t.expense_categories?.name || 'General'
+        categoryName: t.expense_categories?.name || 'Variable'
     }));
 
     return (

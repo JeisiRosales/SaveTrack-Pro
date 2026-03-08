@@ -14,3 +14,9 @@ export const getUserSettings = () => api.get('/user-settings');
  * @returns Retorna el objeto unificado y modificado desde el servidor.
  */
 export const updateUserSettings = (data: Partial<UserSettings>) => api.patch('/user-settings', data);
+
+/**
+ * Solicita la eliminación permanente de la cuenta del usuario.
+ * @param userId - ID del usuario a eliminar
+ */
+export const deleteUserAccount = (userId: string) => api.delete(`/users/${userId}`);

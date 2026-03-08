@@ -12,18 +12,18 @@ export class UserSettingsController {
   // Crear configuración de usuario
   @Post()
   create(@Request() req, @Body() createDto: CreateUserSettingDto) {
-    return this.userSettingsService.create(req.user.sub, createDto);
+    return this.userSettingsService.create(req.user.id, createDto);
   }
 
   // Obtener configuración de usuario
   @Get()
   findMine(@Request() req) {
-    return this.userSettingsService.findByUserId(req.user.sub);
+    return this.userSettingsService.findByUserId(req.user.id);
   }
 
   // Modificar configuración de usuario
   @Patch()
   update(@Request() req, @Body() updateDto: UpdateUserSettingDto) {
-    return this.userSettingsService.update(req.user.sub, updateDto);
+    return this.userSettingsService.update(req.user.id, updateDto);
   }
 }

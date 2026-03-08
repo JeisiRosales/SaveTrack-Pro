@@ -100,7 +100,7 @@ export class TransactionsService {
      * @param goalId - ID de la meta
      */
     async findByGoal(goalId: string): Promise<Transaction[]> {
-        const { data, error } = await this.supabase.getClient()
+        const { data, error } = await this.supabase.getAdminClient()
             .from('transactions')
             .select('*, funding_accounts(name)')
             .eq('goal_id', goalId)

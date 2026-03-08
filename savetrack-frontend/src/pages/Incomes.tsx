@@ -23,18 +23,26 @@ export const Incomes: React.FC = () => {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
-    const monthlyIncomes = transactions.filter(t => {
+    // Ordenar por fecha descendente
+    const sortedIncomes = [...transactions].sort((a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
+    const monthlyIncomes = sortedIncomes.filter(t => {
         const txDate = new Date(t.created_at);
         return txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear;
     });
 
-    // Calcular montos
+    // Si no hay ingresos este mes, mostrar todos para evitar "pantalla vacía" confusa
+    const displayIncomes = monthlyIncomes.length > 0 ? monthlyIncomes : sortedIncomes;
+
+    // Calcular montos (siempre sobre el mes actual para los stats)
     const totalMonthlyIncome = monthlyIncomes.reduce((acc, t) => acc + Number(t.amount), 0);
     // Asumimos 4 semanas por mes para el promedio semanal rápido
     const averageWeeklyIncome = totalMonthlyIncome / 4;
 
     // Formatear para la tabla compartida
-    const formattedTransactions = monthlyIncomes.map((t: any) => ({
+    const formattedTransactions = displayIncomes.map((t: any) => ({
         ...t,
         universalType: 'income',
         isPositive: true,

@@ -12,30 +12,30 @@ export class IncomeTransactionsController {
   // Crear una transacción de ingreso
   @Post()
   create(@Request() req, @Body() createDto: CreateIncomeTransactionDto) {
-    return this.incomeTransactionsService.create(req.user.sub, createDto);
+    return this.incomeTransactionsService.create(req.user.id, createDto);
   }
 
   // Obtener todas las transacciones de ingreso
   @Get()
   findAll(@Request() req, @Query('account_id') accountId?: string) {
-    return this.incomeTransactionsService.findAll(req.user.sub, accountId);
+    return this.incomeTransactionsService.findAll(req.user.id, accountId);
   }
 
   // Obtener una transacción de ingreso por ID
   @Get(':id')
   findOne(@Request() req, @Param('id') id: string) {
-    return this.incomeTransactionsService.findOne(id, req.user.sub);
+    return this.incomeTransactionsService.findOne(id, req.user.id);
   }
 
   //Actualizar una transacción de ingreso
   @Patch(':id')
   update(@Request() req, @Param('id') id: string, @Body() updateDto: UpdateIncomeTransactionDto) {
-    return this.incomeTransactionsService.update(id, req.user.sub, updateDto);
+    return this.incomeTransactionsService.update(id, req.user.id, updateDto);
   }
 
   //Eliminar una transacción de ingreso
   @Delete(':id')
   remove(@Request() req, @Param('id') id: string) {
-    return this.incomeTransactionsService.remove(id, req.user.sub);
+    return this.incomeTransactionsService.remove(id, req.user.id);
   }
 }

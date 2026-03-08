@@ -12,30 +12,30 @@ export class SavingsGoalsController {
     // Crear meta de ahorro
     @Post()
     create(@Body() dto: CreateGoalDto, @Request() req) {
-        return this.goalsService.create(req.user.sub, dto);
+        return this.goalsService.create(req.user.id, dto);
     }
 
     // Obtener todas las metas de ahorro del usuario
     @Get()
     findAll(@Request() req) {
-        return this.goalsService.findAll(req.user.sub);
+        return this.goalsService.findAll(req.user.id);
     }
 
     // Obtener una meta de ahorro específica
     @Get(':id')
     findOne(@Param('id') id: string, @Request() req) {
-        return this.goalsService.findOne(id, req.user.sub);
+        return this.goalsService.findOne(id, req.user.id);
     }
 
     // Modificar un meta de ahorro
     @Patch(':id')
     update(@Param('id') id: string, @Body() dto: UpdateGoalDto, @Request() req) {
-        return this.goalsService.update(id, dto, req.user.sub);
+        return this.goalsService.update(id, dto, req.user.id);
     }
 
     // Eliminar una meta de ahorro
     @Delete(':id')
     remove(@Param('id') id: string, @Request() req) {
-        return this.goalsService.remove(id, req.user.sub);
+        return this.goalsService.remove(id, req.user.id);
     }
 }

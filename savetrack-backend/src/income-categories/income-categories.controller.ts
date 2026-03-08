@@ -12,30 +12,30 @@ export class IncomeCategoriesController {
   // Crear categoría de ingresos
   @Post()
   create(@Request() req, @Body() createDto: CreateIncomeCategoryDto) {
-    return this.incomeCategoriesService.create(req.user.sub, createDto);
+    return this.incomeCategoriesService.create(req.user.id, createDto);
   }
 
   // Buscar todas las categorías de ingresos
   @Get()
   findAll(@Request() req) {
-    return this.incomeCategoriesService.findAll(req.user.sub);
+    return this.incomeCategoriesService.findAll(req.user.id);
   }
 
   // Buscar una categoría de ingresos
   @Get(':id')
   findOne(@Request() req, @Param('id') id: string) {
-    return this.incomeCategoriesService.findOne(id, req.user.sub);
+    return this.incomeCategoriesService.findOne(id, req.user.id);
   }
 
   // Actualizar categoría de ingresos
   @Patch(':id')
   update(@Request() req, @Param('id') id: string, @Body() updateDto: UpdateIncomeCategoryDto) {
-    return this.incomeCategoriesService.update(id, req.user.sub, updateDto);
+    return this.incomeCategoriesService.update(id, req.user.id, updateDto);
   }
 
   // Eliminar categoría de ingresos
   @Delete(':id')
   remove(@Request() req, @Param('id') id: string) {
-    return this.incomeCategoriesService.remove(id, req.user.sub);
+    return this.incomeCategoriesService.remove(id, req.user.id);
   }
 }

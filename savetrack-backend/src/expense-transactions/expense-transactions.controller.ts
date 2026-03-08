@@ -12,30 +12,30 @@ export class ExpenseTransactionsController {
   // Crear una transaccion de gasto
   @Post()
   create(@Request() req, @Body() createDto: CreateExpenseTransactionDto) {
-    return this.expenseTransactionsService.create(req.user.sub, createDto);
+    return this.expenseTransactionsService.create(req.user.id, createDto);
   }
 
   // Listar transacciones
   @Get()
   findAll(@Request() req, @Query('account_id') accountId?: string) {
-    return this.expenseTransactionsService.findAll(req.user.sub, accountId);
+    return this.expenseTransactionsService.findAll(req.user.id, accountId);
   }
 
   // Listar transacciones por ID
   @Get(':id')
   findOne(@Request() req, @Param('id') id: string) {
-    return this.expenseTransactionsService.findOne(id, req.user.sub);
+    return this.expenseTransactionsService.findOne(id, req.user.id);
   }
 
   // Modificar una transaccion de gasto
   @Patch(':id')
   update(@Request() req, @Param('id') id: string, @Body() updateDto: UpdateExpenseTransactionDto) {
-    return this.expenseTransactionsService.update(id, req.user.sub, updateDto);
+    return this.expenseTransactionsService.update(id, req.user.id, updateDto);
   }
 
   // Eliminar una transaccion de gasto
   @Delete(':id')
   remove(@Request() req, @Param('id') id: string) {
-    return this.expenseTransactionsService.remove(id, req.user.sub);
+    return this.expenseTransactionsService.remove(id, req.user.id);
   }
 }

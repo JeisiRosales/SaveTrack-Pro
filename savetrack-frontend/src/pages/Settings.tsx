@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { SettingsForm } from '@/features/user-settings/components/SettingsForm';
 import { useAuth } from '@/context/AuthContext';
-import { User, LogOut, Sun, Moon, Briefcase } from 'lucide-react';
+import { User, Sun, Moon, Briefcase } from 'lucide-react';
 
 const Settings = () => {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains('dark'));
 
     const toggleTheme = () => {
@@ -63,17 +63,6 @@ const Settings = () => {
                                 <div className={`bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out ${darkMode ? 'translate-x-4' : ''}`}></div>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Zona Peligrosa */}
-                    <div className="bg-rose-500/5 p-5 rounded-3xl border border-rose-500/20 shadow-sm mt-auto">
-                        <h3 className="font-bold text-rose-500 mb-3 text-sm">Zona de Riesgo</h3>
-                        <button
-                            onClick={logout}
-                            className="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold p-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
-                        >
-                            <LogOut className="w-4 h-4" /> Cerrar Sesión
-                        </button>
                     </div>
                 </div>
 
