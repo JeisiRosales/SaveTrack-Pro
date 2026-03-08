@@ -48,10 +48,10 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={onClose} />
-            <div className="relative bg-[#0f111a] w-full max-w-md rounded-3xl p-8 border border-white/10 shadow-2xl">
+            <div className="relative bg-[var(--card)] w-full max-w-md rounded-3xl p-8 border border-white/10 shadow-2xl">
                 <div className="flex justify-between items-center mb-6">
                     <div>
-                        <h2 className="text-xl font-bold text-white">Registrar Ingreso</h2>
+                        <h2 className="text-xl font-bold text-[var(--foreground)]">Registrar Ingreso</h2>
                         <p className="text-xs text-gray-400 mt-1">Añade fondos a tu cuenta y activa el ahorro automático.</p>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
@@ -77,18 +77,23 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="block text-[11px] font-black text-[var(--muted)] uppercase ml-1">Monto del Ingreso</label>
+                        <div>
+                            <label className="text-[var(--muted)] text-xs mt-1 uppercase font-semibold">
+                                Monto
+                            </label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500/50 font-black text-xl">{currencySymbol}</span>
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-[var(--accent-text)] opacity-50">
+                                    {currencySymbol}
+                                </span>
                                 <input
                                     type="number"
-                                    placeholder="0.00"
                                     required
                                     step="0.01"
+                                    min="0.01"
+                                    placeholder="0.00"
                                     value={amount}
-                                    onChange={e => setAmount(e.target.value)}
-                                    className="w-full bg-black/20 border border-white/10 text-emerald-400 text-2xl font-bold rounded-2xl p-4 pl-12 text-center placeholder:text-emerald-900 focus:border-emerald-500/50 outline-none transition-all"
+                                    onChange={(e) => setAmount(e.target.value)}
+                                    className="text-[var(--foreground)] text-sm w-full pl-12 pr-4 py-4 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-[var(--card)] transition-all outline-none"
                                 />
                             </div>
                         </div>
@@ -100,7 +105,7 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                 placeholder="Ej. Pago de Nómina, Venta..."
                                 value={desc}
                                 onChange={e => setDesc(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 text-white text-sm rounded-xl p-4 outline-none focus:border-white/20 transition-all"
+                                className="text-[var(--foreground)] capitalize text-sm w-full pl-4 pr-4 py-4 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-[var(--card)] transition-all outline-none"
                             />
                         </div>
                     </div>

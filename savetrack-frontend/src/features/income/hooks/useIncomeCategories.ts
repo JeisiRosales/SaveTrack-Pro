@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { IncomeCategory } from '../../income-categories/types';
+import { IncomeCategory } from '../types';
 import { getIncomeCategories, createIncomeCategory, deleteIncomeCategory, updateIncomeCategory } from '../api/income-categories.api';
 
 /**
