@@ -92,7 +92,6 @@ export const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                                         });
                                     }}
                                     className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-600 outline-none transition-all text-[var(--foreground)]"
-                                    required
                                 />
                             </div>
 

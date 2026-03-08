@@ -98,7 +98,9 @@ const CreateAccountModal: React.FC<CreateAccountModalProps> = ({ isOpen, onClose
                         <div>
                             <label className="block text-xs font-semibold text-[var(--foreground)] opacity-80 mb-2 ml-1">Saldo Inicial</label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-indigo-500/50">{currencySymbol}</span>
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] font-bold text-sm">
+                                    {currencySymbol}
+                                </span>
                                 <input
                                     type="number"
                                     required

@@ -6,11 +6,12 @@ import { Account, TransferForm } from '../types';
 // Hook para manejar las cuentas con React Query
 export const useAccounts = () => {
     const queryClient = useQueryClient();
+    const [isTransferring, setIsTransferring] = useState(false);
+    const [isTransferModalOpen, setTransferModalOpen] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{
         text: string;
         type: 'success' | 'error' | null;
     }>({ text: '', type: null });
-    const [isTransferring, setIsTransferring] = useState(false);
 
     const {
         data: accounts = [],
@@ -27,6 +28,17 @@ export const useAccounts = () => {
 
     const error = queryError ? "No se pudieron cargar tus cuentas." : null;
     const totalBalance = accounts.reduce((acc: number, curr: Account) => acc + (curr.balance || 0), 0);
+
+    // Esta función es la que pasaremos al prop onClose del modal
+    const handleCloseTransferModal = () => {
+        setTransferModalOpen(false);
+
+        // Esperamos a que la animación de salida termine (aprox 300ms) 
+        // antes de borrar el mensaje, para que no desaparezca bruscamente
+        setTimeout(() => {
+            setStatusMessage({ text: '', type: null });
+        }, 300);
+    };
 
     // Manejamos la transferencia de fondos e invalidamos cachés
     const handleTransfer = async (formData: TransferForm) => {
@@ -57,8 +69,10 @@ export const useAccounts = () => {
         totalBalance,
         statusMessage,
         isTransferring,
+        isTransferModalOpen,
         fetchAccounts,
         handleTransfer,
-        setStatusMessage
+        setStatusMessage,
+        handleCloseTransferModal
     };
 };

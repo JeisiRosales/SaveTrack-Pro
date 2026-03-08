@@ -9,6 +9,8 @@ import { DeleteAccountModal } from './DeleteAccountModal';
 import {
     Trash2, Settings, Save, Loader2,
     DollarSign, Calendar, PiggyBank, AlertTriangle, LogOut,
+    EuroIcon,
+    CoinsIcon,
 } from 'lucide-react';
 
 export const SettingsForm = () => {
@@ -45,8 +47,12 @@ export const SettingsForm = () => {
 
     const currencyOptions = [
         { value: 'USD', label: 'Dólares (USD $)', icon: <DollarSign className="w-4 h-4" /> },
-        { value: 'EUR', label: 'Euros (EUR €)', icon: <DollarSign className="w-4 h-4" /> },
-        { value: 'VES', label: 'Bolívares (VES Bs)', icon: <DollarSign className="w-4 h-4" /> },
+        { value: 'EUR', label: 'Euros (EUR €)', icon: <EuroIcon className="w-4 h-4" /> },
+        { value: 'VES', label: 'Bolívares (VES Bs)', icon: <CoinsIcon className="w-4 h-4" /> },
+        { value: 'MXN', label: 'Peso Mexicano (MXN $)', icon: <DollarSign className="w-4 h-4" /> },
+        { value: 'COP', label: 'Peso Colombiano (COP $)', icon: <DollarSign className="w-4 h-4" /> },
+        { value: 'CLP', label: 'Peso Chileno (CLP $)', icon: <DollarSign className="w-4 h-4" /> },
+
     ];
 
     const periodOptions = [

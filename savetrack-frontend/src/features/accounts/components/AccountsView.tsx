@@ -15,7 +15,6 @@ interface ContextType {
     toggleSidebar: () => void;
 }
 
-// Componente para mostrar la vista de cuentas
 export const AccountsView: React.FC = () => {
     const { toggleSidebar } = useOutletContext<ContextType>();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -31,12 +30,19 @@ export const AccountsView: React.FC = () => {
         statusMessage,
         isTransferring,
         fetchAccounts,
-        handleTransfer
+        handleTransfer,
+        handleCloseTransferModal: closeTransferModal, // ← usamos la del hook
     } = useAccounts();
 
     const accountDetails = useAccountDetails(null);
 
-    // Manejamos la apertura del modal de detalle de cuenta
+    // Cierra el modal de transferencia usando el handler del hook
+    // que limpia statusMessage con el delay correcto
+    const handleCloseTransferModal = () => {
+        setIsTransferModalOpen(false);
+        closeTransferModal(); // limpia statusMessage tras animación
+    };
+
     const handleOpenDetails = (account: any) => {
         accountDetails.openDetails(account);
         setIsDetailModalOpen(true);
@@ -56,7 +62,9 @@ export const AccountsView: React.FC = () => {
                         <Wallet className="w-6 h-6 text-[var(--accent-text)]" />
                         Mis Cuentas
                     </h1>
-                    <p className="text-[var(--muted)] text-xs mt-1 font-medium">Administra tus fuentes de ahorro y saldos.</p>
+                    <p className="text-[var(--muted)] text-xs mt-1 font-medium">
+                        Administra tus fuentes de ahorro y saldos.
+                    </p>
                 </div>
                 <button
                     onClick={toggleSidebar}
@@ -73,7 +81,6 @@ export const AccountsView: React.FC = () => {
                 </div>
             ) : (
                 <div className="space-y-8">
-                    {/* Resumen Global */}
                     <div className="bg-[var(--accent-soft)] p-6 grid grid-cols-1 md:grid-cols-2 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm flex flex-center gap-4">
                         <div>
                             <h2 className="text-xl font-semibold text-[var(--foreground)]">Saldo Consolidado</h2>
@@ -93,7 +100,6 @@ export const AccountsView: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Grid de Cuentas */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {accounts.length > 0 ? (
                             accounts.map((acc: Account) => (
@@ -123,7 +129,7 @@ export const AccountsView: React.FC = () => {
 
             <TransferModal
                 isOpen={isTransferModalOpen}
-                onClose={() => setIsTransferModalOpen(false)}
+                onClose={handleCloseTransferModal}
                 accounts={accounts}
                 statusMessage={statusMessage}
                 isTransferring={isTransferring}

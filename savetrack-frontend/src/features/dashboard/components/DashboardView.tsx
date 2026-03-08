@@ -3,9 +3,10 @@ import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import {
     Menu, Loader2, TrendingUp, TrendingDown, Wallet,
     Target, ArrowUpRight, ArrowDownRight,
-    Landmark, RefreshCw, Zap, PiggyBank, ChevronRight,
+    Landmark, RefreshCw, PiggyBank, ChevronRight,
     BarChart3,
     User,
+    Settings
 } from 'lucide-react';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip,
@@ -149,37 +150,64 @@ export const DashboardView: React.FC = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
                         {/* Balance principal */}
-                        <div className="lg:col-span-2 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-3xl p-7 relative overflow-hidden shadow-xl shadow-indigo-900/30">
-                            {/* Decoración */}
-                            <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/5 rounded-full" />
-                            <div className="absolute -bottom-6 -left-6 w-28 h-28 bg-white/5 rounded-full" />
+                        <div className="lg:col-span-2 bg-[#4F46E5] rounded-2xl p-7 relative overflow-hidden">
 
-                            <p className="text-indigo-200 text-[11px] font-bold uppercase tracking-widest mb-1">
-                                Balance Total
-                            </p>
-                            <h2 className="text-4xl lg:text-5xl font-black text-white mb-1">
-                                {fmt(totalBalance)}
-                            </h2>
-                            <p className="text-indigo-300 text-xs font-medium mb-6">
-                                En {accounts.length} cuenta{accounts.length !== 1 ? 's' : ''}
-                            </p>
+                            {/* Decoración sutil */}
+                            <div className="absolute -top-10 -right-10 w-44 h-44 bg-white/5 rounded-full pointer-events-none" />
+                            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-white/5 rounded-full pointer-events-none" />
+
+                            {/* Cabecera */}
+                            <div className="flex items-start justify-between mb-6 relative">
+                                <div>
+                                    <p className="text-[10px] font-black text-white uppercase mb-1">
+                                        Balance Total
+                                    </p>
+                                    <h2 className="text-4xl lg:text-5xl font-black text-white leading-none">
+                                        {fmt(totalBalance)}
+                                    </h2>
+                                    <p className="text-white/60 text-xs font-medium mt-2">
+                                        Distribuido en {accounts.length} cuenta{accounts.length !== 1 ? 's' : ''}
+                                    </p>
+                                </div>
+                                <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0">
+                                    <Wallet className="w-5 h-5 text-white" />
+                                </div>
+                            </div>
+
+                            {/* Separador */}
+                            <div className="h-px bg-white/10 mb-5" />
 
                             {/* Mini cuentas */}
-                            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                                {accounts.map(acc => (
-                                    <Link
-                                        key={acc.id}
-                                        to="/accounts"
-                                        className="flex-shrink-0 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl px-4 py-2.5 transition-all"
-                                    >
-                                        <p className="text-indigo-200 text-[10px] font-bold uppercase truncate max-w-[80px]">
-                                            {acc.name}
-                                        </p>
-                                        <p className="text-white text-sm font-black mt-0.5">
-                                            {fmt(acc.balance)}
-                                        </p>
-                                    </Link>
-                                ))}
+                            <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide relative">
+                                {accounts.map(acc => {
+                                    const pct = totalBalance > 0 ? Math.round((acc.balance / totalBalance) * 100) : 0;
+                                    return (
+                                        <Link
+                                            key={acc.id}
+                                            to="/accounts"
+                                            className="flex-1 min-w-[130px] bg-white/10 hover:bg-white/30 border border-white/10 hover:border-white/25 rounded-xl px-4 py-3 transition-all"
+                                        >
+                                            <div className="flex items-center justify-between mb-2">
+                                                <p className="text-[10px] font-black text-white uppercase truncate">
+                                                    {acc.name}
+                                                </p>
+                                                <span className="text-[10px] font-bold text-white/80 flex-shrink-0 ml-1">
+                                                    {pct}%
+                                                </span>
+                                            </div>
+                                            <p className="text-sm font-black text-white">
+                                                {fmt(acc.balance)}
+                                            </p>
+                                            {/* Barra de proporción */}
+                                            <div className="mt-2 h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-white/80 rounded-full transition-all duration-500"
+                                                    style={{ width: `${pct}%` }}
+                                                />
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -195,7 +223,7 @@ export const DashboardView: React.FC = () => {
                                     <QuickAction icon={PiggyBank} label="Meta" to="/goals" color="bg-indigo-600" />
                                     <QuickAction icon={Landmark} label="Cuentas" to="/accounts" color="bg-sky-600" />
                                     <QuickAction icon={BarChart3} label="Movimientos" to="/transactions" color="bg-violet-600" />
-                                    <QuickAction icon={Zap} label="Ajustes" to="/settings" color="bg-amber-600" />
+                                    <QuickAction icon={Settings} label="Ajustes" to="/settings" color="bg-amber-600" />
                                 </div>
                             </div>
                             <div className="mt-4 pt-4 border-t border-[var(--card-border)] flex items-center justify-between">

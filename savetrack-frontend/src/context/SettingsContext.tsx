@@ -59,10 +59,12 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     // Calcular el símbolo en base a la configuración
     const getSymbol = (currency?: string) => {
         switch (currency) {
-            case 'EUR': return '€';
-            case 'COP': return 'COP $';
-            case 'VES': return 'Bs';
-            case 'USD': default: return '$';
+            case 'EUR': return '€ ';
+            case 'VES': return 'Bs ';
+            case 'USD': default: return '$ ';
+            case 'MXN': return '$ ';
+            case 'COP': return '$ ';
+            case 'CLP': return '$ ';
         }
     };
 

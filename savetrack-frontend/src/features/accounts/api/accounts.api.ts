@@ -21,4 +21,4 @@ export const deleteAccount = (id: string) =>
 
 // Petición para transferir fondos
 export const transferFunds = (data: TransferForm) =>
-    api.post('/transactions/transfer', data);
+    api.post('/funding-accounts/transfer', data);
