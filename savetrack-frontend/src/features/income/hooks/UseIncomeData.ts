@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useIncomeTransactions } from '@/features/income-transactions/hooks/useIncomeTransactions';
+import { useIncomeTransactions } from '@/features/income/hooks/useIncomeTransactions';
 import { useGlobalSettings } from '@/context/SettingsContext';
 
 export const useIncomesData = () => {

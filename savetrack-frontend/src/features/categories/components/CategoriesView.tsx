@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useExpenseCategories } from '@/features/expense/hooks/useExpenseCategories';
-import { useIncomeCategories } from '@/features/income-categories/hooks/useIncomeCategories';
+import { useIncomeCategories } from '@/features/income/hooks/useIncomeCategories';
 import { CategoryList } from '@/features/categories/components/CategoryList';
 import { TrendingUp, TrendingDown, Menu } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';

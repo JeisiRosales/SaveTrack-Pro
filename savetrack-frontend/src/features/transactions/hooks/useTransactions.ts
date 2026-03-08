@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import * as transactionsApi from '../api/transactions.api';
 import { getExpenseTransactions } from '@/features/expense/api/expense-transactions.api';
-import { getIncomeTransactions } from '@/features/income-transactions/api/income-transactions.api';
+import { getIncomeTransactions } from '@/features/income/api/income-transactions.api';
 import { getAccounts } from '@/features/accounts/api/accounts.api';
 import { Account } from '@/features/accounts/types';
 
