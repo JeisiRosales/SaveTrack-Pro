@@ -1,4 +1,5 @@
 import { Account } from "../types";
+import { useGlobalSettings } from "@/context/SettingsContext";
 
 // Interfaz para las propiedades de la tarjeta de cuenta
 interface AccountCardProps {
@@ -8,6 +9,7 @@ interface AccountCardProps {
 
 // Componente de tarjeta de cuenta
 export const AccountCard = ({ account, totalBalance }: AccountCardProps) => {
+    const { currencySymbol } = useGlobalSettings();
     // Calcula el porcentaje de la cuenta
     const percentage = totalBalance > 0
         ? `${Math.round((account.balance / totalBalance) * 100)}%`
@@ -18,7 +20,7 @@ export const AccountCard = ({ account, totalBalance }: AccountCardProps) => {
             <div>
                 <h5 className="text-[10px] font-semibold text-[var(--muted)]">{account.name}</h5>
                 <p className="text-lg font-bold mt-2 text-[var(--accent-text)]">
-                    ${account.balance.toLocaleString()}
+                    {currencySymbol}{account.balance.toLocaleString()}
                 </p>
             </div>
             <span className="text-[10px] font-bold bg-[var(--accent-soft)] text-[var(--accent-text)] px-2 py-0.5 rounded-full border border-[var(--card-border)]">

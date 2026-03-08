@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Loader2, Clock, Wallet, Pencil, Trash2, Plus } from 'lucide-react';
 import { Account, EditAccountForm, Transaction } from '../types';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // Interfaz para las propiedades del modal de detalle de cuenta
 interface AccountDetailModalProps {
@@ -40,6 +41,7 @@ export const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
     loadingTransactions
 }) => {
     if (!isOpen || !account) return null;
+    const { currencySymbol } = useGlobalSettings();
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -77,11 +79,18 @@ export const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-bold text-[var(--muted)] uppercase mb-2 px-1">Saldo Actual ($)</label>
+                                <label className="block text-[10px] font-bold text-[var(--muted)] uppercase mb-2 px-1">Saldo Actual</label>
                                 <input
                                     type="number"
-                                    value={editForm.balance}
-                                    onChange={(e) => onEditFormChange({ ...editForm, balance: Number(e.target.value) })}
+                                    placeholder="0"
+                                    value={editForm.balance === 0 ? '' : editForm.balance}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        onEditFormChange({
+                                            ...editForm,
+                                            balance: val === '' ? 0 : Number(val)
+                                        });
+                                    }}
                                     className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-600 outline-none transition-all text-[var(--foreground)]"
                                     required
                                 />
@@ -109,7 +118,7 @@ export const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                             <div className="bg-[var(--accent-soft)] p-5 rounded-2xl border border-[var(--card-border)]">
                                 <p className="text-[10px] font-bold text-[var(--accent-text)] opacity-80 uppercase mb-1">Saldo Disponible</p>
                                 <p className="text-3xl font-bold text-[var(--accent-text)]">
-                                    ${account.balance.toLocaleString()}
+                                    {currencySymbol}{account.balance.toLocaleString()}
                                 </p>
                             </div>
 
@@ -153,7 +162,7 @@ export const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                                                         </div>
                                                     </div>
                                                     <p className={`text-xs font-black ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                                        {isPositive ? '+' : '-'}${tx.amount.toLocaleString()}
+                                                        {isPositive ? '+' : '-'}{currencySymbol}{tx.amount.toLocaleString()}
                                                     </p>
                                                 </div>
                                             );

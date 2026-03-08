@@ -9,6 +9,7 @@ import { AccountCard } from './AccountCard';
 import { TransferModal } from './TransferModal';
 import { AccountDetailModal } from './AccountDetailModal';
 import { Account } from '../types';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 interface ContextType {
     toggleSidebar: () => void;
@@ -20,6 +21,7 @@ export const AccountsView: React.FC = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const { currencySymbol } = useGlobalSettings();
 
     const {
         accounts,
@@ -76,7 +78,7 @@ export const AccountsView: React.FC = () => {
                         <div>
                             <h2 className="text-xl font-semibold text-[var(--foreground)]">Saldo Consolidado</h2>
                             <h3 className="text-3xl font-bold mt-2 text-[var(--accent-text)]">
-                                ${totalBalance.toLocaleString()}
+                                {currencySymbol}{totalBalance.toLocaleString()}
                             </h3>
                             <div className="text-xs text-[var(--muted)] font-medium mt-2">
                                 <span className="text-[var(--accent-text)] font-bold">{accounts.length}</span> cuentas activas

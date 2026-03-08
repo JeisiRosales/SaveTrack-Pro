@@ -6,6 +6,7 @@ import GoalCard from './GoalCard';
 import CreateGoalModal from './CreateGoalModal';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { Goal } from '../types';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 interface ContextType {
     toggleSidebar: () => void;
@@ -25,6 +26,8 @@ const GoalsView: React.FC = () => {
     } = useGoals();
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+    const { currencySymbol } = useGlobalSettings();
 
     // Configuración del banner de estado global
     const allGoalsCompleted = stats.activeGoalsCount === 0 && filteredGoals.length > 0;
@@ -58,11 +61,11 @@ const GoalsView: React.FC = () => {
             <div className="bg-[var(--accent-soft)] mb-4 p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
                 <h2 className="text-xl font-semibold text-[var(--foreground)]">Total Ahorrado en Metas</h2>
                 <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
-                    ${stats.totalSaved.toLocaleString()}
+                    {currencySymbol}{stats.totalSaved.toLocaleString()}
                 </h3>
                 <p className="text-[var(--muted)] text-xs mt-1">Progreso acumulado de tus {filteredGoals.length} metas</p>
                 <div className="text-[var(--foreground)] font-semibold text-xs mt-1">
-                    <h3>Debes ahorrar ${stats.totalWeeklyInstallments.toFixed(2).toLocaleString()} semanalmente</h3>
+                    <h3>Debes ahorrar {currencySymbol}{stats.totalWeeklyInstallments.toFixed(2).toLocaleString()} semanalmente</h3>
                 </div>
             </div>
 
@@ -78,7 +81,7 @@ const GoalsView: React.FC = () => {
                                 {allGoalsCompleted
                                     ? "¡Felicidades, todas tus metas están cumplidas!"
                                     : stats.totalBalanceToPay > 0
-                                        ? `Debes saldar $${stats.totalBalanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} esta semana`
+                                        ? `Debes saldar ${currencySymbol}${stats.totalBalanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} esta semana`
                                         : "¡Estás al día con todas tus metas!"
                                 }
                             </h3>

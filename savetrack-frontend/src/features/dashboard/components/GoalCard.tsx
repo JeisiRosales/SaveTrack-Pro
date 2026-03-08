@@ -1,7 +1,9 @@
 import { Goal } from '../types';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // Interfaz para las propiedades de la tarjeta de meta
 export const GoalCard = ({ goal }: { goal: Goal }) => {
+    const { currencySymbol } = useGlobalSettings();
     // Calcula el progreso de la meta
     const progress = Math.min(Math.round((goal.current_amount / goal.target_amount) * 100), 100);
 
@@ -18,8 +20,8 @@ export const GoalCard = ({ goal }: { goal: Goal }) => {
 
             <h4 className="font-bold text-[var(--foreground)] text-sm mb-1">{goal.name}</h4>
             <div className="flex items-baseline gap-1.5 mb-3">
-                <span className="text-base font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
-                <span className="text-[10px] text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
+                <span className="text-base font-bold text-[var(--accent-text)]">{currencySymbol}{goal.current_amount?.toLocaleString()}</span>
+                <span className="text-[10px] text-[var(--muted)] font-medium">/ {currencySymbol}{goal.target_amount?.toLocaleString()}</span>
             </div>
         </div>
     );

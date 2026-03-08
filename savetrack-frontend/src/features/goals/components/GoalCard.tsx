@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { Goal } from '../types';
 import { calculateWeeklyStatus } from '../utils/goal-calculations';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // interface para las props del componente GoalCard
 interface GoalCardProps {
@@ -12,6 +13,7 @@ interface GoalCardProps {
 // componente para mostrar una meta
 const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
     const navigate = useNavigate();
+    const { currencySymbol } = useGlobalSettings();
     const progress = Math.min(Math.round((goal.current_amount / goal.target_amount) * 100), 100);
     const status = calculateWeeklyStatus(goal);
     const isCompleted = goal.current_amount >= goal.target_amount;
@@ -32,8 +34,8 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
 
             <h4 className="font-bold text-[var(--foreground)] text-xl mb-1">{goal.name}</h4>
             <div className="flex items-baseline gap-1.5 mb-3">
-                <span className="text-xs font-bold text-[var(--accent-text)]">${goal.current_amount?.toLocaleString()}</span>
-                <span className="text-xs text-[var(--muted)] font-medium">/ ${goal.target_amount?.toLocaleString()}</span>
+                <span className="text-xs font-bold text-[var(--accent-text)]">{currencySymbol}{goal.current_amount?.toLocaleString()}</span>
+                <span className="text-xs text-[var(--muted)] font-medium">/ {currencySymbol}{goal.target_amount?.toLocaleString()}</span>
             </div>
 
             <div className="w-full h-2.5 bg-[var(--background)] rounded-full overflow-hidden mb-3">
@@ -51,7 +53,7 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
                     {isCompleted
                         ? "¡Felicidades, has cumplido con tu meta de ahorro!"
                         : status.balanceToStayOnTrack > 0
-                            ? `Debe saldar $${status.balanceToStayOnTrack.toFixed(2)} esta semana`
+                            ? `Debe saldar ${currencySymbol}${status.balanceToStayOnTrack.toFixed(2)} esta semana`
                             : "¡Vas al día con tus ahorros!"
                     }
                 </p>

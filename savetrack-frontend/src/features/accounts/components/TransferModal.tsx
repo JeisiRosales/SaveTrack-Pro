@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Loader2, Plus, AlertCircle } from 'lucide-react';
 import { Account, TransferForm } from '../types';
 import { AccountSelector } from './AccountSelector';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // Interfaz para las propiedades del modal de transferencia
 interface TransferModalProps {
@@ -22,6 +23,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
     isTransferring,
     onTransfer
 }) => {
+    const { currencySymbol } = useGlobalSettings();
     const [form, setForm] = useState<TransferForm>({
         fromAccountId: '',
         toAccountId: '',
@@ -42,7 +44,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" >
             <div
                 className="absolute inset-0 bg-black/60 backdrop-blur-md"
                 onClick={() => !isTransferring && onClose()}
@@ -99,7 +101,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                         <div className="space-y-2">
                             <label className="block text-[11px] font-black text-[var(--muted)] uppercase ml-1">Monto a Transferir</label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] font-bold">$</span>
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] font-bold">{currencySymbol}</span>
                                 <input
                                     type="number"
                                     min="1"
@@ -122,6 +124,6 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                     </form>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };

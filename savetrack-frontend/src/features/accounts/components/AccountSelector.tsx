@@ -1,5 +1,5 @@
 import React from 'react';
-import { PiggyBank } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 import { Account } from '../types';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { useGlobalSettings } from '@/context/SettingsContext';
@@ -24,7 +24,7 @@ export const AccountSelector: React.FC<AccountSelectorProps> = ({
     const accountOptions = accounts.map(acc => ({
         value: acc.id,
         label: `${acc.name} - ${currencySymbol}${acc.balance.toLocaleString()}`,
-        icon: <PiggyBank className="w-4 h-4" />
+        icon: <Wallet className="w-4 h-4" />
     }));
 
     return (

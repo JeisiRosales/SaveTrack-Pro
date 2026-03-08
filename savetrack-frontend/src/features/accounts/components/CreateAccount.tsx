@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, Wallet, DollarSign, Loader2 } from 'lucide-react';
+import { X, Wallet, Loader2 } from 'lucide-react';
 import { createAccount } from '../api/accounts.api';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // Interfaz para las propiedades del modal de creación de cuenta
 interface CreateAccountModalProps {
@@ -11,6 +12,7 @@ interface CreateAccountModalProps {
 
 // Componente para crear una cuenta
 const CreateAccountModal: React.FC<CreateAccountModalProps> = ({ isOpen, onClose, onAccountCreated }) => {
+    const { currencySymbol } = useGlobalSettings();
     const [name, setName] = useState('');
     const [balance, setBalance] = useState('');
     const [loading, setLoading] = useState(false);
@@ -96,13 +98,13 @@ const CreateAccountModal: React.FC<CreateAccountModalProps> = ({ isOpen, onClose
                         <div>
                             <label className="block text-xs font-semibold text-[var(--foreground)] opacity-80 mb-2 ml-1">Saldo Inicial</label>
                             <div className="relative">
-                                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" />
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-indigo-500/50">{currencySymbol}</span>
                                 <input
                                     type="number"
                                     required
                                     step="0.01"
                                     min="0"
-                                    placeholder="0.00"
+                                    placeholder="0"
                                     value={balance}
                                     onChange={(e) => setBalance(e.target.value)}
                                     className="text-[var(--foreground)] text-sm w-full pl-11 pr-4 py-3 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-[var(--card)] transition-all outline-none font-bold"
@@ -110,18 +112,12 @@ const CreateAccountModal: React.FC<CreateAccountModalProps> = ({ isOpen, onClose
                             </div>
                         </div>
 
-                        <div className="pt-2 flex gap-3">
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="flex-1 py-3 px-4 border border-[var(--card-border)] text-[var(--muted)] font-bold rounded-xl hover:bg-[var(--background)] transition-colors text-sm"
-                            >
-                                Cancelar
-                            </button>
+                        {/* Botón de Envío */}
+                        <div className="pt-2">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] py-3 px-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-[var(--card-border)] flex items-center justify-center gap-2 text-sm"
+                                className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 text-sm"
                             >
                                 {loading ? (
                                     <>

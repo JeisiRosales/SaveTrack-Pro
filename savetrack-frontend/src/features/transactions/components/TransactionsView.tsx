@@ -4,6 +4,7 @@ import { useOutletContext } from 'react-router-dom';
 import { useTransactions } from '../hooks/useTransactions';
 import { TransactionFilters } from './TransactionFilters';
 import { TransactionsTable } from './TransactionsTable';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 interface ContextType {
     toggleSidebar: () => void;
@@ -26,6 +27,8 @@ export const TransactionsView: React.FC = () => {
         stats,
         exportToCSV
     } = useTransactions();
+
+    const { currencySymbol } = useGlobalSettings();
 
     if (loading) return (
         <div className="flex items-center justify-center h-screen bg-[var(--background)]">
@@ -62,7 +65,7 @@ export const TransactionsView: React.FC = () => {
                 <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--card-border)] shadow-sm">
                     <p className="text-[var(--muted)] text-sm font-bold mb-2">Total Depósitos</p>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-2xl font-bold text-emerald-500">${stats.totalIncomes.toLocaleString()}</h3>
+                        <h3 className="text-2xl font-bold text-emerald-500">{currencySymbol}{stats.totalIncomes.toLocaleString()}</h3>
                         <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
                             <TrendingUp className="w-5 h-5 text-emerald-500" />
                         </div>
@@ -72,7 +75,7 @@ export const TransactionsView: React.FC = () => {
                 <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--card-border)] shadow-sm">
                     <p className="text-[var(--muted)] text-sm font-bold mb-2">Total Retiros</p>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-2xl font-bold text-rose-500">${stats.totalExpenses.toLocaleString()}</h3>
+                        <h3 className="text-2xl font-bold text-rose-500">{currencySymbol}{stats.totalExpenses.toLocaleString()}</h3>
                         <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center">
                             <TrendingDown className="w-5 h-5 text-rose-500" />
                         </div>
@@ -83,7 +86,7 @@ export const TransactionsView: React.FC = () => {
                     <p className="text-[var(--muted)] text-sm font-bold mb-2">Balance Neto</p>
                     <div className="flex items-end justify-between">
                         <h3 className={`text-2xl font-bold ${stats.netBalance >= 0 ? 'text-indigo-500' : 'text-rose-500'}`}>
-                            ${stats.netBalance.toLocaleString()}
+                            {currencySymbol}{stats.netBalance.toLocaleString()}
                         </h3>
                         <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center">
                             <ArrowUpCircle className="w-5 h-5 text-indigo-500" />

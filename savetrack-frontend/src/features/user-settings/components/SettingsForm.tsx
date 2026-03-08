@@ -128,9 +128,20 @@ export const SettingsForm = () => {
                         <div>
                             <label className="text-xs font-bold text-[var(--muted)] uppercase mb-2 block">Proporción a desvíar (%)</label>
                             <input
-                                type="number" max="100" min="0"
-                                value={formData.saving_percentage || 0}
-                                onChange={e => setFormData({ ...formData, saving_percentage: Number(e.target.value) })}
+                                type="number"
+                                max="100"
+                                min="0"
+                                placeholder="0"
+                                // Si el valor es 0, lo pasamos como string vacío para que se vea el placeholder
+                                value={formData.saving_percentage === 0 ? '' : formData.saving_percentage}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    // Si el input está vacío, guardamos 0 (o null), de lo contrario el número
+                                    setFormData({
+                                        ...formData,
+                                        saving_percentage: val === '' ? 0 : Number(val)
+                                    });
+                                }}
                                 className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] p-3 rounded-xl text-[var(--foreground)] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono"
                             />
                         </div>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, Loader2 } from 'lucide-react';
+import { X, Plus, Minus, Loader2, ArrowRightLeft } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import * as transactionsApi from '../api/transactions.api';
 import { getAccounts } from '@/features/accounts/api/accounts.api';
 import { Account } from '@/features/accounts/types';
 import { AccountSelector } from '@/features/accounts/components/AccountSelector';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // Interfaz para las propiedades del modal de transacciones
 interface TransactionModalProps {
@@ -16,6 +17,7 @@ interface TransactionModalProps {
 
 // Componente de modal para transacciones
 export const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onClose, goalId, onSuccess }) => {
+    const { currencySymbol } = useGlobalSettings();
     const [type, setType] = useState<'deposit' | 'withdrawal'>('deposit');
     const [amount, setAmount] = useState('');
     const [accountId, setAccountId] = useState('');
@@ -67,71 +69,111 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onCl
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={onClose} />
+            {/* Backdrop con blur */}
+            <div
+                className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity"
+                onClick={onClose}
+            />
 
-            <div className="relative bg-[#12141c] w-full max-w-md rounded-3xl border border-white/10 shadow-2xl overflow-hidden animate-in zoom-in duration-200">
-                <div className="p-8">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-2xl font-bold text-white tracking-tight">Movimiento</h2>
-                        <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-white">
-                            <X className="w-5 h-5 text-gray-400" />
+            {/* Contenedor del Modal */}
+            <div className="relative bg-[var(--card)] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 border border-[var(--card-border)]">
+                <div className="p-6">
+                    <div className="flex justify-between items-start mb-6">
+                        <div>
+                            <h2 className="text-xl font-bold text-[var(--foreground)] tracking-tight">Movimiento de Meta</h2>
+                            <p className="text-[var(--muted)] text-xs mt-1">Registra un depósito o retiro para este objetivo.</p>
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="p-1.5 hover:bg-[var(--background)] rounded-lg text-[var(--muted)] transition-colors"
+                        >
+                            <X className="w-5 h-5" />
                         </button>
                     </div>
 
-                    {/* Toggle Tipo */}
-                    <div className="flex p-1.5 bg-black/20 border border-white/5 rounded-2xl mb-4 mt-4">
+                    {/* Toggle Tipo de Transacción */}
+                    <div className="flex p-1 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl mb-6">
                         <button
                             type="button"
                             onClick={() => setType('deposit')}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${type === 'deposit' ? 'bg-[#4f46e5] text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${type === 'deposit'
+                                ? 'bg-indigo-600 text-white shadow-md'
+                                : 'text-[var(--muted)] hover:text-[var(--foreground)]'
+                                }`}
                         >
                             <Plus className="w-4 h-4" /> Depósito
                         </button>
                         <button
                             type="button"
                             onClick={() => setType('withdrawal')}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${type === 'withdrawal' ? 'bg-rose-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${type === 'withdrawal'
+                                ? 'bg-rose-600 text-white shadow-md'
+                                : 'text-[var(--muted)] hover:text-[var(--foreground)]'
+                                }`}
                         >
                             <Minus className="w-4 h-4" /> Retiro
                         </button>
                     </div>
 
+                    {error && (
+                        <div className="mb-6 p-4 bg-rose-500/10 text-rose-500 rounded-2xl text-sm border border-rose-500/20 flex items-center gap-3">
+                            <span className="font-bold">Error:</span> {error}
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Selector de Cuenta */}
+                        <label className="text-[var(--muted)] text-xs mt-1 uppercase font-semibold">
+                            Cuenta Vinculada
+                        </label>
                         <AccountSelector
-                            label="Cuenta de origen"
-                            placeholder="¿De dónde viene el dinero?"
+                            placeholder="Selecciona la cuenta para el movimiento"
                             accounts={accounts}
                             selectedId={accountId}
-                            onSelect={(id) => setAccountId(id)}
-                        />
+                            onSelect={(id) => setAccountId(id)} label={''} />
 
                         {/* Input Monto */}
-                        <div className="space-y-2">
-                            <label className="text-xs font-black text-gray-500 ml-1 uppercase">Monto a transferir</label>
-                            <div className="relative group">
+                        <div>
+                            <label className="text-[var(--muted)] text-xs mt-1 uppercase font-semibold">
+                                Monto a {type === 'deposit' ? 'depositar' : 'retirar'}
+                            </label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-[var(--accent-text)] opacity-50">
+                                    {currencySymbol}
+                                </span>
                                 <input
                                     type="number"
                                     required
                                     step="0.01"
+                                    min="0.01"
+                                    placeholder="0.00"
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
-                                    className="text-white text-sm font-semibold w-full flex items-center justify-between bg-black/20 border border-white/10 mt-0.5 rounded-2xl py-4 px-5 outline-none focus:border-indigo-500 transition-all"
-                                    placeholder="0.00"
+                                    className="text-[var(--foreground)] text-sm w-full pl-12 pr-4 py-4 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-[var(--card)] transition-all outline-none font-bold"
                                 />
                             </div>
                         </div>
 
-                        {error && <p className="text-rose-500 text-xs font-bold text-center">{error}</p>}
-
-                        <button
-                            disabled={loading}
-                            className={`w-full py-5 rounded-2xl font-black text-xs text-white shadow shadow-indigo-500/10 transition-all active:scale-95 flex items-center justify-center gap-3 ${type === 'deposit'
-                                ? 'bg-[#4f46e5] hover:bg-[#4338ca] shadow-indigo-500/20'
-                                : 'bg-rose-600 hover:bg-rose-700 shadow-rose-500/20'
-                                }`}
-                        >
-                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Confirmar Transferencia'}
-                        </button>
+                        {/* Botón de Confirmación */}
+                        <div className="pt-2">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`w-full py-4 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm ${type === 'deposit'
+                                    ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/20'
+                                    : 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20'
+                                    } active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100`}
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        <ArrowRightLeft className="w-4 h-4 mr-1" />
+                                        Confirmar {type === 'deposit' ? 'Depósito' : 'Retiro'}
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

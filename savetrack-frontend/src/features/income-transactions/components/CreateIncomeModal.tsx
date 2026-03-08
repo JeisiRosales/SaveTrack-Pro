@@ -4,6 +4,7 @@ import { X, Loader2 } from 'lucide-react';
 import { AccountSelector } from '@/features/accounts/components/AccountSelector';
 import { IncomeCategorySelector } from '@/features/income-categories/components/IncomeCategorySelector';
 import { useAccounts } from '@/features/accounts/hooks/useAccounts';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 interface Props {
     isOpen: boolean;
@@ -20,6 +21,8 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
     const [catId, setCatId] = useState('');
     const [autoSave, setAutoSave] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const { currencySymbol } = useGlobalSettings();
 
     if (!isOpen) return null;
 
@@ -76,15 +79,18 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
                         <div className="space-y-2">
                             <label className="block text-[11px] font-black text-[var(--muted)] uppercase ml-1">Monto del Ingreso</label>
-                            <input
-                                type="number"
-                                placeholder="0.00"
-                                required
-                                step="0.01"
-                                value={amount}
-                                onChange={e => setAmount(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 text-emerald-400 text-2xl font-bold rounded-2xl p-4 text-center placeholder:text-emerald-900 focus:border-emerald-500/50 outline-none transition-all"
-                            />
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500/50 font-black text-xl">{currencySymbol}</span>
+                                <input
+                                    type="number"
+                                    placeholder="0.00"
+                                    required
+                                    step="0.01"
+                                    value={amount}
+                                    onChange={e => setAmount(e.target.value)}
+                                    className="w-full bg-black/20 border border-white/10 text-emerald-400 text-2xl font-bold rounded-2xl p-4 pl-12 text-center placeholder:text-emerald-900 focus:border-emerald-500/50 outline-none transition-all"
+                                />
+                            </div>
                         </div>
 
                         <div className="space-y-2">

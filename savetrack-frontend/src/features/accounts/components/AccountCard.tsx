@@ -1,6 +1,7 @@
 import React from 'react';
 import { Wallet } from 'lucide-react';
 import { Account } from '../types';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // Interfaz para las propiedades de la tarjeta de cuenta
 interface AccountCardProps {
@@ -11,6 +12,7 @@ interface AccountCardProps {
 
 // Componente para mostrar una tarjeta de cuenta
 export const AccountCard: React.FC<AccountCardProps> = ({ account, totalBalance, onClick }) => {
+    const { currencySymbol } = useGlobalSettings();
     return (
         <div
             onClick={onClick}
@@ -26,7 +28,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({ account, totalBalance,
                     </span>
                 </div>
                 <h5 className="text-sm font-bold text-[var(--foreground)] leading-tight mb-1">{account.name}</h5>
-                <p className="text-xl font-bold text-[var(--accent-text)]">${account.balance.toLocaleString()}</p>
+                <p className="text-xl font-bold text-[var(--accent-text)]">{currencySymbol}{account.balance.toLocaleString()}</p>
                 <p className="text-[10px] text-[var(--muted)] mt-1">Toca para ver detalles</p>
             </div>
         </div>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Target, DollarSign, Calendar, Loader2 } from 'lucide-react';
+import { X, Target, Calendar, Loader2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import api from '../../../lib/api';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // interface para las props del componente EditGoalModal
 interface EditGoalModalProps {
@@ -18,6 +19,7 @@ const EditGoalModal: React.FC<EditGoalModalProps> = ({
     onClose,
     onGoalUpdated
 }) => {
+    const { currencySymbol } = useGlobalSettings();
     const [name, setName] = useState('');
     const [targetAmount, setTargetAmount] = useState('');
     const [currentAmount, setCurrentAmount] = useState('');
@@ -129,7 +131,7 @@ const EditGoalModal: React.FC<EditGoalModalProps> = ({
                                 Monto Objetivo
                             </label>
                             <div className="relative">
-                                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" />
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-indigo-500/50">{currencySymbol}</span>
                                 <input
                                     type="number"
                                     required

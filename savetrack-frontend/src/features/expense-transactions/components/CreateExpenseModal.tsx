@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useExpenseTransactions } from '../hooks/useExpenseTransactions';
 import { X, Loader2 } from 'lucide-react';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 interface Props {
     isOpen: boolean; // Flag que indica visibilidad
@@ -23,6 +24,8 @@ export const CreateExpenseModal: React.FC<Props> = ({ isOpen, onClose }) => {
     const [accountId, setAccountId] = useState('');
     const [catId, setCatId] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const { currencySymbol } = useGlobalSettings();
 
     // Evita renderizar estructuras del DOM extra temporalmente
     if (!isOpen) return null;
@@ -67,7 +70,17 @@ export const CreateExpenseModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     <input type="text" placeholder="ID de Categoría" onChange={e => setCatId(e.target.value)} className="w-full bg-black/20 border border-white/10 text-white text-sm rounded-xl p-3" />
 
                     {/* Valor de Monto Destacado */}
-                    <input type="number" placeholder="Monto" required step="0.01" onChange={e => setAmount(e.target.value)} className="w-full bg-black/20 border border-white/10 text-white text-xl font-bold rounded-xl p-4 text-center placeholder:font-normal" />
+                    <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-500/50 font-black text-xl">{currencySymbol}</span>
+                        <input
+                            type="number"
+                            placeholder="Monto"
+                            required
+                            step="0.01"
+                            onChange={e => setAmount(e.target.value)}
+                            className="w-full bg-black/20 border border-white/10 text-white text-xl font-bold rounded-xl p-4 pl-12 text-center placeholder:font-normal"
+                        />
+                    </div>
 
                     {/* Descripción Opcional Expandida */}
                     <input type="text" placeholder="Concepto (Opcional)" onChange={e => setDesc(e.target.value)} className="w-full bg-black/20 border border-white/10 text-white text-sm rounded-xl p-3" />
