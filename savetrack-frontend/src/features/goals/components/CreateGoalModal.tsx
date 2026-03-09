@@ -114,55 +114,27 @@ const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGo
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {/* Monto Objetivo */}
-                            <div>
-                                <label className="block text-xs font-semibold text-[var(--foreground)] opacity-80 mb-2 ml-1">Monto Objetivo</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-indigo-500/50">{currencySymbol}</span>
-                                    <input
-                                        type="number"
-                                        required
-                                        step="0.01"
-                                        min="1"
-                                        placeholder="0.00"
-                                        value={targetAmount}
-                                        onChange={
-                                            (e) => {
-                                                const val = e.target.value;
-                                                if (val === "" || /^\d*\.?\d{0,2}$/.test(val)) {
-                                                    setTargetAmount(val);
-                                                }
-                                            }
+                        {/* Monto Objetivo */}
+                        <label className="block text-xs font-semibold text-[var(--foreground)] opacity-80 mb-2 ml-1">Monto Objetivo</label>
+                        <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] font-bold text-sm">{currencySymbol}</span>
+                            <input
+                                type="number"
+                                required
+                                step="0.01"
+                                min="0.01"
+                                placeholder="0.00"
+                                value={targetAmount}
+                                onChange={
+                                    (e) => {
+                                        const val = e.target.value;
+                                        if (val === "" || /^\d*\.?\d{0,2}$/.test(val)) {
+                                            setTargetAmount(val);
                                         }
-                                        className="text-[var(--foreground)] text-sm w-full pl-11 pr-4 py-3 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-[var(--card)] transition-all outline-none font-bold"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Ahorro Inicial */}
-                            <div>
-                                <label className="block text-xs font-semibold text-[var(--foreground)] opacity-80 mb-2 ml-1">Ya tengo ahorrado</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-indigo-500/50">{currencySymbol}</span>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        step="0.01"
-                                        placeholder="0.00"
-                                        value={initialAmount}
-                                        onChange={
-                                            (e) => {
-                                                const val = e.target.value;
-                                                if (val === "" || /^\d*\.?\d{0,2}$/.test(val)) {
-                                                    setInitialAmount(val);
-                                                }
-                                            }
-                                        }
-                                        className="text-[var(--foreground)] text-sm w-full pl-11 pr-4 py-3 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-[var(--card)] transition-all outline-none"
-                                    />
-                                </div>
-                            </div>
+                                    }
+                                }
+                                className="text-[var(--foreground)] text-sm w-full pl-11 pr-4 py-3 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-indigo-600 focus:bg-[var(--card)] transition-all outline-none"
+                            />
                         </div>
 
                         {/* Fecha Límite */}

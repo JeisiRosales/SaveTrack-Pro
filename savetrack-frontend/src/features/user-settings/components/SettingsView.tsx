@@ -176,8 +176,10 @@ const Settings = () => {
                 <div className="w-full lg:w-2/3">
                     <SettingsForm />
                 </div>
-
             </div>
+            <p className="text-xl text-[var(--muted)] mt-6 max-w-sm items-center justify-center text-center">
+                Hecho con cariño<span className="text-rose-500">IA</span>mor
+            </p>
         </div>
     );
 };

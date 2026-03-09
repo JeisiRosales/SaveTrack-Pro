@@ -158,8 +158,8 @@ export const CreateExpenseModal: React.FC<Props> = ({ isOpen, onClose }) => {
                             </label>
                             {isFixed !== null && (
                                 <span className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${isFixed
-                                        ? 'bg-violet-500/10 text-violet-400 border border-violet-500/20'
-                                        : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'
+                                    ? 'bg-violet-500/10 text-violet-400 border border-violet-500/20'
+                                    : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'
                                     }`}>
                                     {isFixed
                                         ? <><Repeat className="w-2.5 h-2.5" /> Gasto Fijo</>
@@ -177,7 +177,7 @@ export const CreateExpenseModal: React.FC<Props> = ({ isOpen, onClose }) => {
                             Monto
                         </label>
                         <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-rose-500/50">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] font-bold text-sm">
                                 {currencySymbol}
                             </span>
                             <input
@@ -209,8 +209,8 @@ export const CreateExpenseModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     {/* Preview fijo/variable */}
                     {isFixed !== null && (
                         <div className={`flex items-center gap-4 p-4 rounded-2xl border ${isFixed
-                                ? 'bg-violet-500/5 border-violet-500/20'
-                                : 'bg-orange-500/5 border-orange-500/20'
+                            ? 'bg-violet-500/5 border-violet-500/20'
+                            : 'bg-orange-500/5 border-orange-500/20'
                             }`}>
                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isFixed ? 'bg-violet-500/20' : 'bg-orange-500/20'
                                 }`}>

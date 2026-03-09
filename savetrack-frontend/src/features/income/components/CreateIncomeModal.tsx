@@ -11,7 +11,7 @@ interface Props {
     onClose: () => void;
 }
 
-const INITIAL = { amount: '', desc: '', accountId: '', catId: '', autoSave: false };
+const INITIAL = { amount: '', desc: '', accountId: '', catId: '', autoSave: false, customSavingPct: 10 };
 
 const friendlyError = (err: any): string => {
     const msg = (err?.response?.data?.message || err?.message || '').toLowerCase();
@@ -36,11 +36,13 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
     const [success, setSuccess] = useState(false);
     const savingPercentage = settings?.saving_percentage || 0;
     const amountValue = Number(form.amount) || 0;
-    // Calculamos cuánto se desvía y cuánto queda
-    const savingAmount = (amountValue * (savingPercentage / 100));
-    const remainingAmount = amountValue - savingAmount;
     // Verificamos si la configuración global está activa
     const isAutoSaveGloballyEnabled = settings?.auto_save_enabled && settings?.savings_account_id;
+    // Usamos el porcentaje global si está activo, o el personalizado del formulario
+    const effectiveSavingPct = isAutoSaveGloballyEnabled ? savingPercentage : form.customSavingPct;
+    // Calculamos cuánto se desvía y cuánto queda
+    const savingAmount = (amountValue * (effectiveSavingPct / 100));
+    const remainingAmount = amountValue - savingAmount;
 
     // Limpia el formulario cada vez que el modal se abre o cierra
     useEffect(() => {
@@ -85,6 +87,7 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
             // 1. Verificamos si debemos aplicar el ahorro (global o manual)
             // y si existe una cuenta destino configurada
             const shouldApplySavings = (isAutoSaveGloballyEnabled || form.autoSave) && settings?.savings_account_id;
+            // savingAmount y remainingAmount ya usan effectiveSavingPct (global o personalizado)
 
             if (shouldApplySavings) {
                 // A. Registramos el remanente en la cuenta principal
@@ -199,7 +202,7 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                             Monto
                         </label>
                         <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black text-emerald-500/40">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] font-bold text-sm">
                                 {currencySymbol}
                             </span>
                             <input
@@ -261,33 +264,86 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                             </div>
                         ) : (
                             /* ESCENARIO B: No está configurado (Ofrecer la oportunidad) */
-                            <label className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border group ${form.autoSave
+                            <div className={`rounded-2xl border transition-all overflow-hidden ${form.autoSave
                                 ? 'bg-indigo-500/10 border-indigo-500/30'
-                                : 'bg-[var(--background)] border-[var(--card-border)] hover:border-indigo-500/20'
+                                : 'bg-[var(--background)] border-[var(--card-border)]'
                                 }`}>
-                                <div className="p-2 bg-indigo-500/10 rounded-xl group-hover:scale-110 transition-transform">
-                                    <ArrowLeftRight className={`w-5 h-5 ${form.autoSave ? 'text-indigo-400' : 'text-[var(--muted)]'}`} />
-                                </div>
+                                {/* Toggle row */}
+                                <label className="flex items-center gap-4 p-4 cursor-pointer group">
+                                    <div className="p-2 bg-indigo-500/10 rounded-xl group-hover:scale-110 transition-transform">
+                                        <ArrowLeftRight className={`w-5 h-5 ${form.autoSave ? 'text-indigo-400' : 'text-[var(--muted)]'}`} />
+                                    </div>
 
-                                <div className="flex-1">
-                                    <p className={`text-sm font-bold ${form.autoSave ? 'text-indigo-400' : 'text-[var(--foreground)]'}`}>
-                                        ¿Deseas ahorrar una parte?
-                                    </p>
-                                    <p className="text-[10px] text-[var(--muted)] leading-tight mt-0.5">
-                                        Activa esto para desviar manualmente un porcentaje de este ingreso específico.
-                                    </p>
-                                </div>
+                                    <div className="flex-1">
+                                        <p className={`text-sm font-bold ${form.autoSave ? 'text-indigo-400' : 'text-[var(--foreground)]'}`}>
+                                            ¿Deseas ahorrar una parte?
+                                        </p>
+                                        <p className="text-[10px] text-[var(--muted)] leading-tight mt-0.5">
+                                            Desvía un porcentaje de este ingreso a tu cuenta de ahorro.
+                                        </p>
+                                    </div>
 
-                                <div className="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={form.autoSave}
-                                        onChange={e => set('autoSave')(e.target.checked)}
-                                        className="sr-only peer"
-                                    />
-                                    <div className="w-10 h-5 bg-slate-300 dark:bg-slate-700 rounded-full peer-checked:bg-indigo-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
-                                </div>
-                            </label>
+                                    <div className="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={form.autoSave}
+                                            onChange={e => set('autoSave')(e.target.checked)}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-10 h-5 bg-slate-300 dark:bg-slate-700 rounded-full peer-checked:bg-indigo-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+                                    </div>
+                                </label>
+
+                                {/* Slider — solo visible cuando autoSave está activo */}
+                                {form.autoSave && (
+                                    <div className="px-4 pb-4 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                                        <div className="h-px bg-indigo-500/20" />
+
+                                        {/* Porcentaje grande + montos */}
+                                        <div className="flex items-end justify-between">
+                                            <div>
+                                                <span className="text-3xl font-black text-indigo-400">{form.customSavingPct}%</span>
+                                                <span className="text-xs text-[var(--muted)] ml-2">de ahorro</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Slider */}
+                                        <div className="relative">
+                                            <input
+                                                type="range"
+                                                min={1}
+                                                max={100}
+                                                step={1}
+                                                value={form.customSavingPct}
+                                                onChange={e => setForm(f => ({ ...f, customSavingPct: Number(e.target.value) }))}
+                                                className="w-full h-2 rounded-full appearance-none cursor-pointer accent-indigo-500"
+                                                style={{
+                                                    background: `linear-gradient(to right, rgb(99 102 241) 0%, rgb(99 102 241) ${((form.customSavingPct - 1) / 99) * 100}%, rgba(99,102,241,0.15) ${((form.customSavingPct - 1) / 99) * 100}%, rgba(99,102,241,0.15) 100%)`
+                                                }}
+                                            />
+                                            <div className="flex justify-between mt-1">
+                                                <span className="text-[9px] text-[var(--muted)]">1%</span>
+                                                <span className="text-[9px] text-[var(--muted)]">100%</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Desglose cuenta principal vs ahorro */}
+                                        {amountValue > 0 && (
+                                            <div className="flex justify-between items-center p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/10">
+                                                <div className="text-center">
+                                                    <p className="text-[10px] text-[var(--muted)] font-medium">Cuenta principal</p>
+                                                    <p className="text-sm font-black text-[var(--foreground)]">{fmt(remainingAmount)}</p>
+                                                </div>
+                                                <ArrowLeftRight className="w-4 h-4 text-indigo-500/40" />
+                                                <div className="text-center">
+                                                    <p className="text-[10px] text-[var(--muted)] font-medium">Cuenta de ahorro</p>
+                                                    <p className="text-sm font-black text-indigo-400">{fmt(savingAmount)}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
 
