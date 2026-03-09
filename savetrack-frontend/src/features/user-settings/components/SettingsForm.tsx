@@ -56,7 +56,9 @@ export const SettingsForm = () => {
     ];
 
     const periodOptions = [
+        { value: 'daily', label: 'Diario', icon: <Calendar className="w-4 h-4" /> },
         { value: 'weekly', label: 'Semanal', icon: <Calendar className="w-4 h-4" /> },
+        { value: 'quarterly', label: 'Quincenal', icon: <Calendar className="w-4 h-4" /> },
         { value: 'monthly', label: 'Mensual', icon: <Calendar className="w-4 h-4" /> },
         { value: 'yearly', label: 'Anual', icon: <Calendar className="w-4 h-4" /> },
     ];
@@ -122,8 +124,8 @@ export const SettingsForm = () => {
 
                         {/* Campos — solo visibles si está activo */}
                         <div className={`transition-all duration-300 space-y-4 ${formData.auto_save_enabled
-                                ? 'opacity-100 max-h-[500px]'
-                                : 'opacity-0 max-h-0 overflow-hidden pointer-events-none'
+                            ? 'opacity-100 max-h-[500px]'
+                            : 'opacity-0 max-h-0 overflow-hidden pointer-events-none'
                             }`}>
                             <div>
                                 <label className="text-xs font-bold text-[var(--muted)] uppercase mb-2 block">

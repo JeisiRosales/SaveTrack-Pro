@@ -33,12 +33,20 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
 }) => {
     const { currencySymbol, settings } = useGlobalSettings();
     const queryClient = useQueryClient();
-
     const [type, setType] = useState<'deposit' | 'withdrawal'>('deposit');
     const [amount, setAmount] = useState('');
     const [account, setAccount] = useState<Account | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // Validaciones en tiempo real 
+    const amountNum = Number(amount) || 0;
+    const remaining = goalTarget - goalCurrent;
+    const goalCompleted = remaining <= 0;
+    const exceedsRemaining = type === 'deposit' && remaining > 0 && amountNum > remaining;
+    const exceedsGoal = type === 'withdrawal' && amountNum > goalCurrent;
+    const exceedsAccountBalance = type === 'deposit' && amountNum > (account?.balance ?? 0);
+    const hasSavingsAccount = !!settings?.savings_account_id;
 
     useEffect(() => {
         if (!isOpen) { setAmount(''); setError(''); setType('deposit'); return; }
@@ -54,27 +62,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         });
     }, [isOpen, settings?.savings_account_id]);
 
-    // ── Validaciones en tiempo real 
-    const amountNum = Number(amount) || 0;
-    const remaining = goalTarget - goalCurrent;
-
-    // Depósito: solo bloquear si hay monto restante Y se supera — metas completadas permiten depósitos adicionales
-    const exceedsRemaining = type === 'deposit' && remaining > 0 && amountNum > remaining;
-    // Retiro: no puede superar lo que hay en la meta
-    const exceedsGoal = type === 'withdrawal' && amountNum > goalCurrent;
-    const exceedsAccountBalance = type === 'deposit' && amountNum > (account?.balance ?? 0);
-    const hasSavingsAccount = !!settings?.savings_account_id;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 
         if (!account) { setError('No hay una cuenta de ahorro configurada.'); return; }
-        if (!amount || amountNum <= 0) { setError('Ingresa un monto válido mayor a cero.'); return; }
-        if (amountNum < 0.01) { setError('El monto mínimo es 0.01.'); return; }
-        if (exceedsRemaining) { setError(`El depósito supera lo que falta para la meta (${currencySymbol}${remaining.toLocaleString()}).`); return; }
-        if (exceedsGoal) { setError(`No puedes retirar más de lo acumulado en la meta (${currencySymbol}${goalCurrent.toLocaleString()}).`); return; }
-        if (exceedsAccountBalance) { setError(`Saldo insuficiente. Tu cuenta solo tiene ${currencySymbol}${account!.balance.toLocaleString()}.`); return; }
 
         setLoading(true);
         try {
@@ -225,6 +218,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                                 />
                             </div>
 
+                            {/* Validaciones */}
                             {exceedsRemaining && (
                                 <p className="text-xs font-bold text-rose-400 ml-1">
                                     Supera lo que falta para completar la meta ({currencySymbol}{remaining.toLocaleString()}).
@@ -241,8 +235,15 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                                 </p>
                             )}
 
+                            {/* Meta completada */}
+                            {type === 'deposit' && goalCompleted && (
+                                <p className="text-xs font-bold text-emerald-500 ml-1">
+                                    ¡Meta completada! No puedes seguir depositando fondos
+                                </p>
+                            )}
+
                             {/* Atajo: depositar el monto exacto para completar la meta */}
-                            {type === 'deposit' && remaining > 0 && (
+                            {type === 'deposit' && remaining > 0 && !goalCompleted && (
                                 <button
                                     type="button"
                                     onClick={() => { setAmount(String(remaining)); setError(''); }}
@@ -251,18 +252,13 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                                     Completar meta ({currencySymbol}{remaining.toLocaleString()}) →
                                 </button>
                             )}
-                            {type === 'deposit' && remaining <= 0 && (
-                                <p className="text-xs font-bold text-emerald-500 ml-1">
-                                    ✓ Meta completada — puedes seguir añadiendo fondos
-                                </p>
-                            )}
                         </div>
 
                         {/* Submit */}
                         <div className="pt-1">
                             <button
                                 type="submit"
-                                disabled={loading || !account || exceedsRemaining || exceedsGoal || exceedsAccountBalance}
+                                disabled={loading || !account || exceedsRemaining || exceedsGoal || exceedsAccountBalance || goalCompleted}
                                 className={`w-full py-4 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${type === 'deposit'
                                     ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/20'
                                     : 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20'
