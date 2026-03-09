@@ -20,3 +20,10 @@ export const updateUserSettings = (data: Partial<UserSettings>) => api.patch('/u
  * @param userId - ID del usuario a eliminar
  */
 export const deleteUserAccount = (userId: string) => api.delete(`/users/${userId}`);
+
+/**
+ * Cambio de nombre de usuario
+ * @param userName - Nuevo nombre de usuario
+ * @returns Retorna el objeto unificado y modificado desde el servidor.
+ */
+export const updateUserName = (userName: string) => api.patch('/user/profile', { userName });

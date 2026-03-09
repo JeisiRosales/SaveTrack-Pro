@@ -33,6 +33,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return () => subscription.unsubscribe();
     }, []);
 
+    const updateProfile = async (updates: { full_name: string }) => {
+        try {
+            const { error } = await supabase
+                .from('profiles')
+                .update(updates)
+                .eq('id', user.id)
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            // Actualizamos los metadatos de la sesión de Supabase para mantener consistencia
+            const { data: authData, error: authError } = await supabase.auth.updateUser({
+                data: { full_name: updates.full_name }
+            });
+
+            if (authError) throw authError;
+
+            // Actualizamos el estado local
+            const updatedUser = { ...user, full_name: updates.full_name, user_metadata: authData.user.user_metadata };
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+
+            return { success: true };
+        } catch (error) {
+            console.error('[AuthContext] Error al actualizar perfil:', error);
+            throw error;
+        }
+    };
+
     const handleUser = (supabaseUser: any, token: string) => {
         const enrichedUser = {
             ...supabaseUser,
@@ -83,7 +113,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, updateProfile }}>
             {children}
         </AuthContext.Provider>
     );
