@@ -178,7 +178,7 @@ const Settings = () => {
                 </div>
             </div>
             <p className="text-xl text-[var(--muted)] mt-6 max-w-sm items-center justify-center text-center">
-                Hecho con cariño<span className="text-rose-500">IA</span>mor jajaja
+                <span className="text-rose-500">Hecho con</span> cariño<span className="text-rose-500">IA</span>mor jajaja
             </p>
         </div>
     );
