@@ -86,8 +86,10 @@ export const TransactionsView: React.FC = () => {
                     <QuickFilterBtn label="Hoy" onClick={() => setTimeRange?.('today')} active={timeRange === 'today'} />
                     <QuickFilterBtn label="Ayer" onClick={() => setTimeRange?.('yesterday')} active={timeRange === 'yesterday'} />
                     <QuickFilterBtn label="Esta Semana" onClick={() => setTimeRange?.('week')} active={timeRange === 'week'} />
+                    <QuickFilterBtn label="Quincenal" onClick={() => setTimeRange?.('biweekly')} active={timeRange === 'biweekly'} />
                     <QuickFilterBtn label="Este Mes" onClick={() => setTimeRange?.('month')} active={timeRange === 'month'} />
                     <QuickFilterBtn label="Mes Anterior" onClick={() => setTimeRange?.('last_month')} active={timeRange === 'last_month'} />
+                    <QuickFilterBtn label="Este Año" onClick={() => setTimeRange?.('year')} active={timeRange === 'year'} />
                 </div>
             </div>
 

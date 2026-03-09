@@ -129,7 +129,7 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pb-24">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => !loading && onClose()} />
 
             <div className="relative bg-[var(--card)] w-full max-w-md rounded-3xl p-8 border border-[var(--card-border)] shadow-2xl">
@@ -254,7 +254,7 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                     <span className="text-[10px] text-[var(--muted)] font-medium italic">
                                         Quedarán {fmt(remainingAmount)} en la cuenta principal
                                     </span>
-                                    <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">
+                                    <span className="text-[8px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">
                                         Regla Activa
                                     </span>
                                 </div>

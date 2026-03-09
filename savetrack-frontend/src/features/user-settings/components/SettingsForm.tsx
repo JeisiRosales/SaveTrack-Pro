@@ -58,7 +58,7 @@ export const SettingsForm = () => {
     const periodOptions = [
         { value: 'daily', label: 'Diario', icon: <Calendar className="w-4 h-4" /> },
         { value: 'weekly', label: 'Semanal', icon: <Calendar className="w-4 h-4" /> },
-        { value: 'quarterly', label: 'Quincenal', icon: <Calendar className="w-4 h-4" /> },
+        { value: 'biweekly', label: 'Quincenal', icon: <Calendar className="w-4 h-4" /> },
         { value: 'monthly', label: 'Mensual', icon: <Calendar className="w-4 h-4" /> },
         { value: 'yearly', label: 'Anual', icon: <Calendar className="w-4 h-4" /> },
     ];

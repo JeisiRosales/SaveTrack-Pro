@@ -165,8 +165,8 @@ export const ExpensesView: React.FC<ExpensesViewProps> = ({
         `${currencySymbol}${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 
     const periodLabel: Record<TimeRange, string> = {
-        today: 'Hoy', yesterday: 'Ayer', week: 'Esta semana',
-        month: 'Este mes', last_month: 'Mes anterior', all: 'Todo',
+        today: 'Hoy', yesterday: 'Ayer', week: 'Esta semana', biweekly: 'Quincenal',
+        month: 'Este mes', last_month: 'Mes anterior', year: 'Este año', all: 'Todo',
     };
 
     const activeTransactions = activeTable === 'variable' ? formattedVariables : formattedFixed;
@@ -199,7 +199,8 @@ export const ExpensesView: React.FC<ExpensesViewProps> = ({
                     </div>
                     {([
                         ['all', 'Todo'], ['today', 'Hoy'], ['yesterday', 'Ayer'],
-                        ['week', 'Esta Semana'], ['month', 'Este Mes'], ['last_month', 'Mes Anterior'],
+                        ['week', 'Esta Semana'], ['biweekly', 'Quincenal'], ['month', 'Este Mes'],
+                        ['last_month', 'Mes Anterior'], ['year', 'Este Año'],
                     ] as [TimeRange, string][]).map(([val, label]) => (
                         <QuickFilterBtn key={val} label={label} onClick={() => setTimeRange(val)} active={timeRange === val} />
                     ))}

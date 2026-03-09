@@ -3,7 +3,7 @@ import { useExpenseTransactions } from '@/features/expense/hooks/useExpenseTrans
 import { useExpenseCategories } from '@/features/expense/hooks/useExpenseCategories';
 import { useGlobalSettings } from '@/context/SettingsContext';
 
-export type TimeRange = 'today' | 'yesterday' | 'week' | 'month' | 'last_month' | 'all';
+export type TimeRange = 'today' | 'yesterday' | 'week' | 'biweekly' | 'month' | 'last_month' | 'year' | 'all';
 
 export interface DailyExpense {
     day: number;
@@ -25,7 +25,7 @@ export const useExpenseData = () => {
     const { transactions } = useExpenseTransactions();
     const { categories } = useExpenseCategories();
     const { currencySymbol } = useGlobalSettings();
-    const [timeRange, setTimeRange] = useState<TimeRange>('month');
+    const [timeRange, setTimeRange] = useState<TimeRange>('all');
 
     const data = useMemo(() => {
         const now = new Date();
@@ -48,6 +48,12 @@ export const useExpenseData = () => {
                     startOfWeek.setHours(0, 0, 0, 0);
                     return txDate >= startOfWeek;
                 }
+                case 'biweekly': {
+                    const startOfBiweekly = new Date(now);
+                    startOfBiweekly.setDate(now.getDate() - now.getDate() % 15);
+                    startOfBiweekly.setHours(0, 0, 0, 0);
+                    return txDate >= startOfBiweekly;
+                }
                 case 'month':
                     return txDate.getMonth() === now.getMonth() &&
                         txDate.getFullYear() === now.getFullYear();
@@ -55,6 +61,11 @@ export const useExpenseData = () => {
                     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
                     return txDate.getMonth() === lastMonth.getMonth() &&
                         txDate.getFullYear() === lastMonth.getFullYear();
+                }
+                case 'year': {
+                    const startOfYear = new Date(now.getFullYear(), 0, 1);
+                    startOfYear.setHours(0, 0, 0, 0);
+                    return txDate >= startOfYear;
                 }
                 case 'all':
                 default:

@@ -3,7 +3,7 @@ import { useIncomeTransactions } from '@/features/income/hooks/useIncomeTransact
 import { useIncomeCategories } from '@/features/income/hooks/useIncomeCategories';
 import { useGlobalSettings } from '@/context/SettingsContext';
 
-export type TimeRange = 'today' | 'yesterday' | 'week' | 'month' | 'last_month' | 'all';
+export type TimeRange = 'today' | 'yesterday' | 'week' | 'biweekly' | 'month' | 'last_month' | 'year' | 'all';
 
 export interface DailyIncome {
     day: number;
@@ -24,7 +24,7 @@ export const useIncomeData = () => {
     const { transactions } = useIncomeTransactions();
     const { categories } = useIncomeCategories();
     const { currencySymbol } = useGlobalSettings();
-    const [timeRange, setTimeRange] = useState<TimeRange>('month');
+    const [timeRange, setTimeRange] = useState<TimeRange>('all');
 
     const data = useMemo(() => {
         const now = new Date();
@@ -54,6 +54,17 @@ export const useIncomeData = () => {
                     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
                     return txDate.getMonth() === lastMonth.getMonth() &&
                         txDate.getFullYear() === lastMonth.getFullYear();
+                }
+                case 'biweekly': {
+                    const startOfBiweekly = new Date(now);
+                    startOfBiweekly.setDate(now.getDate() - now.getDate() % 15);
+                    startOfBiweekly.setHours(0, 0, 0, 0);
+                    return txDate >= startOfBiweekly;
+                }
+                case 'year': {
+                    const startOfYear = new Date(now.getFullYear(), 0, 1);
+                    startOfYear.setHours(0, 0, 0, 0);
+                    return txDate >= startOfYear;
                 }
                 case 'all':
                 default:

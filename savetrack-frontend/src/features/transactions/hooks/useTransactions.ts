@@ -7,13 +7,13 @@ import { getAccounts } from '@/features/accounts/api/accounts.api';
 import { Account } from '@/features/accounts/types';
 
 // Definición del tipo de rango de tiempo
-export type TimeRange = 'today' | 'yesterday' | 'week' | 'month' | 'last_month' | 'all';
+export type TimeRange = 'today' | 'yesterday' | 'week' | 'biweekly' | 'month' | 'last_month' | 'year' | 'all';
 
 export const useTransactions = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [typeFilter, setTypeFilter] = useState<'All' | 'deposit' | 'withdrawal' | 'expense' | 'income'>('All');
     const [accountFilter, setAccountFilter] = useState<string>('All');
-    const [timeRange, setTimeRange] = useState<TimeRange>('month');
+    const [timeRange, setTimeRange] = useState<TimeRange>('all');
 
     const {
         data,
@@ -107,6 +107,12 @@ export const useTransactions = () => {
                     startOfWeek.setHours(0, 0, 0, 0);
                     matchesTime = txDate >= startOfWeek;
                     break;
+                case 'biweekly': {
+                    const startOfBiweekly = new Date(now);
+                    startOfBiweekly.setDate(now.getDate() - now.getDate() % 15);
+                    startOfBiweekly.setHours(0, 0, 0, 0);
+                    return txDate >= startOfBiweekly;
+                }
                 case 'month':
                     matchesTime = txDate.getMonth() === now.getMonth() &&
                         txDate.getFullYear() === now.getFullYear();
@@ -116,6 +122,11 @@ export const useTransactions = () => {
                     matchesTime = txDate.getMonth() === lastMonth.getMonth() &&
                         txDate.getFullYear() === lastMonth.getFullYear();
                     break;
+                case 'year': {
+                    const startOfYear = new Date(now.getFullYear(), 0, 1);
+                    startOfYear.setHours(0, 0, 0, 0);
+                    return txDate >= startOfYear;
+                }
                 case 'all':
                 default:
                     matchesTime = true;

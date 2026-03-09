@@ -99,8 +99,8 @@ const AreaTooltip = ({ active, payload, symbol }: any) => {
     if (!active || !payload?.length) return null;
     return (
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl px-3 py-2 text-xs shadow-lg">
-            <p className="text-emerald-400 font-bold mb-0.5">{payload[0]?.payload?.day}/{payload[0]?.payload?.month}</p>
-            <p className="text-lime-400 font-black text-sm">
+            <p className="text-gray-400 font-bold mb-0.5">{payload[0]?.payload?.day}/{payload[0]?.payload?.month}</p>
+            <p className="text-emerald-400 font-black text-sm">
                 {symbol}{Number(payload[0]?.value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </p>
         </div>
@@ -141,12 +141,12 @@ export const IncomesView: React.FC<IncomesViewProps> = ({
         `${currencySymbol}${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 
     const periodLabel: Record<TimeRange, string> = {
-        today: 'Hoy', yesterday: 'Ayer', week: 'Esta semana',
-        month: 'Este mes', last_month: 'Mes anterior', all: 'Todo',
+        today: 'Hoy', yesterday: 'Ayer', week: 'Esta semana', biweekly: 'Quincenal',
+        month: 'Este mes', last_month: 'Mes anterior', year: 'Este año', all: 'Todo',
     };
 
     return (
-        <main className="flex-1 p-6 lg:p-10 relative overflow-x-hidden font-black">
+        <main className="flex-1 p-6 pb-30 lg:p-10 relative overflow-x-hidden font-black">
 
             {/* Header */}
             <header className="mb-6 flex items-center justify-between">
@@ -175,8 +175,10 @@ export const IncomesView: React.FC<IncomesViewProps> = ({
                     <QuickFilterBtn label="Hoy" onClick={() => setTimeRange('today')} active={timeRange === 'today'} />
                     <QuickFilterBtn label="Ayer" onClick={() => setTimeRange('yesterday')} active={timeRange === 'yesterday'} />
                     <QuickFilterBtn label="Esta Semana" onClick={() => setTimeRange('week')} active={timeRange === 'week'} />
+                    <QuickFilterBtn label="Quincenal" onClick={() => setTimeRange('biweekly')} active={timeRange === 'biweekly'} />
                     <QuickFilterBtn label="Este Mes" onClick={() => setTimeRange('month')} active={timeRange === 'month'} />
                     <QuickFilterBtn label="Mes Anterior" onClick={() => setTimeRange('last_month')} active={timeRange === 'last_month'} />
+                    <QuickFilterBtn label="Este Año" onClick={() => setTimeRange('year')} active={timeRange === 'year'} />
                 </div>
             </div>
 
