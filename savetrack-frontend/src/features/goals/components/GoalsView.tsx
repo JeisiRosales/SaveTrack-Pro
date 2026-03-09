@@ -12,7 +12,6 @@ interface ContextType {
     toggleSidebar: () => void;
 }
 
-// componente para mostrar las metas
 const GoalsView: React.FC = () => {
     const { toggleSidebar } = useOutletContext<ContextType>();
     const {
@@ -25,9 +24,8 @@ const GoalsView: React.FC = () => {
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    const { currencySymbol } = useGlobalSettings();
+    const { currencySymbol, periodLabel, periodUnitLabel } = useGlobalSettings();
 
-    // Configuración del banner de estado global
     const allGoalsCompleted = stats.activeGoalsCount === 0 && filteredGoals.length > 0;
     const isBehind = stats.anyGoalBehind;
 
@@ -63,7 +61,8 @@ const GoalsView: React.FC = () => {
                 </h3>
                 <p className="text-[var(--muted)] text-xs mt-1">Progreso acumulado de tus {filteredGoals.length} metas</p>
                 <div className="text-[var(--foreground)] font-semibold text-xs mt-1">
-                    <h3>Debes ahorrar {currencySymbol}{stats.totalWeeklyInstallments.toFixed(2).toLocaleString()} semanalmente</h3>
+                    {/* Cuota ahora refleja el período configurado */}
+                    <h3>Debes ahorrar {currencySymbol}{stats.totalWeeklyInstallments.toFixed(2).toLocaleString()} {periodLabel}</h3>
                 </div>
             </div>
 
@@ -79,7 +78,8 @@ const GoalsView: React.FC = () => {
                                 {allGoalsCompleted
                                     ? "¡Felicidades, todas tus metas están cumplidas!"
                                     : stats.totalBalanceToPay > 0
-                                        ? `Debes saldar ${currencySymbol}${stats.totalBalanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} esta semana`
+                                        // "esta semana" → dinámico según período
+                                        ? `Debes saldar ${currencySymbol}${stats.totalBalanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} este ${periodUnitLabel}`
                                         : "¡Estás al día con todas tus metas!"
                                 }
                             </h3>

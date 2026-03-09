@@ -2,10 +2,15 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { getUserSettings, updateUserSettings } from '@/features/user-settings/api/user-settings.api';
 import { UserSettings } from '@/features/user-settings/types';
 import { useAuth } from './AuthContext';
+import { BudgetPeriod, PERIOD_LABELS, PERIOD_INSTALLMENT_LABELS, PERIOD_UNIT_LABELS } from '@/features/goals/utils/goal-calculations';
 
 interface SettingsContextType {
     settings: UserSettings | null;
     currencySymbol: string;
+    budgetPeriod: BudgetPeriod;
+    periodLabel: string;           // ej: "semanalmente", "mensualmente"
+    periodInstallmentLabel: string; // ej: "cuota semanal", "cuota mensual"
+    periodUnitLabel: string;        // ej: "semana", "mes"
     loading: boolean;
     refreshSettings: () => Promise<void>;
     saveSettings: (data: Partial<UserSettings>) => Promise<void>;
@@ -34,10 +39,8 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     const saveSettings = async (data: Partial<UserSettings>) => {
         setLoading(true);
         try {
-            // Limpiar campos que NO deben enviarse al backend/supabase en un update
             const { id, user_id, created_at, updated_at, ...cleanData } = data as any;
 
-            // Si savings_account_id es string vacio, enviamos null
             if (cleanData.savings_account_id === '') {
                 cleanData.savings_account_id = null;
             }
@@ -56,7 +59,6 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
         refreshSettings();
     }, [user]);
 
-    // Calcular el símbolo en base a la configuración
     const getSymbol = (currency?: string) => {
         switch (currency) {
             case 'EUR': return '€ ';
@@ -70,8 +72,24 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
 
     const currencySymbol = getSymbol(settings?.base_currency);
 
+    // Período presupuestario activo (default: monthly)
+    const budgetPeriod: BudgetPeriod = (settings?.budget_period as BudgetPeriod) ?? 'monthly';
+    const periodLabel = PERIOD_LABELS[budgetPeriod];
+    const periodInstallmentLabel = PERIOD_INSTALLMENT_LABELS[budgetPeriod];
+    const periodUnitLabel = PERIOD_UNIT_LABELS[budgetPeriod];
+
     return (
-        <SettingsContext.Provider value={{ settings, currencySymbol, loading, refreshSettings, saveSettings }}>
+        <SettingsContext.Provider value={{
+            settings,
+            currencySymbol,
+            budgetPeriod,
+            periodLabel,
+            periodInstallmentLabel,
+            periodUnitLabel,
+            loading,
+            refreshSettings,
+            saveSettings,
+        }}>
             {children}
         </SettingsContext.Provider>
     );

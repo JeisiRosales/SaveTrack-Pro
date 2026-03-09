@@ -83,7 +83,9 @@ const ActivityRow = ({ item, symbol }: any) => {
 // Vista principal 
 export const DashboardView: React.FC = () => {
     const { user } = useAuth();
-    const { currencySymbol } = useGlobalSettings();
+    const { currencySymbol, periodUnitLabel } = useGlobalSettings();
+    // Capitalizar primera letra para títulos de métricas (ej: "Semana", "Mes")
+    const periodUnitCap = periodUnitLabel.charAt(0).toUpperCase() + periodUnitLabel.slice(1);
     const { toggleSidebar } = useOutletContext<ContextType>();
 
     const {
@@ -240,7 +242,7 @@ export const DashboardView: React.FC = () => {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
                             {
-                                label: 'Ingresos del Mes',
+                                label: `Ingresos del ${periodUnitCap}`,
                                 value: fmt(monthlyIncome),
                                 sub: 'Entradas registradas',
                                 icon: ArrowUpRight,
@@ -248,7 +250,7 @@ export const DashboardView: React.FC = () => {
                                 bg: 'bg-emerald-500/10',
                             },
                             {
-                                label: 'Gastos del Mes',
+                                label: `Gastos del ${periodUnitCap}`,
                                 value: fmt(monthlyExpense),
                                 sub: 'Salidas registradas',
                                 icon: ArrowDownRight,
@@ -266,7 +268,7 @@ export const DashboardView: React.FC = () => {
                             {
                                 label: 'Tasa de Ahorro',
                                 value: `${savingsRate}%`,
-                                sub: 'Del ingreso mensual',
+                                sub: `Del ingreso del ${periodUnitLabel}`,
                                 icon: PiggyBank,
                                 color: savingsRate >= 20 ? 'text-emerald-500' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-500',
                                 bg: savingsRate >= 20 ? 'bg-emerald-500/10' : savingsRate >= 10 ? 'bg-amber-500/10' : 'bg-rose-500/10',

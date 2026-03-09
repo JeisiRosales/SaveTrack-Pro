@@ -12,9 +12,9 @@ export class CreateUserSettingDto {
     saving_percentage?: number = 10.00;
 
     @IsString()
-    @IsIn(['weekly', 'monthly', 'yearly'])
+    @IsIn(['daily', 'weekly', 'bi-weekly', 'monthly', 'yearly'])
     @IsOptional()
-    budget_period?: 'weekly' | 'monthly' | 'yearly' = 'monthly';
+    budget_period?: 'daily' | 'weekly' | 'bi-weekly' | 'monthly' | 'yearly' = 'monthly';
 
     @IsNumber()
     @IsOptional()
