@@ -242,7 +242,7 @@ export const DashboardView: React.FC = () => {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
                             {
-                                label: `Ingresos del ${periodUnitCap}`,
+                                label: `Ingresos por ${periodUnitCap}`,
                                 value: fmt(monthlyIncome),
                                 sub: 'Entradas registradas',
                                 icon: ArrowUpRight,
@@ -250,7 +250,7 @@ export const DashboardView: React.FC = () => {
                                 bg: 'bg-emerald-500/10',
                             },
                             {
-                                label: `Gastos del ${periodUnitCap}`,
+                                label: `Gastos por ${periodUnitCap}`,
                                 value: fmt(monthlyExpense),
                                 sub: 'Salidas registradas',
                                 icon: ArrowDownRight,
