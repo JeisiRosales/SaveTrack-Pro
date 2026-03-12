@@ -7,6 +7,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
+    const [isResettingPassword, setIsResettingPassword] = useState(false);
+
     useEffect(() => {
         const initializeAuth = async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -19,7 +21,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         initializeAuth();
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                setIsResettingPassword(true);
+            }
+
             if (session) {
                 handleUser(session.user, session.access_token);
             } else {
@@ -27,6 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 setUser(null);
+                setIsResettingPassword(false);
             }
         });
 
@@ -113,7 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading, updateProfile }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, updateProfile, isResettingPassword }}>
             {children}
         </AuthContext.Provider>
     );

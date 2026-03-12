@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Lock, Loader2, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { resetPasswordRequest } from '../api/auth.api';
+import { useAuth } from '../../../context/AuthContext';
 
 // Interfaz para las propiedades del formulario de restablecimiento de contraseña
 export const ResetPasswordForm = () => {
@@ -11,7 +11,8 @@ export const ResetPasswordForm = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
-    const navigate = useNavigate();
+
+    const { isResettingPassword, user } = useAuth();
 
     // Hook para obtener el token de restablecimiento de contraseña
     useEffect(() => {
@@ -20,10 +21,11 @@ export const ResetPasswordForm = () => {
             const params = new URLSearchParams(hash.substring(1));
             const token = params.get('access_token');
             if (token) localStorage.setItem('token', token);
-        } else {
+        } else if (!isResettingPassword && !user) {
+            // Solo mostramos error si no estamos en flujo de reset ni hay usuario logueado
             setError('Token inválido o expirado.');
         }
-    }, []);
+    }, [isResettingPassword, user]);
 
     // Manejamos el envio del formulario
     const handleSubmit = async (e: React.FormEvent) => {
@@ -34,10 +36,13 @@ export const ResetPasswordForm = () => {
         try {
             await resetPasswordRequest(password);
             setSuccess(true);
-            localStorage.removeItem('token');
-            setTimeout(() => navigate('/login'), 3000);
+            setTimeout(() => {
+                // Forzamos la limpieza del token de recuperación
+                localStorage.removeItem('token');
+                window.location.replace('/login');
+            }, 3000);
         } catch (err: any) {
-            setError('Error al actualizar la contraseña');
+            setError(err.response?.data?.message || 'Error al actualizar la contraseña');
         } finally {
             setLoading(false);
         }
