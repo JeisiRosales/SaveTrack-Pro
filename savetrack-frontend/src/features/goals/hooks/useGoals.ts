@@ -3,10 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import * as goalsApi from '../api/goals.api';
 import { Goal } from '../types';
 import { calculateWeeklyStatus } from '../utils/goal-calculations';
+import { useGlobalSettings } from '@/context/SettingsContext';
 
 // hook para obtener las metas con React Query
 export const useGoals = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const { budgetPeriod } = useGlobalSettings();
 
     const {
         data: goals = [],
@@ -27,12 +29,12 @@ export const useGoals = () => {
     const stats = useMemo(() => {
         const totalSaved = goals.reduce((acc: number, curr: Goal) => acc + (curr.current_amount || 0), 0);
         const totalWeeklyInstallments = goals.reduce((acc: number, goal: Goal) => {
-            const status = calculateWeeklyStatus(goal);
+            const status = calculateWeeklyStatus(goal, budgetPeriod);
             return acc + status.weeklyInstallment;
         }, 0);
 
         const globalStatus = goals.reduce((acc: any, goal: Goal) => {
-            const status = calculateWeeklyStatus(goal);
+            const status = calculateWeeklyStatus(goal, budgetPeriod);
             const isCompleted = (goal.current_amount || 0) >= (goal.target_amount || 0);
 
             if (!isCompleted) {
@@ -50,7 +52,7 @@ export const useGoals = () => {
             totalWeeklyInstallments,
             ...globalStatus
         };
-    }, [goals]);
+    }, [goals, budgetPeriod]);
 
     const filteredGoals = useMemo(() => {
         return goals

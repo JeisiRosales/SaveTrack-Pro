@@ -13,7 +13,7 @@ import {
     Pencil
 } from 'lucide-react';
 import { useGoalDetails } from '../hooks/useGoalDetails';
-import { calculateWeeklyStatus } from '../utils/goal-calculations';
+import { calculateWeeklyStatus, PERIOD_THIS_PREFIX } from '../utils/goal-calculations';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { TransactionModal } from '@/features/transactions/components/TransactionModal';
 import EditGoalModal from './EditGoalModal';
@@ -94,6 +94,8 @@ const GoalDetailView: React.FC = () => {
     };
 
     // Config del banner de estado
+    const thisPrefix = PERIOD_THIS_PREFIX[budgetPeriod] || 'este';
+
     const config = isCompleted
         ? { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-600', icon: <CheckCircle2 className="w-6 h-6" />, iconBg: 'bg-emerald-500/20' }
         : status.isBehind
@@ -200,7 +202,7 @@ const GoalDetailView: React.FC = () => {
                         </div>
                         <div className="bg-[var(--background)] rounded-xl p-3 border border-[var(--card-border)]">
                             <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
-                                {periodUnitCap} actual
+                                Progeso por {periodUnitCap}
                             </p>
                             <p className="text-sm font-black text-[var(--foreground)]">
                                 {status.weeksElapsed} de {status.totalWeeksDuration}
@@ -229,8 +231,7 @@ const GoalDetailView: React.FC = () => {
                             {isCompleted
                                 ? "¡Felicidades, has cumplido con tu meta!"
                                 : status.balanceToPay > 0
-                                    // Ahora el texto varía según el período
-                                    ? `Debes saldar ${currencySymbol}${status.balanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2 })} este ${periodUnitLabel}`
+                                    ? `Debes saldar ${currencySymbol}${status.balanceToPay.toLocaleString(undefined, { minimumFractionDigits: 2 })} ${thisPrefix} ${periodUnitLabel}`
                                     : `¡Estás al día con tu meta!`
                             }
                         </h3>
@@ -238,9 +239,8 @@ const GoalDetailView: React.FC = () => {
                             {isCompleted
                                 ? "Has alcanzado el 100% de tu objetivo financiero. ¡Excelente trabajo!"
                                 : status.isBehind
-                                    // "Semana X de Y" → dinámico
-                                    ? `${periodUnitCap} ${status.weeksElapsed} de ${status.weeksDuration}. Incluye saldo pendiente acumulado.`
-                                    : `Has cumplido con los depósitos programados para este ${periodUnitLabel}.`
+                                    ? `${periodUnitCap} ${status.weeksElapsed} de ${status.weeksDuration}. Incluye depósitos de ${thisPrefix} ${periodUnitLabel}.`
+                                    : `Has cumplido con todos los depósitos programados.`
                             }
                         </p>
                     </div>

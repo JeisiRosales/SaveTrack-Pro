@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { Goal } from '../types';
-import { calculateWeeklyStatus } from '../utils/goal-calculations';
+import { calculateWeeklyStatus, PERIOD_THIS_PREFIX, PERIOD_UNIT_PLURAL_LABELS } from '../utils/goal-calculations';
 import { useGlobalSettings } from '@/context/SettingsContext';
 
 // interface para las props del componente GoalCard
@@ -13,10 +13,13 @@ interface GoalCardProps {
 // componente para mostrar una meta
 const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
     const navigate = useNavigate();
-    const { currencySymbol } = useGlobalSettings();
+    const { currencySymbol, budgetPeriod, periodUnitLabel } = useGlobalSettings();
     const progress = Math.min(Math.round((goal.current_amount / goal.target_amount) * 100), 100);
-    const status = calculateWeeklyStatus(goal);
+    const status = calculateWeeklyStatus(goal, budgetPeriod);
     const isCompleted = goal.current_amount >= goal.target_amount;
+
+    const thisPrefix = PERIOD_THIS_PREFIX[budgetPeriod] || 'este';
+    const pluralUnit = PERIOD_UNIT_PLURAL_LABELS[budgetPeriod] || 'semanas';
 
     return (
         <div
@@ -53,14 +56,14 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
                     {isCompleted
                         ? "¡Felicidades, has cumplido con tu meta de ahorro!"
                         : status.balanceToStayOnTrack > 0
-                            ? `Debe saldar ${currencySymbol}${status.balanceToStayOnTrack.toFixed(2)} esta semana`
+                            ? `Debe saldar ${currencySymbol}${status.balanceToStayOnTrack.toLocaleString(undefined, { minimumFractionDigits: 2 })} ${thisPrefix} ${periodUnitLabel}`
                             : "¡Vas al día con tus ahorros!"
                     }
                 </p>
 
                 {status.isBehind && !isCompleted && (
                     <span className="text-xs opacity-70 flex items-center gap-1 mt-1">
-                        <AlertCircle className="w-3 h-3" /> Incluye saldo acumulado de semanas anteriores
+                        <AlertCircle className="w-3 h-3" /> Incluye depósito(s) de {pluralUnit} pendiente(s)
                     </span>
                 )}
             </div>
