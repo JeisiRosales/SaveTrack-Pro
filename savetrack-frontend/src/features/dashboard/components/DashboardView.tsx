@@ -168,7 +168,7 @@ export const DashboardView: React.FC = () => {
                                         {fmt(totalBalance + totalSavedInGoals)}
                                     </h2>
                                     <p className="text-white/60 text-xs font-medium mt-2">
-                                        Distribuido en {accounts.length} cuenta{accounts.length !== 1 ? 's' : ''}
+                                        Distribuido en {accounts.length} cuenta{accounts.length !== 1 ? 's' : ''} + tus metas de ahorro
                                     </p>
                                 </div>
                                 <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0">
