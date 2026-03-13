@@ -188,7 +188,7 @@ export const SettingsForm = () => {
                     </div>
 
                     {/* Cerrar sesión */}
-                    <div className="bg-[var(--background)] border border-[var(--card-border)] p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="bg-[var(--background)] border border-rose-500/20 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <p className="text-sm font-bold text-[var(--foreground)]">Cerrar Sesión</p>
                             <p className="text-xs text-[var(--muted)] mt-0.5">
@@ -197,7 +197,7 @@ export const SettingsForm = () => {
                         </div>
                         <button
                             onClick={logout}
-                            className="flex items-center justify-center gap-2 bg-[var(--card)] hover:bg-rose-500 border border-[var(--card-border)] hover:border-rose-500 text-[var(--muted)] hover:text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all"
+                            className="flex items-center justify-center gap-2 bg-rose-600/10 hover:bg-rose-600 border border-rose-500/20 hover:border-rose-600 text-rose-400 hover:text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95"
                         >
                             <LogOut className="w-4 h-4" /> Cerrar Sesión
                         </button>

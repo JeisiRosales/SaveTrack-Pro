@@ -177,8 +177,8 @@ const Settings = () => {
                     <SettingsForm />
                 </div>
             </div>
-            <p className="text-xl text-[var(--muted)] mt-6 max-w-sm items-center justify-center text-center">
-                <span className="text-rose-500">Hecho con</span> cariño<span className="text-rose-500">IA</span>mor jajaja
+            <p className="text-sm text-[var(--muted)] mt-6 max-w-sm items-center justify-center text-center">
+                Creado por Jeisi Rosales
             </p>
         </div>
     );

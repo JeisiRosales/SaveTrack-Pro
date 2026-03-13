@@ -165,7 +165,7 @@ export const DashboardView: React.FC = () => {
                                         Balance Total
                                     </p>
                                     <h2 className="text-4xl lg:text-5xl font-black text-white leading-none">
-                                        {fmt(totalBalance)}
+                                        {fmt(totalBalance + totalSavedInGoals)}
                                     </h2>
                                     <p className="text-white/60 text-xs font-medium mt-2">
                                         Distribuido en {accounts.length} cuenta{accounts.length !== 1 ? 's' : ''}
@@ -268,7 +268,7 @@ export const DashboardView: React.FC = () => {
                             {
                                 label: 'Tasa de Ahorro',
                                 value: `${savingsRate}%`,
-                                sub: `Del ingreso del ${periodUnitLabel}`,
+                                sub: `Del ingreso por ${periodUnitLabel}`,
                                 icon: PiggyBank,
                                 color: savingsRate >= 20 ? 'text-emerald-500' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-500',
                                 bg: savingsRate >= 20 ? 'bg-emerald-500/10' : savingsRate >= 10 ? 'bg-amber-500/10' : 'bg-rose-500/10',

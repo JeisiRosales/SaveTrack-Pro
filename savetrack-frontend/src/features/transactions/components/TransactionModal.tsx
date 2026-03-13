@@ -121,7 +121,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     {/* Toggle tipo */}
                     <div className="flex p-1 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl mb-6">
                         <button type="button" onClick={() => { setType('deposit'); setError(''); }}
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${type === 'deposit' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--muted)] hover:text-[var(--foreground)]'
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${type === 'deposit' ? 'bg-emerald-500 text-white shadow-md' : 'text-[var(--muted)] hover:text-[var(--foreground)]'
                                 }`}
                         >
                             <Plus className="w-4 h-4" /> Depósito
@@ -260,7 +260,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                                 type="submit"
                                 disabled={loading || !account || exceedsRemaining || exceedsGoal || exceedsAccountBalance || goalCompleted}
                                 className={`w-full py-4 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${type === 'deposit'
-                                    ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/20'
+                                    ? 'bg-emerald-500 hover:bg-emerald-700 shadow-emerald-600/20'
                                     : 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20'
                                     }`}
                             >
