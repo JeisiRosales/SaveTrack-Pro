@@ -6,7 +6,7 @@ Este es el frontend de **SaveTrack Pro**, una aplicación inteligente para la ge
 
 - **Sistema de Autenticación:** Login, registro, recuperación de contraseña y verificación de email mediante Supabase Auth.
 - **Dashboard Interactivo:** Resumen de balance total, visualización de cuentas con distribución porcentual y estado de metas de ahorro.
-- **Gestión de Metas de Ahorro:** Creación, edición y seguimiento de objetivos financieros con cálculo automático de estado (adelantado, al día, atrasado).
+- **Gestión Avanzada de Metas:** Creación y seguimiento de objetivos financieros interactivos. Incluye un motor de **cálculo dinámico de cuotas** con precisión de días UTC (anti-zonas horarias) y marcos de cumplimiento totalmente personalizables (*diario, semanal, quincenal, mensual o anual*), mostrando alertas de atraso en tiempo real.
 - **Cuentas Financieras:** CRUD completo de cuentas, transferencias entre cuentas con validación de fondos.
 - **Historial de Transacciones:** Vista unificada con filtros avanzados, estadísticas visuales y exportación a CSV.
 - **Diseño Premium:** Interfaz responsiva con animaciones suaves, modo oscuro/claro y sistema de diseño consistente.
