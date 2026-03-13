@@ -111,9 +111,9 @@ const GoalDetailView: React.FC = () => {
                 </Link>
                 <button
                     onClick={toggleSidebar}
-                    className="lg:hidden p-3 bg-[var(--card)] rounded-xl hover:bg-[var(--background)] transition-colors flex items-center justify-center"
+                    className="lg:hidden p-2.5 bg-[var(--card)] border border-[var(--card-border)] rounded-xl"
                 >
-                    <Menu className="w-6 h-6" />
+                    <Menu className="w-5 h-5" />
                 </button>
             </header>
 

@@ -52,8 +52,11 @@ export const TransactionsView: React.FC = () => {
                     <p className="text-[var(--muted)] text-xs font-medium">Análisis global de flujo de caja.</p>
                 </div>
 
-                <button onClick={toggleSidebar} className="lg:hidden p-3 bg-[var(--card)] rounded-xl border border-[var(--card-border)]">
-                    <Menu className="w-6 h-6" />
+                <button
+                    onClick={toggleSidebar}
+                    className="lg:hidden p-2.5 bg-[var(--card)] border border-[var(--card-border)] rounded-xl"
+                >
+                    <Menu className="w-5 h-5" />
                 </button>
             </header>
 

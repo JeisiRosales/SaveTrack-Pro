@@ -185,8 +185,11 @@ export const ExpensesView: React.FC<ExpensesViewProps> = ({
                         Control detallado de tus gastos fijos y variables.
                     </p>
                 </div>
-                <button onClick={onToggleSidebar} className="lg:hidden p-3 bg-[var(--card)] rounded-xl">
-                    <Menu className="w-6 h-6" />
+                <button
+                    onClick={onToggleSidebar}
+                    className="lg:hidden p-2.5 bg-[var(--card)] border border-[var(--card-border)] rounded-xl"
+                >
+                    <Menu className="w-5 h-5" />
                 </button>
             </header>
 

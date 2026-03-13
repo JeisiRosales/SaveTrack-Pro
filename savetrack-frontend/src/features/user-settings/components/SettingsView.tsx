@@ -77,9 +77,9 @@ const Settings = () => {
                 {/* Botón de Menú (Solo visible en móvil) */}
                 <button
                     onClick={toggleSidebar}
-                    className="lg:hidden p-3 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors shrink-0"
+                    className="lg:hidden p-2.5 bg-[var(--card)] border border-[var(--card-border)] rounded-xl shrink-0"
                 >
-                    <Menu className="w-6 h-6 text-[var(--foreground)]" />
+                    <Menu className="w-5 h-5 text-[var(--foreground)]" />
                 </button>
             </header>
 
