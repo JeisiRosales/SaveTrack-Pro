@@ -83,7 +83,9 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
             queryClient.invalidateQueries({ queryKey: ['dashboard-summary'] });
 
             onSuccess();
-            onClose();
+            setTimeout(() => {
+                onClose();
+            }, 500);
         } catch (err) {
             setError(friendlyError(err));
         } finally {
@@ -205,12 +207,18 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                                     {currencySymbol}
                                 </span>
                                 <input
-                                    type="number"
-                                    step="0.01"
-                                    min="0.01"
+                                    type="text"
+                                    inputMode="decimal"
                                     placeholder="0.00"
                                     value={amount}
-                                    onChange={e => { setAmount(e.target.value); setError(''); }}
+                                    onChange={e => {
+                                        const val = e.target.value.replace(',', '.');
+                                        // Validamos que solo sean números y un punto
+                                        if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                                            setAmount(val);
+                                            setError('');
+                                        }
+                                    }}
                                     className={`text-[var(--foreground)] text-sm w-full pl-12 pr-4 py-4 bg-[var(--input-bg)] border rounded-xl focus:ring-2 transition-all outline-none font-bold ${exceedsRemaining || exceedsGoal
                                         ? 'border-rose-500/50 focus:ring-rose-500/30'
                                         : 'border-[var(--input-border)] focus:ring-indigo-600/40'

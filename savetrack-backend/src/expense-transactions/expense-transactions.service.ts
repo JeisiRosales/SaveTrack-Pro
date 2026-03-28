@@ -35,10 +35,36 @@ export class ExpenseTransactionsService {
     const { data, error } = await this.supabase.getAdminClient()
       .from('expense_transactions')
       .insert(createDto)
-      .select()
+      .select(`
+        *,
+        expense_categories(is_fixed)
+      `)
       .single();
 
     if (error) throw error;
+
+    const transaction = data as any;
+
+    // Lógica de Vincular Gasto Fijo Automáticamente (si no se envió uno explícito)
+    if (!createDto.fixed_expense_id && transaction.expense_categories?.is_fixed) {
+      // 1. Buscar si hay un compromiso fijo activo para esta categoría
+      const { data: fixedExpense } = await this.supabase.getAdminClient()
+        .from('fixed_expenses')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('category_id', createDto.category_id)
+        .eq('is_active', true)
+        .limit(1)
+        .maybeSingle();
+
+      if (fixedExpense) {
+        // 2. Vincular la transacción con el compromiso
+        await this.supabase.getAdminClient()
+          .from('expense_transactions')
+          .update({ fixed_expense_id: fixedExpense.id })
+          .eq('id', transaction.id);
+      }
+    }
 
     // Actualizar el balance de la cuenta
     await this.supabase.getAdminClient()
@@ -46,7 +72,7 @@ export class ExpenseTransactionsService {
       .update({ balance: account.balance - createDto.amount })
       .eq('id', createDto.account_id);
 
-    return data as ExpenseTransaction;
+    return transaction;
   }
 
   /**

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Wallet, PiggyBank, LogOut, ArrowRightLeft, Github, Tags, Settings, TrendingUp, TrendingDown } from 'lucide-react';
+import { LayoutDashboard, Wallet, PiggyBank, LogOut, ArrowRightLeft, Github, Tags, Settings, TrendingUp, TrendingDown, CalendarClock } from 'lucide-react';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -48,6 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     <NavItem icon={<PiggyBank />} label="Cochinito" nav="/goals" active={location.pathname === '/goals'} onClick={() => { navigate('/goals'); onClose(); }} />
                     <NavItem icon={<TrendingUp />} label="Ingresos" nav="/incomes" active={location.pathname === '/incomes'} onClick={() => { navigate('/incomes'); onClose(); }} />
                     <NavItem icon={<TrendingDown />} label="Gastos" nav="/expenses" active={location.pathname === '/expenses' || location.pathname === '/savings'} onClick={() => { navigate('/expenses'); onClose(); }} />
+                    <NavItem icon={<CalendarClock />} label="Gastos Fijos" nav="/fixed-expenses" active={location.pathname === '/fixed-expenses'} onClick={() => { navigate('/fixed-expenses'); onClose(); }} />
                     <NavItem icon={<ArrowRightLeft />} label="Transacciones" nav="/transactions" active={location.pathname === '/transactions'} onClick={() => { navigate('/transactions'); onClose(); }} />
                     <NavItem icon={<Tags />} label="Categorías" nav="/categories" active={location.pathname === '/categories'} onClick={() => { navigate('/categories'); onClose(); }} />
                 </nav>

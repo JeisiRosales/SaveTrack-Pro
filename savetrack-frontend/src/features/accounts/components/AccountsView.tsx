@@ -10,6 +10,7 @@ import { TransferModal } from './TransferModal';
 import { AccountDetailModal } from './AccountDetailModal';
 import { Account } from '../types';
 import { useGlobalSettings } from '@/context/SettingsContext';
+import HeroCard from '@/components/ui/HeroCard';
 
 interface ContextType {
     toggleSidebar: () => void;
@@ -81,24 +82,27 @@ export const AccountsView: React.FC = () => {
                 </div>
             ) : (
                 <div className="space-y-8">
-                    <div className="bg-[var(--accent-soft)] p-6 grid grid-cols-1 md:grid-cols-2 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm flex flex-center gap-4">
-                        <div>
-                            <h2 className="text-xl font-semibold text-[var(--foreground)]">Saldo Consolidado</h2>
-                            <h3 className="text-3xl font-bold mt-2 text-[var(--accent-text)]">
-                                {currencySymbol}{totalBalance.toLocaleString()}
-                            </h3>
-                            <div className="text-xs text-[var(--muted)] font-medium mt-2">
-                                <span className="text-[var(--accent-text)] font-bold">{accounts.length}</span> cuentas activas
+                    <HeroCard
+                        label="Saldo Consolidado"
+                        amount={`${currencySymbol}${totalBalance.toLocaleString()}`}
+                        sublabel={
+                            <div className="flex flex-col gap-1">
+                                <p className="opacity-90">{accounts.length} cuentas activas</p>
+                                <p className="text-[10px] tracking-wider uppercase font-black">Resumen de tus activos financieros</p>
                             </div>
+                        }
+                        icon={Wallet}
+                    >
+                        <div className="flex flex-wrap gap-3">
+                            <button
+                                onClick={() => setIsTransferModalOpen(true)}
+                                className="flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all border border-white/10 shadow-sm"
+                            >
+                                <ArrowLeftRight className="w-4 h-4" />
+                                <span>Transferir entre cuentas</span>
+                            </button>
                         </div>
-                        <button
-                            onClick={() => setIsTransferModalOpen(true)}
-                            className="flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-md xl:ml-auto xl:w-fit self-center"
-                        >
-                            <ArrowLeftRight className="w-4 h-4" />
-                            Transferir entre cuentas
-                        </button>
-                    </div>
+                    </HeroCard>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {accounts.length > 0 ? (

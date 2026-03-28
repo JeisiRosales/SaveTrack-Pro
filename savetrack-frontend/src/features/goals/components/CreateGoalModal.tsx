@@ -122,7 +122,6 @@ const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ isOpen, onClose, onGo
                                 type="number"
                                 required
                                 step="0.01"
-                                min="0.01"
                                 placeholder="0.00"
                                 value={targetAmount}
                                 onChange={

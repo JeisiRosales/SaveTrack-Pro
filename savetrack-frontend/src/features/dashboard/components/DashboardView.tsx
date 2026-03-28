@@ -3,11 +3,12 @@ import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import {
     Menu, Loader2, TrendingUp, TrendingDown, Wallet,
     Target, ArrowUpRight, ArrowDownRight,
-    Landmark, RefreshCw, PiggyBank, ChevronRight,
+    Landmark, PiggyBank, ChevronRight,
     BarChart3,
     User,
     Settings
 } from 'lucide-react';
+import HeroCard from '@/components/ui/HeroCard';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip,
     ResponsiveContainer,
@@ -93,7 +94,7 @@ export const DashboardView: React.FC = () => {
         accounts, goals, recentActivity,
         totalBalance, totalSavedInGoals,
         monthlyIncome, monthlyExpense, monthlySavings, savingsRate,
-        weeklyData, refresh,
+        weeklyData,
     } = useDashboard();
 
     const fmt = (n: number) =>
@@ -127,12 +128,6 @@ export const DashboardView: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={() => refresh()}
-                        className="p-2.5 bg-[var(--card)] border border-[var(--card-border)] rounded-xl hover:bg-[var(--background)] transition-colors"
-                    >
-                        <RefreshCw className="w-4 h-4 text-[var(--muted)]" />
-                    </button>
-                    <button
                         onClick={toggleSidebar}
                         className="lg:hidden p-2.5 bg-[var(--card)] border border-[var(--card-border)] rounded-xl"
                     >
@@ -152,35 +147,15 @@ export const DashboardView: React.FC = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
                         {/* Balance principal */}
-                        <div className="lg:col-span-2 bg-[#4F46E5] rounded-2xl p-7 relative overflow-hidden">
-
-                            {/* Decoración sutil */}
-                            <div className="absolute -top-10 -right-10 w-44 h-44 bg-white/5 rounded-full pointer-events-none" />
-                            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-white/5 rounded-full pointer-events-none" />
-
-                            {/* Cabecera */}
-                            <div className="flex items-start justify-between mb-6 relative">
-                                <div>
-                                    <p className="text-[10px] font-black text-white uppercase mb-1">
-                                        Balance Total
-                                    </p>
-                                    <h2 className="text-4xl lg:text-5xl font-black text-white leading-none">
-                                        {fmt(totalBalance + totalSavedInGoals)}
-                                    </h2>
-                                    <p className="text-white/60 text-xs font-medium mt-2">
-                                        Distribuido en {accounts.length} cuenta{accounts.length !== 1 ? 's' : ''} + tus metas de ahorro
-                                    </p>
-                                </div>
-                                <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0">
-                                    <Wallet className="w-5 h-5 text-white" />
-                                </div>
-                            </div>
-
-                            {/* Separador */}
-                            <div className="h-px bg-white/10 mb-5" />
-
+                        <HeroCard
+                            label="Balance Total"
+                            amount={fmt(totalBalance + totalSavedInGoals)}
+                            sublabel={`Distribuido en ${accounts.length} cuenta${accounts.length !== 1 ? 's' : ''} + tus metas de ahorro`}
+                            icon={Wallet}
+                            className="lg:col-span-2"
+                        >
                             {/* Mini cuentas */}
-                            <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide relative">
+                            <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
                                 {accounts.map(acc => {
                                     const pct = totalBalance > 0 ? Math.round((acc.balance / totalBalance) * 100) : 0;
                                     return (
@@ -211,7 +186,7 @@ export const DashboardView: React.FC = () => {
                                     );
                                 })}
                             </div>
-                        </div>
+                        </HeroCard>
 
                         {/* Acciones rápidas */}
                         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-3xl p-6 flex flex-col justify-between">

@@ -135,7 +135,6 @@ const EditGoalModal: React.FC<EditGoalModalProps> = ({
                                 <input
                                     type="number"
                                     required
-                                    min="1"
                                     step="0.01"
                                     value={targetAmount}
                                     onChange={(e) => setTargetAmount(e.target.value)}

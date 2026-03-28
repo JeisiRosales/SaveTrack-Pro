@@ -123,7 +123,7 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 setForm(INITIAL);
                 setSuccess(false);
                 onClose();
-            }, 1500);
+            }, 500);
         } catch (err) {
             setError(friendlyError(err));
         } finally {
@@ -206,12 +206,17 @@ export const CreateIncomeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                 {currencySymbol}
                             </span>
                             <input
-                                type="number"
-                                step="0.01"
-                                min="0.01"
+                                type="text"
+                                inputMode="decimal"
                                 placeholder="0.00"
                                 value={form.amount}
-                                onChange={e => set('amount')(e.target.value)}
+                                onChange={e => {
+                                    const val = e.target.value.replace(',', '.');
+                                    // Validamos que solo sean números y un punto
+                                    if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                                        set('amount')(val);
+                                    }
+                                }}
                                 className="text-[var(--foreground)] text-sm w-full pl-12 pr-4 py-4 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-emerald-600 focus:bg-[var(--card)] transition-all outline-none"
                             />
                         </div>

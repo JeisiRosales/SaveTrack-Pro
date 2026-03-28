@@ -16,9 +16,9 @@ export interface ExpenseTransaction {
     id: string;
     account_id: string;
     category_id?: string;
-    amount: number;
     description?: string;
     created_at: string;
+    fixed_expense_id?: string;
     expense_categories?: { name: string };
 }
 
@@ -28,4 +28,5 @@ export interface CreateExpenseTransactionForm {
     category_id?: string;
     amount: number;
     description?: string;
+    fixed_expense_id?: string;
 }

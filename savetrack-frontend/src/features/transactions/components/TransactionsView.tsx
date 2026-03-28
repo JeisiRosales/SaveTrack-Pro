@@ -8,6 +8,7 @@ import { useTransactions } from '../hooks/useTransactions';
 import { TransactionFilters } from './TransactionFilters';
 import { TransactionsTable } from './TransactionsTable';
 import { useGlobalSettings } from '@/context/SettingsContext';
+import HeroCard from '@/components/ui/HeroCard';
 
 interface ContextType {
     toggleSidebar: () => void;
@@ -61,22 +62,38 @@ export const TransactionsView: React.FC = () => {
             </header>
 
             {/* Métricas Principales Unificadas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <MetricCard
-                    label="Ingresos Totales"
-                    value={stats.totalIncomes}
-                    symbol={currencySymbol}
-                    color="emerald"
-                    icon={<TrendingUp className="w-5 h-5" />}
-                />
-                <MetricCard
-                    label="Gastos Totales"
-                    value={stats.totalExpenses}
-                    symbol={currencySymbol}
-                    color="rose"
-                    icon={<TrendingDown className="w-5 h-5" />}
-                />
-            </div>
+            <HeroCard
+                label="Balance del Período"
+                amount={`${currencySymbol}${(stats.totalIncomes - stats.totalExpenses).toLocaleString()}`}
+                sublabel={
+                    <div className="flex flex-col gap-1">
+                        <p className="opacity-90">Análisis de flujo de caja</p>
+                        <p className="text-[10px] tracking-wider uppercase font-black">{timeRange === 'all' ? 'Historial Completo' : `Filtro: ${timeRange}`}</p>
+                    </div>
+                }
+                icon={Activity}
+            >
+                <div className="grid grid-cols-2 gap-6">
+                    <div>
+                        <p className="text-[10px] font-black text-white/50 uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <TrendingUp className="w-3 h-3" /> Ingresos
+                        </p>
+                        <p className="text-xl font-black text-emerald-200 leading-none">
+                            {currencySymbol}{stats.totalIncomes.toLocaleString()}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black text-white/50 uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <TrendingDown className="w-3 h-3" /> Gastos
+                        </p>
+                        <p className="text-xl font-black text-rose-200 leading-none">
+                            {currencySymbol}{stats.totalExpenses.toLocaleString()}
+                        </p>
+                    </div>
+                </div>
+            </HeroCard>
+
+            <div className="mb-8" />
 
             {/* Filtros de Acción Rápida (Temporales) */}
             <div className="mb-6 overflow-x-auto">
@@ -125,22 +142,6 @@ export const TransactionsView: React.FC = () => {
         </main>
     );
 };
-
-// Componentes Auxiliares para Limpieza Visual
-const MetricCard = ({ label, value, symbol, color, icon }: any) => (
-    <div className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--card-border)] relative overflow-hidden group">
-        <div className={`absolute top-0 right-0 w-24 h-24 ${color === 'emerald' ? 'bg-emerald-500/5' : 'bg-rose-500/5'} rounded-bl-full -z-10`} />
-        <p className="text-[var(--muted)] text-[10px] font-black uppercase tracking-widest mb-2">{label}</p>
-        <div className="flex items-center justify-between">
-            <h3 className={`text-3xl font-black ${color === 'emerald' ? 'text-emerald-500' : 'text-rose-500'}`}>
-                {symbol}{value.toLocaleString()}
-            </h3>
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color === 'emerald' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
-                {icon}
-            </div>
-        </div>
-    </div>
-);
 
 const QuickFilterBtn = ({ label, onClick, active }: any) => (
     <button

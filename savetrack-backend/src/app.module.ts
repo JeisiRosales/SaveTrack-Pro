@@ -14,6 +14,7 @@ import { ExpenseCategoriesModule } from './expense-categories/expense-categories
 import { IncomeTransactionsModule } from './income-transactions/income-transactions.module';
 import { ExpenseTransactionsModule } from './expense-transactions/expense-transactions.module';
 import { ReportsModule } from './reports/reports.module';
+import { FixedExpensesModule } from './fixed-expenses/fixed-expenses.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ReportsModule } from './reports/reports.module';
     IncomeTransactionsModule,
     ExpenseTransactionsModule,
     ReportsModule,
+    FixedExpensesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

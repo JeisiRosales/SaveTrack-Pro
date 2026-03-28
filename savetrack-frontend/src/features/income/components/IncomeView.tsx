@@ -5,6 +5,7 @@ import {
     ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { TimeRange } from '../hooks/UseIncomeData';
+import HeroCard from '@/components/ui/HeroCard';
 
 const CATEGORY_COLORS = ['#2dd4bf', '#a3e635', '#fb923c', '#818cf8', '#f472b6', '#34d399'];
 
@@ -167,66 +168,50 @@ export const IncomesView: React.FC<IncomesViewProps> = ({
                 </button>
             </header>
 
-            {/* Filtros rápidos */}
-            <div className="mb-6 overflow-x-auto">
-                <div className="flex items-center gap-2 pb-2">
-                    <div className="flex items-center gap-2 pr-4 border-r border-[var(--card-border)] mr-2 flex-shrink-0">
-                        <Calendar className="w-4 h-4 text-[var(--muted)]" />
-                        <span className="text-[10px] font-bold text-[var(--muted)] uppercase">Periodo:</span>
-                    </div>
-                    <QuickFilterBtn label="Todo" onClick={() => setTimeRange('all')} active={timeRange === 'all'} />
-                    <QuickFilterBtn label="Hoy" onClick={() => setTimeRange('today')} active={timeRange === 'today'} />
-                    <QuickFilterBtn label="Ayer" onClick={() => setTimeRange('yesterday')} active={timeRange === 'yesterday'} />
-                    <QuickFilterBtn label="Esta Semana" onClick={() => setTimeRange('week')} active={timeRange === 'week'} />
-                    <QuickFilterBtn label="Quincenal" onClick={() => setTimeRange('biweekly')} active={timeRange === 'biweekly'} />
-                    <QuickFilterBtn label="Este Mes" onClick={() => setTimeRange('month')} active={timeRange === 'month'} />
-                    <QuickFilterBtn label="Mes Anterior" onClick={() => setTimeRange('last_month')} active={timeRange === 'last_month'} />
-                    <QuickFilterBtn label="Este Año" onClick={() => setTimeRange('year')} active={timeRange === 'year'} />
-                </div>
-            </div>
-
             <div className="space-y-6">
 
-                {/* Tarjeta combinada */}
-                <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 shadow-sm relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-lime-400/5 rounded-tr-full -z-10" />
-
-                    <div className="flex items-center gap-2 mb-4">
-                        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">
-                            Resumen —
-                        </p>
-                        <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">
-                            {periodLabel[timeRange]}
-                        </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative">
-                        <div>
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
-                                Ingreso Total
-                            </p>
-                            <p className="text-3xl font-black text-emerald-500 leading-none">
-                                {fmt(totalMonthlyIncome)}
-                            </p>
-                            <p className="text-[10px] text-[var(--muted)] mt-1.5 font-medium">
-                                Acumulado en el período seleccionado
-                            </p>
+                {/* Resumen */}
+                <HeroCard
+                    label="Resumen de Ingresos"
+                    amount={fmt(totalMonthlyIncome)}
+                    sublabel={
+                        <div className="flex flex-col gap-1">
+                            <p className="opacity-90">{periodLabel[timeRange]}</p>
+                            <p className="text-[10px] tracking-wider uppercase font-black">Control de entradas financieras</p>
                         </div>
-
-                        <div className="hidden sm:block absolute left-1/2 top-0 bottom-0 w-px bg-[var(--card-border)]" />
-
+                    }
+                    icon={TrendingUp}
+                >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
+                            <p className="text-[10px] font-black text-white/50 uppercase tracking-wider mb-1">
                                 Promedio Semanal
                             </p>
-                            <p className="text-3xl font-black text-[var(--foreground)] leading-none">
+                            <p className="text-2xl font-black text-white">
                                 {fmt(averageWeeklyIncome)}
                             </p>
-                            <p className="text-[10px] text-[var(--muted)] mt-1.5 font-medium">
-                                Basado en {fmt(totalMonthlyIncome)} ÷ 4 sem
+                            <p className="text-[10px] text-white/40 mt-1 font-medium italic">
+                                Estimado basado en el período
                             </p>
                         </div>
+                    </div>
+                </HeroCard>
+
+                {/* Filtros rápidos */}
+                <div className="mb-6 overflow-x-auto">
+                    <div className="flex items-center gap-2 pb-2">
+                        <div className="flex items-center gap-2 pr-4 border-r border-[var(--card-border)] mr-2 flex-shrink-0">
+                            <Calendar className="w-4 h-4 text-[var(--muted)]" />
+                            <span className="text-[10px] font-bold text-[var(--muted)] uppercase">Periodo:</span>
+                        </div>
+                        <QuickFilterBtn label="Todo" onClick={() => setTimeRange('all')} active={timeRange === 'all'} />
+                        <QuickFilterBtn label="Hoy" onClick={() => setTimeRange('today')} active={timeRange === 'today'} />
+                        <QuickFilterBtn label="Ayer" onClick={() => setTimeRange('yesterday')} active={timeRange === 'yesterday'} />
+                        <QuickFilterBtn label="Esta Semana" onClick={() => setTimeRange('week')} active={timeRange === 'week'} />
+                        <QuickFilterBtn label="Quincenal" onClick={() => setTimeRange('biweekly')} active={timeRange === 'biweekly'} />
+                        <QuickFilterBtn label="Este Mes" onClick={() => setTimeRange('month')} active={timeRange === 'month'} />
+                        <QuickFilterBtn label="Mes Anterior" onClick={() => setTimeRange('last_month')} active={timeRange === 'last_month'} />
+                        <QuickFilterBtn label="Este Año" onClick={() => setTimeRange('year')} active={timeRange === 'year'} />
                     </div>
                 </div>
 

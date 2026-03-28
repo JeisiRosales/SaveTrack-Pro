@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { SettingsForm } from '@/features/user-settings/components/SettingsForm';
+import { UserManual } from '@/features/user-settings/components/UserManual';
 import { useAuth } from '@/context/AuthContext';
 import { User, Sun, Moon, Briefcase, Menu, Pencil, Check, X, Loader2 } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
@@ -83,10 +84,10 @@ const Settings = () => {
                 </button>
             </header>
 
-            <div className="flex flex-col lg:flex-row gap-8 max-w-6xl">
+            <div className="flex flex-col gap-8 max-w-6xl">
 
-                {/* Columna Izquierda: Perfil y Peligro */}
-                <div className="w-full lg:w-1/3 flex flex-col gap-6">
+                {/* Perfil y Peligro */}
+                <div className="w-full flex flex-col gap-6">
                     {/* Tarjeta de Perfil Profesional */}
                     <div className="bg-[var(--card)] p-6 rounded-3xl border border-[var(--card-border)] shadow-sm text-center">
                         {/* Contenedor del Avatar con posición relativa para el lápiz */}
@@ -152,6 +153,9 @@ const Settings = () => {
                         </div>
                     </div>
 
+                    {/* Centro de Ayuda / Manual de Usuario */}
+                    <UserManual />
+
                     {/* Apariencia Visual */}
                     <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--card-border)] shadow-sm">
                         <h3 className="font-bold text-[var(--foreground)] mb-3 text-sm">Apariencia</h3>
@@ -172,14 +176,15 @@ const Settings = () => {
                     </div>
                 </div>
 
-                {/* Columna Derecha: Formulario Central de Finances */}
-                <div className="w-full lg:w-2/3">
+                {/* Formulario Central de Finances */}
+                <div className="w-full">
                     <SettingsForm />
                 </div>
+
+                <p className="text-sm text-[var(--muted)] mt-6 flex items-center justify-center">
+                    Creado por Jeisi Rosales - Version 1.1.0
+                </p>
             </div>
-            <p className="text-sm text-[var(--muted)] mt-6 max-w-sm items-center justify-center text-center">
-                Creado por Jeisi Rosales
-            </p>
         </div>
     );
 };

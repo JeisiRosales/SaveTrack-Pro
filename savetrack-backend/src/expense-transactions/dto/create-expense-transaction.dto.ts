@@ -15,4 +15,8 @@ export class CreateExpenseTransactionDto {
     @IsString()
     @IsOptional()
     description?: string;
+
+    @IsUUID()
+    @IsOptional()
+    fixed_expense_id?: string;
 }

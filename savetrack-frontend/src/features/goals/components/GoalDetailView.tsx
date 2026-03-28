@@ -10,8 +10,10 @@ import {
     Plus,
     Minus,
     Trash,
-    Pencil
+    Pencil,
+    Target
 } from 'lucide-react';
+import HeroCard from '@/components/ui/HeroCard';
 import { useGoalDetails } from '../hooks/useGoalDetails';
 import { calculateWeeklyStatus, PERIOD_THIS_PREFIX } from '../utils/goal-calculations';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
@@ -118,107 +120,76 @@ const GoalDetailView: React.FC = () => {
             </header>
 
             {/* SECCIÓN 1: SALDO TOTAL Y CUENTAS */}
-            <div className="bg-[var(--card)] p-4 sm:p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                <div className="mb-6">
-
-                    {/* Nombre de la Meta y Acciones */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
-                        <div>
-                            <h1 className="text-2xl sm:text-3xl font-black text-[var(--foreground)] mt-2 tracking-tight">{goal.name}</h1>
-                            <p className="text-[var(--muted)] text-[10px] sm:text-xs mt-1 font-medium tracking-wider">Detalles de la meta financiera</p>
-                        </div>
-
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <button
-                                onClick={() => setIsEditModalOpen(true)}
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-[var(--accent-soft)] text-[var(--accent-text)] hover:bg-[var(--background)] transition-all"
-                                title="Editar meta"
-                            >
-                                <Pencil className="w-4 h-4" />
-                                <span className="sm:hidden">Editar</span>
-                            </button>
-
-                            <button
-                                onClick={() => onDelete()}
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-rose-600 text-white hover:bg-rose-700 transition-all shadow-sm"
-                                title="Eliminar meta"
-                            >
-                                <Trash className="w-4 h-4" />
-                                <span className="sm:hidden">Eliminar</span>
-                            </button>
-                        </div>
+            <HeroCard
+                label={goal.name}
+                amount={`${currencySymbol}${goal.current_amount.toLocaleString()}`}
+                sublabel={
+                    <div className="flex flex-col gap-1">
+                        <p className="opacity-80">Objetivo: {currencySymbol}{goal.target_amount.toLocaleString()}</p>
+                        <p className="text-[10px] tracking-wider uppercase font-black">Detalles de la meta financiera</p>
                     </div>
+                }
+                icon={Target}
+            >
+                {/* Acciones y Progreso */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <button
+                            onClick={() => setIsEditModalOpen(true)}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-white text-[var(--accent-text)] hover:bg-[var(--background)] transition-all"
+                            title="Editar meta"
+                        >
+                            <Pencil className="w-4 h-4" />
+                            <span>Editar</span>
+                        </button>
 
-                    {/* Saldo Actual y Objetivo */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mt-8 gap-4 sm:gap-0">
-                        <div>
-                            <h2 className="text-xs font-semibold text-[var(--muted)] tracking-wider">Saldo Actual</h2>
-                            <h3 className="text-3xl sm:text-4xl font-black mt-1 text-[var(--accent-text)]">
-                                {currencySymbol}{goal.current_amount.toLocaleString()}
-                            </h3>
-                        </div>
-                        <div className="sm:text-right">
-                            <h2 className="text-xs font-semibold text-[var(--muted)] tracking-wider">Meta</h2>
-                            <h3 className="text-xl sm:text-2xl font-black mt-1 text-[var(--foreground)]">
-                                {currencySymbol}{goal.target_amount.toLocaleString()}
-                            </h3>
-                        </div>
+                        <button
+                            onClick={() => onDelete()}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-rose-600 text-white hover:bg-rose-700 transition-all shadow-sm"
+                            title="Eliminar meta"
+                        >
+                            <Trash className="w-4 h-4" />
+                            <span>Eliminar</span>
+                        </button>
                     </div>
 
                     {/* Barra de progreso */}
-                    <div className="mt-6">
+                    <div>
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs font-bold text-[var(--muted)]">Progreso</span>
-                            <span className="text-xs font-black text-indigo-400">{progress}%</span>
+                            <span className="text-[10px] font-black text-white/70 uppercase tracking-widest">Progreso</span>
+                            <span className="text-sm font-black text-white">{progress}%</span>
                         </div>
-                        <div className="w-full h-3 bg-[var(--card-border)] rounded-full overflow-hidden">
+                        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                             <div
-                                className="h-full rounded-full transition-all duration-700"
+                                className="h-full rounded-full transition-all duration-700 shadow-[0_0_10px_rgba(255,255,255,0.2)]"
                                 style={{
                                     width: `${progress}%`,
-                                    backgroundColor: progress >= 75 ? '#10b981' : progress >= 40 ? '#6366f1' : '#f87171'
+                                    backgroundColor: '#ffffffff'
                                 }}
                             />
                         </div>
                     </div>
 
                     {/* Métricas del período */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
-                        <div className="bg-[var(--background)] rounded-xl p-3 border border-[var(--card-border)]">
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
-                                {periodInstallmentLabel}
-                            </p>
-                            <p className="text-sm font-black text-indigo-400">
-                                {currencySymbol}{status.weeklyInstallment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </p>
-                        </div>
-                        <div className="bg-[var(--background)] rounded-xl p-3 border border-[var(--card-border)]">
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
-                                Esperado hoy
-                            </p>
-                            <p className="text-sm font-black text-[var(--foreground)]">
-                                {currencySymbol}{status.expectedAccumulated.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </p>
-                        </div>
-                        <div className="bg-[var(--background)] rounded-xl p-3 border border-[var(--card-border)]">
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
-                                Progeso por {periodUnitCap}
-                            </p>
-                            <p className="text-sm font-black text-[var(--foreground)]">
-                                {status.weeksElapsed} de {status.totalWeeksDuration}
-                            </p>
-                        </div>
-                        <div className="bg-[var(--background)] rounded-xl p-3 border border-[var(--card-border)]">
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">
-                                Fecha límite
-                            </p>
-                            <p className="text-sm font-black text-[var(--foreground)]">
-                                {new Date(goal.end_date).toLocaleDateString()}
-                            </p>
-                        </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {[
+                            { label: periodInstallmentLabel, value: `${currencySymbol}${status.weeklyInstallment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, color: 'text-indigo-200' },
+                            { label: 'Esperado hoy', value: `${currencySymbol}${status.expectedAccumulated.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, color: 'text-white' },
+                            { label: `Progreso ${periodUnitCap}`, value: `${status.weeksElapsed} de ${status.totalWeeksDuration}`, color: 'text-white' },
+                            { label: 'Fecha límite', value: new Date(goal.end_date).toLocaleDateString(), color: 'text-white' },
+                        ].map((m, i) => (
+                            <div key={i} className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10">
+                                <p className="text-[9px] font-black text-white/50 uppercase tracking-tighter mb-1">
+                                    {m.label}
+                                </p>
+                                <p className={`text-xs font-black ${m.color}`}>
+                                    {m.value}
+                                </p>
+                            </div>
+                        ))}
                     </div>
                 </div>
-            </div>
+            </HeroCard>
 
             {/* BANNER DE ESTADO */}
             <div className={`mt-6 p-6 rounded-3xl border transition-all ${config.bg} ${config.border}`}>

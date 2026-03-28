@@ -7,6 +7,7 @@ import CreateGoalModal from './CreateGoalModal';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { Goal } from '../types';
 import { useGlobalSettings } from '@/context/SettingsContext';
+import HeroCard from '@/components/ui/HeroCard';
 
 interface ContextType {
     toggleSidebar: () => void;
@@ -54,17 +55,18 @@ const GoalsView: React.FC = () => {
             </header>
 
             {/* SECCIÓN 1: KPI DE METAS */}
-            <div className="bg-[var(--accent-soft)] mb-4 p-6 lg:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                <h2 className="text-xl font-semibold text-[var(--foreground)]">Total Ahorrado en Metas</h2>
-                <h3 className="text-2xl font-bold mt-2 text-[var(--accent-text)]">
-                    {currencySymbol}{stats.totalSaved.toLocaleString()}
-                </h3>
-                <p className="text-[var(--muted)] text-xs mt-1">Progreso acumulado de tus {filteredGoals.length} metas</p>
-                <div className="text-[var(--foreground)] font-semibold text-xs mt-1">
-                    {/* Cuota ahora refleja el período configurado */}
-                    <h3>Debes ahorrar {currencySymbol}{stats.totalWeeklyInstallments.toFixed(2).toLocaleString()} {periodLabel}</h3>
-                </div>
-            </div>
+            <HeroCard
+                label="Total Ahorrado en Metas"
+                amount={`${currencySymbol}${stats.totalSaved.toLocaleString()}`}
+                sublabel={
+                    <div className="flex flex-col gap-1">
+                        <p className="opacity-90">Debes ahorrar {currencySymbol}{stats.totalWeeklyInstallments.toFixed(2).toLocaleString()} {periodLabel}</p>
+                        <p className="text-[10px] tracking-wider uppercase font-black">Progreso acumulado de tus {filteredGoals.length} metas</p>
+                    </div>
+                }
+                icon={Target}
+                showSeparator={false}
+            />
 
             {/* SECCIÓN DE DINERO A RECOLECTAR */}
             {filteredGoals.length > 0 && (
@@ -105,7 +107,7 @@ const GoalsView: React.FC = () => {
                     <p className="font-bold">{error}</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 mt-6 md:grid-cols-1 lg:grid-cols-2 gap-6">
                     {filteredGoals.length > 0 ? (
                         filteredGoals.map((goal: Goal) => (
                             <GoalCard key={goal.id} goal={goal} />

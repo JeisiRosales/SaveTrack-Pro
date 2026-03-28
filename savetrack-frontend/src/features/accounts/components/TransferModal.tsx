@@ -19,12 +19,18 @@ export const TransferModal: React.FC<TransferModalProps> = ({
     const { currencySymbol } = useGlobalSettings();
 
     const transferableAccounts = accounts;
-    const initialState: TransferForm = { fromAccountId: '', toAccountId: '', amount: 0 };
-    const [form, setForm] = useState<TransferForm>(initialState);
+    const [form, setForm] = useState({
+        fromAccountId: '',
+        toAccountId: '',
+        amount: '' as string | number
+    });
     const [localError, setLocalError] = useState('');
 
     useEffect(() => {
-        if (!isOpen) { setForm(initialState); setLocalError(''); }
+        if (!isOpen) { 
+            setForm({ fromAccountId: '', toAccountId: '', amount: '' }); 
+            setLocalError(''); 
+        }
     }, [isOpen]);
 
     // Cuenta de origen seleccionada (para validar saldo)
@@ -52,7 +58,10 @@ export const TransferModal: React.FC<TransferModalProps> = ({
             return;
         }
 
-        const success = await onTransfer(form);
+        const success = await onTransfer({
+            ...form,
+            amount: amountNum
+        } as TransferForm);
         if (success) setTimeout(onClose, 2000);
     };
 
@@ -135,16 +144,22 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                                     {currencySymbol}
                                 </span>
                                 <input
-                                    type="number"
-                                    min="0.01"
-                                    step="0.01"
+                                    type="text"
+                                    inputMode="decimal"
                                     className={`w-full bg-[var(--input-bg)] border rounded-2xl p-4 pl-10 text-sm font-bold text-[var(--foreground)] outline-none transition-all focus:ring-2 ${exceedsBalance
                                         ? 'border-rose-500/50 focus:ring-rose-500/30'
                                         : 'border-[var(--input-border)] focus:ring-indigo-500/50'
                                         }`}
                                     placeholder="0.00"
-                                    value={form.amount || ''}
-                                    onChange={e => { setForm({ ...form, amount: Number(e.target.value) }); setLocalError(''); }}
+                                    value={form.amount}
+                                    onChange={e => {
+                                        const val = e.target.value.replace(',', '.');
+                                        // Validamos que solo sean números y un punto
+                                        if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                                            setForm({ ...form, amount: val });
+                                            setLocalError('');
+                                        }
+                                    }}
                                 />
                             </div>
 

@@ -5,6 +5,7 @@ import {
     ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { TimeRange } from '../hooks/useExpenseData';
+import HeroCard from '@/components/ui/HeroCard';
 
 const CATEGORY_COLORS = ['#f87171', '#fb923c', '#fbbf24', '#a78bfa', '#60a5fa', '#34d399'];
 
@@ -193,67 +194,61 @@ export const ExpensesView: React.FC<ExpensesViewProps> = ({
                 </button>
             </header>
 
-            {/* Filtros rápidos */}
-            <div className="mb-6 overflow-x-auto">
-                <div className="flex items-center gap-2 pb-2">
-                    <div className="flex items-center gap-2 pr-4 border-r border-[var(--card-border)] mr-2 flex-shrink-0">
-                        <Calendar className="w-4 h-4 text-[var(--muted)]" />
-                        <span className="text-[10px] font-bold text-[var(--muted)] uppercase">Periodo:</span>
-                    </div>
-                    {([
-                        ['all', 'Todo'], ['today', 'Hoy'], ['yesterday', 'Ayer'],
-                        ['week', 'Esta Semana'], ['biweekly', 'Quincenal'], ['month', 'Este Mes'],
-                        ['last_month', 'Mes Anterior'], ['year', 'Este Año'],
-                    ] as [TimeRange, string][]).map(([val, label]) => (
-                        <QuickFilterBtn key={val} label={label} onClick={() => setTimeRange(val)} active={timeRange === val} />
-                    ))}
-                </div>
-            </div>
-
             <div className="space-y-6">
 
                 {/* Resumen */}
-                <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 shadow-sm relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-48 h-48 bg-rose-500/10 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/5 rounded-tr-full -z-10" />
-
-                    <div className="flex items-center gap-2 mb-4">
-                        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">Resumen —</p>
-                        <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{periodLabel[timeRange]}</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-                        <div>
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">Gasto Total</p>
-                            <p className="text-3xl font-black text-rose-500 leading-none">{fmt(totalMonthlyExpenses)}</p>
-                            <p className="text-[10px] text-[var(--muted)] mt-1.5 font-medium">Acumulado en el período</p>
+                <HeroCard
+                    label="Resumen de Egresos"
+                    amount={fmt(totalMonthlyExpenses)}
+                    sublabel={
+                        <div className="flex flex-col gap-1">
+                            <p className="opacity-90">{periodLabel[timeRange]}</p>
+                            <p className="text-[10px] tracking-wider uppercase font-black">Control de salidas financieras</p>
                         </div>
-                        <div className="hidden lg:block absolute left-1/4 top-0 bottom-0 w-px bg-[var(--card-border)]" />
+                    }
+                    icon={TrendingDown}
+                >
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 relative">
                         <div>
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1">Promedio Semanal</p>
-                            <p className="text-3xl font-black text-[var(--foreground)] leading-none">{fmt(averageWeeklyExpenses)}</p>
-                            <p className="text-[10px] text-[var(--muted)] mt-1.5 font-medium">Basado en {fmt(totalMonthlyExpenses)} ÷ 4 sem</p>
+                            <p className="text-[10px] font-black text-white/50 uppercase tracking-wider mb-1">Promedio Semanal</p>
+                            <p className="text-xl font-black text-white leading-none">{fmt(averageWeeklyExpenses)}</p>
+                            <p className="text-[9px] text-white/40 mt-1.5 font-medium italic">Basado en el período</p>
                         </div>
-                        <div className="hidden lg:block absolute left-2/4 top-0 bottom-0 w-px bg-[var(--card-border)]" />
                         <div>
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <p className="text-[10px] font-black text-white/50 uppercase tracking-wider mb-1 flex items-center gap-1">
                                 <Repeat className="w-3 h-3" /> Fijos
                             </p>
-                            <p className="text-3xl font-black text-violet-400 leading-none">{fmt(totalFixed)}</p>
-                            <p className="text-[10px] text-[var(--muted)] mt-1.5 font-medium">
-                                {formattedFixed.length} registro{formattedFixed.length !== 1 ? 's' : ''}
+                            <p className="text-xl font-black text-violet-200 leading-none">{fmt(totalFixed)}</p>
+                            <p className="text-[9px] text-white/40 mt-1.5 font-medium italic">
+                                {formattedFixed.length} registros
                             </p>
                         </div>
-                        <div className="hidden lg:block absolute left-3/4 top-0 bottom-0 w-px bg-[var(--card-border)]" />
                         <div>
-                            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <p className="text-[10px] font-black text-white/50 uppercase tracking-wider mb-1 flex items-center gap-1">
                                 <Zap className="w-3 h-3" /> Variables
                             </p>
-                            <p className="text-3xl font-black text-orange-400 leading-none">{fmt(totalVariable)}</p>
-                            <p className="text-[10px] text-[var(--muted)] mt-1.5 font-medium">
-                                {formattedVariables.length} registro{formattedVariables.length !== 1 ? 's' : ''}
+                            <p className="text-xl font-black text-orange-200 leading-none">{fmt(totalVariable)}</p>
+                            <p className="text-[9px] text-white/40 mt-1.5 font-medium italic">
+                                {formattedVariables.length} registros
                             </p>
                         </div>
+                    </div>
+                </HeroCard>
+
+                {/* Filtros rápidos */}
+                <div className="mb-6 overflow-x-auto">
+                    <div className="flex items-center gap-2 pb-2">
+                        <div className="flex items-center gap-2 pr-4 border-r border-[var(--card-border)] mr-2 flex-shrink-0">
+                            <Calendar className="w-4 h-4 text-[var(--muted)]" />
+                            <span className="text-[10px] font-bold text-[var(--muted)] uppercase">Periodo:</span>
+                        </div>
+                        {([
+                            ['all', 'Todo'], ['today', 'Hoy'], ['yesterday', 'Ayer'],
+                            ['week', 'Esta Semana'], ['biweekly', 'Quincenal'], ['month', 'Este Mes'],
+                            ['last_month', 'Mes Anterior'], ['year', 'Este Año'],
+                        ] as [TimeRange, string][]).map(([val, label]) => (
+                            <QuickFilterBtn key={val} label={label} onClick={() => setTimeRange(val)} active={timeRange === val} />
+                        ))}
                     </div>
                 </div>
 

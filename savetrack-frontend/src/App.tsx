@@ -15,6 +15,7 @@ import Categories from './pages/Categories';
 import Settings from './pages/Settings';
 import { Expenses } from './pages/Expenses';
 import { Incomes } from './pages/Incomes';
+import FixedExpenses from './pages/FixedExpenses';
 import { SettingsProvider } from './context/SettingsContext';
 
 // Configuración de React Query para caché global
@@ -61,6 +62,7 @@ function App() {
               <Route path="/categories" element={<Categories />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/expenses" element={<Expenses />} />
+              <Route path="/fixed-expenses" element={<FixedExpenses />} />
               <Route path="/incomes" element={<Incomes />} />
             </Route>
 
