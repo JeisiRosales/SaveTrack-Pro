@@ -7,7 +7,7 @@ interface VersionHistoryModalProps {
 
 const VERSIONS = [
     {
-        version: "v1.1.0",
+        version: "v1.1.1",
         date: "Marzo 2026",
         changes: [
             "Integración de Gastos Fijos interactivos en el Dashboard.",
@@ -18,7 +18,7 @@ const VERSIONS = [
         ]
     },
     {
-        version: "v1.0.1",
+        version: "v1.1.0",
         date: "Mediados de Marzo 2026",
         changes: [
             "Implementación del sistema completo de Gastos Fijos (Frontend y Backend).",
