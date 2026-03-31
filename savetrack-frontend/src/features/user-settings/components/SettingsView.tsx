@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { SettingsForm } from '@/features/user-settings/components/SettingsForm';
 import { UserManual } from '@/features/user-settings/components/UserManual';
+import { DeleteForm } from '@/features/user-settings/components/DeleteForm';
 import { useAuth } from '@/context/AuthContext';
-import { User, Sun, Moon, Briefcase, Menu, Pencil, Check, X, Loader2 } from 'lucide-react';
+import { User, Briefcase, Menu, Pencil, Check, X, Loader2 } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 
 interface ContextType {
@@ -15,20 +16,7 @@ const Settings = () => {
     const [newName, setNewName] = useState(user?.full_name);
     const [isSaving, setIsSaving] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains('dark'));
     const { toggleSidebar } = useOutletContext<ContextType>();
-
-    const toggleTheme = () => {
-        const newMode = !darkMode;
-        setDarkMode(newMode);
-        if (newMode) {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        }
-    };
 
     // Foco automático al abrir el modo edición
     useEffect(() => {
@@ -86,7 +74,6 @@ const Settings = () => {
 
             <div className="flex flex-col gap-8 max-w-6xl">
 
-                {/* Perfil y Peligro */}
                 <div className="w-full flex flex-col gap-6">
                     {/* Tarjeta de Perfil Profesional */}
                     <div className="bg-[var(--card)] p-6 rounded-3xl border border-[var(--card-border)] shadow-sm text-center">
@@ -153,35 +140,17 @@ const Settings = () => {
                         </div>
                     </div>
 
+                    {/* Formulario Central de Finances y Apariencia */}
+                    <SettingsForm />
+
                     {/* Centro de Ayuda / Manual de Usuario */}
                     <UserManual />
 
-                    {/* Apariencia Visual */}
-                    <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--card-border)] shadow-sm">
-                        <h3 className="font-bold text-[var(--foreground)] mb-3 text-sm">Apariencia</h3>
-                        <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--background)] border border-[var(--card-border)] cursor-pointer hover:border-indigo-500/30 transition-colors" onClick={toggleTheme}>
-                            <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-lg ${darkMode ? 'bg-indigo-500/20 text-indigo-400' : 'bg-orange-500/20 text-orange-500'}`}>
-                                    {darkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                                </div>
-                                <div>
-                                    <p className="font-bold text-sm text-[var(--foreground)]">Tema de la App</p>
-                                    <p className="text-[10px] text-[var(--muted)]">{darkMode ? 'Modo Oscuro' : 'Modo Claro'}</p>
-                                </div>
-                            </div>
-                            <div className={`w-10 h-6 flex items-center bg-gray-300 rounded-full p-1 duration-300 ease-in-out ${darkMode ? 'bg-indigo-500' : ''}`}>
-                                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out ${darkMode ? 'translate-x-4' : ''}`}></div>
-                            </div>
-                        </div>
-                    </div>
+                    {/* Zona de Riesgo (Cerrar Sesión / Eliminar Cuenta) */}
+                    <DeleteForm />
                 </div>
 
-                {/* Formulario Central de Finances */}
-                <div className="w-full">
-                    <SettingsForm />
-                </div>
-
-                <p className="text-sm text-[var(--muted)] mt-6 flex items-center justify-center">
+                <p className="text-sm text-[var(--muted)] flex items-center justify-center">
                     Creado por Jeisi Rosales - Version 1.1.0
                 </p>
             </div>
