@@ -26,7 +26,6 @@ export const useFixedExpenses = () => {
             setFixedExpenses(expensesRes.data);
             setSummary(summaryRes.data);
         } catch (err: any) {
-            console.error('[useFixedExpenses] Error:', err);
             setError(err.response?.data?.message || 'Error al cargar los gastos fijos');
         } finally {
             setIsLoading(false);

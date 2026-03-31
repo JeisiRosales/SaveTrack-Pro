@@ -22,8 +22,8 @@ export const IncomeCategorySelector: React.FC<Props> = ({ selectedId, onSelect }
             options={categoryOptions}
             value={selectedId}
             onChange={onSelect}
-            placeholder={loading ? "Cargando..." : "Selecciona una categoría"}
-            disabled={loading}
+            placeholder={loading ? "Cargando..." : (categories.length === 0 ? "No hay categorías creadas" : "Selecciona una categoría")}
+            disabled={loading || categories.length === 0}
         />
     );
 };

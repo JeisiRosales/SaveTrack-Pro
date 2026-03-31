@@ -5,25 +5,33 @@ import { useExpenseCategories } from '@/features/expense/hooks/useExpenseCategor
 interface Props {
     selectedId: string;
     onSelect: (id: string) => void;
+    filterType?: 'all' | 'fixed' | 'variable';
 }
 
 /**
  * Selector de categorías de gasto con indicador visual fijo/variable.
  * Permite crear nuevas categorías inline sin salir del modal.
  */
-export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect }) => {
+export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect, filterType = 'all' }) => {
     const { categories, loading } = useExpenseCategories();
     const [isOpen, setIsOpen] = useState(false);
 
-    const selected = categories.find(c => c.id === selectedId);
+    const filteredCategories = categories.filter(c => {
+        if (filterType === 'fixed') return c.is_fixed;
+        if (filterType === 'variable') return !c.is_fixed;
+        return true;
+    });
+
+    const selected = filteredCategories.find(c => c.id === selectedId);
 
     return (
         <div className="relative">
             {/* Trigger */}
             <button
                 type="button"
+                disabled={loading || filteredCategories.length === 0}
                 onClick={() => setIsOpen(p => !p)}
-                className="text-[var(--foreground)] text-sm w-full flex items-center justify-between px-4 py-4 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-rose-600 transition-all outline-none"
+                className="text-[var(--foreground)] text-sm w-full flex items-center justify-between px-4 py-4 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl focus:ring-2 focus:ring-rose-600 transition-all outline-none disabled:opacity-70 disabled:cursor-not-allowed"
             >
                 {selected ? (
                     <span className="flex items-center gap-2">
@@ -33,14 +41,21 @@ export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect 
                         }
                         <span>{selected.name}</span>
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${selected.is_fixed
-                                ? 'bg-violet-500/10 text-violet-400'
-                                : 'bg-orange-500/10 text-orange-400'
+                            ? 'bg-violet-500/10 text-violet-400'
+                            : 'bg-orange-500/10 text-orange-400'
                             }`}>
                             {selected.is_fixed ? 'Fijo' : 'Variable'}
                         </span>
                     </span>
                 ) : (
-                    <span className="text-[var(--muted)]">Selecciona categoría</span>
+                    <span className="text-[var(--muted)]">
+                        {loading
+                            ? "Cargando..."
+                            : (filteredCategories.length === 0
+                                ? (filterType === 'fixed' ? "No hay categorías fijas creadas" : "No hay categorías creadas")
+                                : "Selecciona categoría")
+                        }
+                    </span>
                 )}
                 <ChevronDown className={`w-4 h-4 text-[var(--muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
@@ -55,8 +70,8 @@ export const ExpenseCategorySelector: React.FC<Props> = ({ selectedId, onSelect 
                     ) : (
                         <>
                             {/* Grupos: Fijos y Variables */}
-                            {(['fixed', 'variable'] as const).map(group => {
-                                const items = categories.filter(c =>
+                            {(filterType === 'all' ? ['fixed', 'variable'] as const : [filterType] as const).map(group => {
+                                const items = filteredCategories.filter(c =>
                                     group === 'fixed' ? c.is_fixed : !c.is_fixed
                                 );
                                 if (items.length === 0) return null;

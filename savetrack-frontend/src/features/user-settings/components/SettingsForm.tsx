@@ -5,7 +5,7 @@ import { CustomSelect } from '@/components/ui/CustomSelect';
 import { useAccounts } from '@/features/accounts/hooks/useAccounts';
 import { useGlobalSettings } from '@/context/SettingsContext';
 import {
-    Settings, Save, Loader2,
+    Settings, Loader2,
     DollarSign, Calendar, PiggyBank,
     EuroIcon,
     CoinsIcon,
@@ -84,8 +84,10 @@ export const SettingsForm = () => {
         <div className="space-y-8">
 
             {/* Apariencia Visual */}
-            <div className="bg-[var(--card)] p-5 rounded-3xl border border-[var(--card-border)] shadow-sm">
-                <h3 className="font-bold text-[var(--foreground)] mb-3 text-sm">Apariencia</h3>
+            <div className="bg-[var(--card)] p-6 rounded-3xl border border-[var(--card-border)] shadow-sm">
+                <h2 className="text-lg font-bold text-[var(--foreground)] flex gap-2 items-center mb-4">
+                    <Settings className="w-5 h-5 text-indigo-500" /> Apariencia
+                </h2>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--background)] border border-[var(--card-border)] cursor-pointer hover:border-indigo-500/30 transition-colors" onClick={toggleTheme}>
                     <div className="flex items-center gap-3">
                         <div className={`p-2 rounded-lg ${darkMode ? 'bg-indigo-500/20 text-indigo-400' : 'bg-orange-500/20 text-orange-500'}`}>
@@ -183,7 +185,7 @@ export const SettingsForm = () => {
                 <div className="flex flex-col gap-3">
                     {saveSuccess && (
                         <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 p-3 rounded-xl text-xs font-bold flex items-center gap-2">
-                            <Save className="w-3.5 h-3.5" /> ¡Configuraciones guardadas correctamente!
+                            ¡Configuraciones guardadas correctamente!
                         </div>
                     )}
                     <button

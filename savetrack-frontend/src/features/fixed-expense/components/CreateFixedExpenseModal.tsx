@@ -188,6 +188,7 @@ export const CreateFixedExpenseModal: React.FC<Props> = ({
                         <ExpenseCategorySelector
                             selectedId={form.catId}
                             onSelect={set('catId')}
+                            filterType="fixed"
                         />
                         <p className="text-[9px] text-[var(--muted)] font-semibold px-1 italic">* Solo se muestran categorías marcadas como "Fijas".</p>
                     </div>

@@ -74,7 +74,7 @@ const Settings = () => {
 
             <div className="flex flex-col gap-8 max-w-6xl">
 
-                <div className="w-full flex flex-col gap-6">
+                <div className="w-full flex flex-col gap-8">
                     {/* Tarjeta de Perfil Profesional */}
                     <div className="bg-[var(--card)] p-6 rounded-3xl border border-[var(--card-border)] shadow-sm text-center">
                         {/* Contenedor del Avatar con posición relativa para el lápiz */}
