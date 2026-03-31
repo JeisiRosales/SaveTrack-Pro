@@ -161,7 +161,7 @@ const Settings = () => {
                     className="text-sm text-[var(--muted)] hover:text-indigo-400 font-medium flex flex-col items-center justify-center p-3 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400/20"
                 >
                     <span className="mb-0.5">Creado por Jeisi Rosales</span>
-                    <span className="text-xs opacity-70">Haz clic aquí para ver el Historial de Versiones (v1.1.0)</span>
+                    <span className="text-xs opacity-70">Haz clic aquí para ver el Historial de Versiones (v1.1.1)</span>
                 </button>
             </div>
 

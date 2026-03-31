@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Sparkles, CheckCircle2 } from 'lucide-react';
 
-const CURRENT_VERSION = '1.1.0';
+const CURRENT_VERSION = '1.1.1';
 
 export const UpdateNotificationModal: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
