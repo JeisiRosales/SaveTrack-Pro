@@ -3,6 +3,7 @@ import { SettingsForm } from '@/features/user-settings/components/SettingsForm';
 import { UserManual } from '@/features/user-settings/components/UserManual';
 import { DeleteForm } from '@/features/user-settings/components/DeleteForm';
 import { UtilityButtons } from '@/features/user-settings/components/UtilityButtons';
+import { VersionHistoryModal } from '@/features/user-settings/components/VersionHistoryModal';
 import { useAuth } from '@/context/AuthContext';
 import { User, Briefcase, Menu, Pencil, Check, X, Loader2 } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
@@ -16,6 +17,7 @@ const Settings = () => {
     const [isEditingName, setIsEditingName] = useState(false);
     const [newName, setNewName] = useState(user?.full_name);
     const [isSaving, setIsSaving] = useState(false);
+    const [isVersionHistoryOpen, setIsVersionHistoryOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const { toggleSidebar } = useOutletContext<ContextType>();
 
@@ -154,10 +156,19 @@ const Settings = () => {
                     <DeleteForm />
                 </div>
 
-                <p className="text-sm text-[var(--muted)] flex items-center justify-center">
-                    Creado por Jeisi Rosales - Version 1.1.0
-                </p>
+                <button 
+                    onClick={() => setIsVersionHistoryOpen(true)}
+                    className="text-sm text-[var(--muted)] hover:text-indigo-400 font-medium flex flex-col items-center justify-center p-3 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400/20"
+                >
+                    <span className="mb-0.5">Creado por Jeisi Rosales</span>
+                    <span className="text-xs opacity-70">Haz clic aquí para ver el Historial de Versiones (v1.1.0)</span>
+                </button>
             </div>
+
+            <VersionHistoryModal 
+                isOpen={isVersionHistoryOpen} 
+                onClose={() => setIsVersionHistoryOpen(false)} 
+            />
         </div>
     );
 };
