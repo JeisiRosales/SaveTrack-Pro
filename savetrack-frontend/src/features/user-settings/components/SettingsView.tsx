@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { SettingsForm } from '@/features/user-settings/components/SettingsForm';
 import { UserManual } from '@/features/user-settings/components/UserManual';
 import { DeleteForm } from '@/features/user-settings/components/DeleteForm';
+import { UtilityButtons } from '@/features/user-settings/components/UtilityButtons';
 import { useAuth } from '@/context/AuthContext';
 import { User, Briefcase, Menu, Pencil, Check, X, Loader2 } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
@@ -142,6 +143,9 @@ const Settings = () => {
 
                     {/* Formulario Central de Finances y Apariencia */}
                     <SettingsForm />
+
+                    {/* Botones PWA, Share y Mail */}
+                    <UtilityButtons />
 
                     {/* Centro de Ayuda / Manual de Usuario */}
                     <UserManual />

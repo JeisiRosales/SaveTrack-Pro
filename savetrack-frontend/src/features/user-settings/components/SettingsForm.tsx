@@ -6,6 +6,7 @@ import { useAccounts } from '@/features/accounts/hooks/useAccounts';
 import { useGlobalSettings } from '@/context/SettingsContext';
 import {
     Settings, Loader2,
+    LucideSunMoon,
     DollarSign, Calendar, PiggyBank,
     EuroIcon,
     CoinsIcon,
@@ -86,7 +87,7 @@ export const SettingsForm = () => {
             {/* Apariencia Visual */}
             <div className="bg-[var(--card)] p-6 rounded-3xl border border-[var(--card-border)] shadow-sm">
                 <h2 className="text-lg font-bold text-[var(--foreground)] flex gap-2 items-center mb-4">
-                    <Settings className="w-5 h-5 text-indigo-500" /> Apariencia
+                    <LucideSunMoon className="w-5 h-5 text-indigo-500" /> Apariencia
                 </h2>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--background)] border border-[var(--card-border)] cursor-pointer hover:border-indigo-500/30 transition-colors" onClick={toggleTheme}>
                     <div className="flex items-center gap-3">
